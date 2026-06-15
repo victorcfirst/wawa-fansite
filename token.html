@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Token สะสม · ChiwawaLand</title>
+<meta name="description" content="BNK Token สะสมของบ้านชิวาว่าแลนด์ 🐶🪙" />
+
+<link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+<meta name="theme-color" content="#1aa3ad" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Mitr:wght@200;300;400;500;600&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ════════ RESET & TOKENS ════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#1aa3ad; --teal-deep:#127d86; --teal-pale:#d6f2f3;
+  --pink:#f57aa8; --pink-deep:#e85a92; --pink-pale:#ffe3ee;
+  --sky:#8ec9f0; --sky-pale:#e3f1fc;
+  --lilac:#b89cf0; --lilac-pale:#efe7fd;
+  --gold:#e8c060; --gold-deep:#c8980a; --gold-pale:#fff8e0;
+  --ink:#2e2a44; --ink2:#5f5980; --ink3:#9a93b8;
+  --white:#ffffff;
+  --shadow:0 10px 30px rgba(80,120,160,.13);
+  --shadow-gold:0 16px 48px rgba(200,152,10,.28);
+  --r-md:20px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Mitr',sans-serif;font-weight:300;color:var(--ink);
+  background:#fff7fb;min-height:100vh;overflow-x:hidden;position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 15% 10%,rgba(245,122,168,.16),transparent 28%),
+    radial-gradient(circle at 85% 8%,rgba(142,201,240,.2),transparent 28%),
+    radial-gradient(circle at 85% 75%,rgba(184,156,240,.14),transparent 30%),
+    radial-gradient(circle at 10% 80%,rgba(26,163,173,.12),transparent 28%),
+    radial-gradient(circle at 50% 50%,rgba(232,192,96,.08),transparent 50%),
+    linear-gradient(175deg,#fff7fb 0%,#f6fbfc 55%,#fff2f8 100%);
+}
+::selection{background:var(--pink);color:#fff}
+
+/* ════════ FLOATING DECOR ════════ */
+.decor{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.dec{position:absolute;animation:float 15s ease-in-out infinite}
+.dec.b{animation-duration:19s;animation-delay:-4s}
+.dec.c{animation-duration:23s;animation-delay:-9s}
+.dec.d{animation-duration:17s;animation-delay:-6s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-28px) rotate(8deg)}}
+
+/* ════════ NAV ════════ */
+nav{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 30px;
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(18px) saturate(1.5);
+  border-bottom:2px solid rgba(245,122,168,.18);
+}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.brand img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(26,163,173,.3))}
+.brand-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:var(--teal);letter-spacing:.3px;line-height:1}
+.brand-sub{font-family:'Fredoka',sans-serif;font-size:9.5px;font-weight:500;color:var(--pink-deep);letter-spacing:1.5px;text-transform:uppercase}
+.nav-links{display:flex;gap:2px}
+.nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s}
+.nav-links a:hover{background:var(--pink-pale);color:var(--pink-deep);transform:translateY(-1px)}
+.nav-links a.active{background:linear-gradient(120deg,var(--gold),var(--gold-deep));color:#fff;font-weight:600}
+
+/* ════════ HERO BANNER ════════ */
+.token-hero{
+  position:relative;z-index:2;
+  padding:48px 24px 52px;text-align:center;
+}
+.th-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Fredoka',sans-serif;font-size:12px;font-weight:500;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold-deep);
+  background:rgba(255,248,224,.85);border:1px solid rgba(232,192,96,.5);
+  padding:5px 18px;border-radius:30px;margin-bottom:22px;
+  box-shadow:0 4px 14px rgba(200,152,10,.12);
+  backdrop-filter:blur(8px);
+}
+
+/* coin */
+.coin-wrap{width:180px;height:180px;margin:0 auto 28px;position:relative}
+.coin{
+  width:180px;height:180px;border-radius:50%;
+  background:linear-gradient(145deg,#f5d980,#c89020,#f0c840,#a87010,#e8c060);
+  box-shadow:
+    0 0 0 4px #f5e09a,
+    0 0 0 7px #c89020,
+    var(--shadow-gold);
+  display:flex;align-items:center;justify-content:center;
+  animation:coinSpin 6s ease-in-out infinite;
+  position:relative;overflow:hidden;
+}
+.coin::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,220,.5) 0%,transparent 55%);
+}
+.coin img{width:72%;height:72%;object-fit:contain;position:relative;z-index:1;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
+@keyframes coinSpin{
+  0%,100%{transform:rotateY(0deg) scale(1)}
+  25%{transform:rotateY(15deg) scale(1.04)}
+  75%{transform:rotateY(-15deg) scale(1.04)}
+}
+/* glow ring */
+.coin-wrap::after{
+  content:'';position:absolute;inset:-14px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,192,96,.35) 0%,transparent 70%);
+  animation:glowPulse 2.5s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+
+.token-title{
+  font-family:'Baloo 2',cursive;font-weight:800;
+  font-size:clamp(28px,7vw,42px);line-height:1.1;
+  background:linear-gradient(120deg,var(--pink-deep),var(--teal) 50%,var(--gold-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:6px;
+}
+.token-sub{font-family:'Fredoka',sans-serif;font-size:14px;font-weight:400;color:var(--ink3);margin-bottom:32px}
+
+/* ════════ MAIN CARD ════════ */
+.wrap{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:0 20px 70px}
+.card{background:rgba(255,255,255,.72);backdrop-filter:blur(12px);border:2px solid var(--white);border-radius:var(--r-md);box-shadow:var(--shadow)}
+
+/* big token counter */
+.token-card{
+  padding:40px 32px 36px;text-align:center;
+  background:linear-gradient(145deg,rgba(255,252,230,.85),rgba(255,255,255,.75));
+  border:2px solid rgba(232,192,96,.4);
+  box-shadow:0 12px 40px rgba(200,152,10,.12);
+  margin-bottom:16px;
+}
+.tc-label{font-family:'Fredoka',sans-serif;font-size:12px;font-weight:500;
+  letter-spacing:2px;text-transform:uppercase;color:var(--gold-deep);margin-bottom:14px}
+.tc-coin-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px}
+.tc-coin-mini{
+  width:56px;height:56px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(145deg,#f5d980,#c89020,#f0c840);
+  box-shadow:0 4px 16px rgba(200,152,10,.3);
+  display:flex;align-items:center;justify-content:center;
+}
+.tc-coin-mini img{width:70%;height:70%;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.tc-number{
+  font-family:'Baloo 2',cursive;font-weight:800;
+  font-size:clamp(52px,14vw,86px);line-height:1;
+  background:linear-gradient(120deg,#c89020,#f0c840,#a87010);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-2px;
+  animation:numGlow 3s ease-in-out infinite;
+}
+@keyframes numGlow{0%,100%{filter:drop-shadow(0 0 8px rgba(232,192,96,.4))}50%{filter:drop-shadow(0 0 20px rgba(232,192,96,.7))}}
+.tc-unit{font-family:'Fredoka',sans-serif;font-size:18px;font-weight:500;color:var(--gold-deep);margin-bottom:16px}
+.tc-updated{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Fredoka',sans-serif;font-size:11px;font-weight:400;color:var(--ink3);
+  background:rgba(255,255,255,.7);padding:4px 14px;border-radius:20px;
+  border:1px solid rgba(232,192,96,.25);
+}
+.tc-dot{width:7px;height:7px;border-radius:50%;background:#4caf50;animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ════════ STATS ROW ════════ */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat-mini{padding:18px 12px;text-align:center}
+.sm-num{font-family:'Baloo 2',cursive;font-weight:700;font-size:22px;line-height:1}
+.sm-lbl{font-family:'Fredoka',sans-serif;font-size:10.5px;font-weight:400;color:var(--ink3);margin-top:5px;line-height:1.4}
+.sn-gold{color:var(--gold-deep)} .sn-teal{color:var(--teal)} .sn-pink{color:var(--pink-deep)}
+
+/* ════════ HISTORY ════════ */
+.sec-head{display:flex;align-items:center;gap:13px;margin:36px 0 16px}
+.sec-emoji{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:var(--shadow)}
+.e-gold{background:linear-gradient(135deg,#fff8e0,#ffe08a)}
+.e-teal{background:linear-gradient(135deg,var(--teal-pale),#b8e8ea)}
+.e-pink{background:linear-gradient(135deg,var(--pink-pale),#ffc9de)}
+.sec-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:22px;color:var(--ink);line-height:1.1}
+.sec-sub{font-family:'Fredoka',sans-serif;font-size:11px;font-weight:400;color:var(--ink3)}
+.sec-head::after{content:'';flex:1;height:3px;border-radius:3px;background:linear-gradient(to right,rgba(232,192,96,.45),transparent)}
+
+.history{display:flex;flex-direction:column;gap:10px}
+.hist-item{display:flex;align-items:center;gap:14px;padding:14px 18px}
+.hist-icon{width:38px;height:38px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px}
+.hi-in{background:linear-gradient(135deg,#e4f8ee,#b8ecd0)}
+.hi-out{background:linear-gradient(135deg,#ffe3ee,#f9b8d2)}
+.hi-hold{background:linear-gradient(135deg,#fff8e0,#ffe08a)}
+.hist-body{flex:1}
+.hist-t{font-size:13.5px;font-weight:400;color:var(--ink)}
+.hist-d{font-size:11px;font-weight:300;color:var(--ink3);margin-top:2px}
+.hist-amt{font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;text-align:right;flex-shrink:0}
+.amt-in{color:#2e9e60} .amt-out{color:var(--pink-deep)} .amt-hold{color:var(--gold-deep)}
+
+/* ════════ INFO CARD ════════ */
+.info-card{padding:20px 22px;margin-bottom:16px;
+  background:linear-gradient(135deg,rgba(214,242,243,.5),rgba(239,231,253,.5));
+  border:1.5px solid rgba(26,163,173,.2)}
+.info-card .ic-title{font-family:'Baloo 2',cursive;font-weight:600;font-size:15px;
+  color:var(--teal-deep);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.info-card p{font-size:13px;font-weight:300;color:var(--ink2);line-height:1.8}
+
+/* ════════ REVEAL ════════ */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s,transform .65s}
+.reveal.in{opacity:1;transform:none}
+
+/* ════════ FOOTER ════════ */
+footer{position:relative;z-index:2;text-align:center;padding:36px 20px 32px;
+  border-top:2px solid rgba(245,122,168,.18);background:rgba(255,255,255,.5);
+  backdrop-filter:blur(8px);margin-top:20px}
+footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;
+  filter:drop-shadow(0 4px 10px rgba(26,163,173,.28))}
+.foot-name{font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:var(--teal);margin-bottom:4px}
+.foot-tx{font-family:'Fredoka',sans-serif;font-size:11px;font-weight:400;color:var(--ink3);line-height:1.7}
+
+@media(max-width:600px){
+  nav{padding:10px 16px}
+  .nav-links a{font-size:11px;padding:5px 10px}
+  .stats-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="decor" id="decor"></div>
+
+<!-- ░░ NAV ░░ -->
+<nav>
+  <a class="brand" href="index.html">
+    <img src="images/logo-transparent.png" alt="ChiwawaLand" />
+    <div>
+      <div class="brand-name">ChiwawaLand</div>
+      <div class="brand-sub">Wawa BNK48 Fanclub</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">หน้าหลัก</a>
+    <a href="index.html#countdown">นับถอยหลัง</a>
+    <a href="index.html#calendar">ปฏิทิน</a>
+    <a href="token.html" class="active">🪙 Token สะสม</a>
+  </div>
+</nav>
+
+<!-- ░░ HERO ░░ -->
+<div class="token-hero">
+  <div class="th-tag reveal">🪙 BNK Token · ChiwawaLand</div>
+  <div class="coin-wrap reveal">
+    <div class="coin">
+      <img src="images/BNKtoken-logo-transparent.png" alt="BNK Token" />
+    </div>
+  </div>
+  <div class="token-title reveal">Wawa's Token</div>
+  <div class="token-sub reveal">เหรียญ BNK Token ที่บ้านชิวาว่าแลนด์สะสมไว้เพื่อวาว่า 🐶💕</div>
+</div>
+
+<!-- ░░ BODY ░░ -->
+<div class="wrap">
+
+  <!-- BIG NUMBER -->
+  <div class="card token-card reveal">
+    <div class="tc-label">ยอดเหรียญสะสมทั้งหมด</div>
+    <div class="tc-coin-row">
+      <div class="tc-coin-mini">
+        <img src="images/BNKtoken-logo-transparent.png" alt="BNK Token" />
+      </div>
+      <!-- ✏️ แก้ตัวเลขตรงนี้ได้เลยครับ -->
+      <div class="tc-number" id="tokenCount">1,250</div>
+    </div>
+    <div class="tc-unit">BNK Token</div>
+    <div class="tc-updated">
+      <span class="tc-dot"></span>
+      <!-- ✏️ แก้วันที่อัปเดตล่าสุดตรงนี้ -->
+      อัปเดตล่าสุด: 15 มิ.ย. 2569
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row reveal">
+    <div class="card stat-mini">
+      <!-- ✏️ แก้ตัวเลขแต่ละช่องได้เลย -->
+      <div class="sm-num sn-gold">1,250</div>
+      <div class="sm-lbl">Token ทั้งหมด</div>
+    </div>
+    <div class="card stat-mini">
+      <div class="sm-num sn-teal">3</div>
+      <div class="sm-lbl">กิจกรรมที่รอใช้</div>
+    </div>
+    <div class="card stat-mini">
+      <div class="sm-num sn-pink">0</div>
+      <div class="sm-lbl">Token ที่ใช้ไปแล้ว</div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="card info-card reveal">
+    <div class="ic-title">🪙 BNK Token คืออะไร?</div>
+    <p>BNK Token เป็น Governance Token ของวง BNK48 ใช้สำหรับกิจกรรมพิเศษต่างๆ เช่น การโหวต Handshake, อีเวนต์พิเศษ และสิทธิพิเศษของแฟนคลับ บ้านชิวาว่าแลนด์สะสม Token ไว้เพื่อใช้ในกิจกรรมของวาว่าโดยเฉพาะครับ 🐶</p>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-gold">📋</div>
+    <div>
+      <div class="sec-title">ประวัติการสะสม</div>
+      <div class="sec-sub">Transaction history</div>
+    </div>
+  </div>
+  <div class="history reveal">
+    <!-- ✏️ เพิ่ม/แก้รายการตรงนี้ได้เลย -->
+    <div class="card hist-item">
+      <div class="hist-icon hi-in">➕</div>
+      <div class="hist-body">
+        <div class="hist-t">สะสม Token รอบแรก</div>
+        <div class="hist-d">มิ.ย. 2569 · สมาชิกบ้านร่วมกันสะสม</div>
+      </div>
+      <div class="hist-amt amt-in">+1,000</div>
+    </div>
+    <div class="card hist-item">
+      <div class="hist-icon hi-in">➕</div>
+      <div class="hist-body">
+        <div class="hist-t">โบนัสกิจกรรม Birthday Countdown</div>
+        <div class="hist-d">มิ.ย. 2569 · รางวัลจากกิจกรรม</div>
+      </div>
+      <div class="hist-amt amt-in">+250</div>
+    </div>
+    <div class="card hist-item">
+      <div class="hist-icon hi-hold">🔒</div>
+      <div class="hist-body">
+        <div class="hist-t">สำรองไว้สำหรับ Handshake Event</div>
+        <div class="hist-d">รอการใช้งาน · ส.ค. 2569</div>
+      </div>
+      <div class="hist-amt amt-hold">Lock</div>
+    </div>
+  </div>
+
+  <!-- HOW TO -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-teal">🎯</div>
+    <div>
+      <div class="sec-title">แผนการใช้ Token</div>
+      <div class="sec-sub">Upcoming plans</div>
+    </div>
+  </div>
+  <div class="history reveal">
+    <div class="card hist-item">
+      <div class="hist-icon hi-in">🎀</div>
+      <div class="hist-body">
+        <div class="hist-t">Handshake Event รอบถัดไป</div>
+        <div class="hist-d">นำ Token ไปใช้โหวตให้วาว่า</div>
+      </div>
+      <div class="hist-amt amt-hold">รอใช้</div>
+    </div>
+    <div class="card hist-item">
+      <div class="hist-icon e-pink" style="background:linear-gradient(135deg,#ffe3ee,#f9b8d2);width:38px;height:38px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">🎂</div>
+      <div class="hist-body">
+        <div class="hist-t">กิจกรรมวันเกิดวาว่า</div>
+        <div class="hist-d">11 สิงหาคม 2569</div>
+      </div>
+      <div class="hist-amt amt-hold">รอใช้</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ░░ FOOTER ░░ -->
+<footer>
+  <img src="images/logo-transparent.png" alt="ChiwawaLand" />
+  <div class="foot-name">🐶 บ้านชิวาว่าแลนด์ · ChiwawaLand</div>
+  <div class="foot-tx">
+    made with ♡ by Wawa BNK48 Fanclub<br>
+    ไม่มีส่วนเกี่ยวข้องกับ BNK48 หรือ iAM อย่างเป็นทางการ
+  </div>
+</footer>
+
+<script>
+/* reveal on scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* floating decor */
+const decor=document.getElementById('decor');
+const bits=[
+  '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="#f0c840" opacity=".9"/><circle cx="20" cy="20" r="11" fill="none" stroke="#c89020" stroke-width="1.5"/><text x="20" y="25" text-anchor="middle" font-size="12" fill="#a07010">₿</text></svg>',
+  '<svg viewBox="0 0 40 40"><path d="M20 20c-4-7-15-8-17-3-1 4 4 8 9 7 3-1 6-3 8-4z" fill="#f57aa8"/><path d="M20 20c4-7 15-8 17-3 1 4-4 8-9 7-3-1-6-3-8-4z" fill="#1aa3ad"/><circle cx="20" cy="20" r="4" fill="#fff"/></svg>',
+  '<svg viewBox="0 0 40 40"><path d="M20 6l3 9 9.5.8-7.2 6.2 2.2 9.2L20 26l-8.5 5.2 2.2-9.2L6.5 15.8 16 15l4-9z" fill="#e8c060"/></svg>',
+  '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="13" fill="#f9d040" opacity=".6"/><circle cx="20" cy="20" r="8" fill="#e8c060" opacity=".8"/></svg>',
+  '<svg viewBox="0 0 40 40"><path d="M20 10c-7 0-12 5-12 12 0 9 12 16 12 16s12-7 12-16c0-7-5-12-12-12z" fill="#f9b8d2"/></svg>',
+];
+const N=window.innerWidth<600?8:14;
+for(let i=0;i<N;i++){
+  const el=document.createElement('div');
+  el.className='dec '+'abcd'[i%4];
+  const sz=18+Math.random()*28;
+  el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:${(0.2+Math.random()*0.28).toFixed(2)}`;
+  el.innerHTML=bits[i%bits.length];
+  decor.appendChild(el);
+}
+</script>
+</body>
+</html>
