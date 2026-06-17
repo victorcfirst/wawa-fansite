@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>กิจกรรม · ChiwawaLand</title>
+<meta name="description" content="กิจกรรมและมินิเกมของบ้านชิวาว่าแลนด์ 🐶🎮" />
+
+<link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+<meta name="theme-color" content="#1aa3ad" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Mitr:wght@200;300;400;500;600&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ════════ RESET & TOKENS ════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#1aa3ad; --teal-deep:#127d86; --teal-pale:#d6f2f3;
+  --pink:#f57aa8; --pink-deep:#e85a92; --pink-pale:#ffe3ee;
+  --sky:#8ec9f0; --sky-pale:#e3f1fc;
+  --lilac:#b89cf0; --lilac-pale:#efe7fd;
+  --gold:#e8c060; --gold-deep:#c8980a; --gold-pale:#fff8e0;
+  --ink:#2e2a44; --ink2:#5f5980; --ink3:#9a93b8;
+  --white:#ffffff;
+  --shadow:0 10px 30px rgba(80,120,160,.13);
+  --shadow-pink:0 12px 28px rgba(232,90,146,.22);
+  --r-md:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Mitr',sans-serif;font-weight:300;color:var(--ink);
+  background:#fff7fb;min-height:100vh;overflow-x:hidden;position:relative}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 15% 10%,rgba(245,122,168,.16),transparent 28%),
+    radial-gradient(circle at 85% 8%,rgba(142,201,240,.2),transparent 28%),
+    radial-gradient(circle at 85% 75%,rgba(184,156,240,.14),transparent 30%),
+    radial-gradient(circle at 10% 80%,rgba(26,163,173,.12),transparent 28%),
+    linear-gradient(175deg,#fff7fb 0%,#f6fbfc 55%,#fff2f8 100%);
+}
+::selection{background:var(--pink);color:#fff}
+
+/* ════════ FLOATING DECOR ════════ */
+.decor{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.dec{position:absolute;animation:float 15s ease-in-out infinite}
+.dec.b{animation-duration:19s;animation-delay:-4s}
+.dec.c{animation-duration:23s;animation-delay:-9s}
+.dec.d{animation-duration:17s;animation-delay:-6s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-28px) rotate(8deg)}}
+
+/* ════════ NAV (เหมือนหน้าอื่น) ════════ */
+nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 30px;background:rgba(255,255,255,.78);backdrop-filter:blur(18px) saturate(1.5);
+  border-bottom:2px solid rgba(245,122,168,.18)}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.brand img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(26,163,173,.3))}
+.brand-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:var(--teal);letter-spacing:.3px;line-height:1}
+.brand-sub{font-family:'Fredoka',sans-serif;font-size:9.5px;font-weight:500;color:var(--pink-deep);letter-spacing:1.5px;text-transform:uppercase}
+.nav-links{display:flex;gap:2px;align-items:center}
+.nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s}
+.nav-links a:hover{background:var(--pink-pale);color:var(--pink-deep);transform:translateY(-1px)}
+.nav-links a.active{background:linear-gradient(120deg,var(--pink),var(--pink-deep));color:#fff;font-weight:600}
+.nav-primary{display:none;align-items:center;gap:8px}
+.nav-token{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;text-decoration:none;
+  padding:8px 16px;border-radius:30px;color:#fff;box-shadow:0 4px 12px rgba(232,90,146,.3);
+  background:linear-gradient(120deg,var(--pink),var(--pink-deep))}
+.nav-toggle{width:42px;height:38px;border:none;border-radius:12px;cursor:pointer;background:var(--pink-pale);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0;transition:.2s}
+.nav-toggle span{width:18px;height:2.5px;border-radius:3px;background:var(--pink-deep);transition:.3s}
+.nav-toggle.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* ════════ HERO ════════ */
+.act-hero{position:relative;z-index:2;padding:48px 24px 36px;text-align:center}
+.act-tag{display:inline-flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;
+  font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--teal-deep);
+  background:rgba(214,242,243,.7);border:1px solid rgba(26,163,173,.3);padding:5px 18px;
+  border-radius:30px;margin-bottom:22px;backdrop-filter:blur(8px)}
+.act-emoji{font-size:64px;margin-bottom:14px;display:block;animation:bob 4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.act-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(32px,8vw,48px);line-height:1.1;
+  background:linear-gradient(120deg,var(--pink-deep),var(--teal) 50%,var(--lilac));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.act-sub{font-family:'Fredoka',sans-serif;font-size:14px;font-weight:400;color:var(--ink3)}
+
+.wrap{position:relative;z-index:2;max-width:680px;margin:0 auto;padding:0 20px 70px}
+.card{background:rgba(255,255,255,.72);backdrop-filter:blur(12px);border:2px solid var(--white);border-radius:var(--r-md);box-shadow:var(--shadow)}
+
+/* ════════ COMING SOON ════════ */
+.coming{padding:48px 30px;text-align:center;
+  background:linear-gradient(145deg,rgba(255,227,238,.6),rgba(227,241,252,.6));
+  border:2px solid rgba(245,122,168,.3);margin-bottom:20px}
+.coming-badge{display:inline-block;font-family:'Baloo 2',cursive;font-weight:700;font-size:13px;
+  letter-spacing:1px;color:#fff;background:linear-gradient(120deg,var(--pink),var(--pink-deep));
+  padding:6px 20px;border-radius:30px;margin-bottom:20px;box-shadow:var(--shadow-pink);
+  animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.coming-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(30px,8vw,46px);
+  color:var(--pink-deep);line-height:1.1;margin-bottom:14px}
+.coming-tx{font-size:14px;font-weight:300;color:var(--ink2);line-height:1.9;max-width:420px;margin:0 auto 8px}
+.coming-dogs{font-size:30px;letter-spacing:6px;margin-top:18px}
+
+/* ════════ PREVIEW (สิ่งที่กำลังจะมา) ════════ */
+.sec-head{display:flex;align-items:center;gap:13px;margin:36px 0 16px}
+.sec-emoji{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;box-shadow:var(--shadow)}
+.e-pink{background:linear-gradient(135deg,var(--pink-pale),#ffc9de)}
+.e-teal{background:linear-gradient(135deg,var(--teal-pale),#b8e8ea)}
+.e-gold{background:linear-gradient(135deg,#fff8e0,#ffe08a)}
+.sec-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:22px;color:var(--ink);line-height:1.1}
+.sec-sub{font-family:'Fredoka',sans-serif;font-size:11px;font-weight:400;color:var(--ink3)}
+.sec-head::after{content:'';flex:1;height:3px;border-radius:3px;background:linear-gradient(to right,rgba(245,122,168,.4),transparent)}
+
+.preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+.pv{padding:22px 14px;text-align:center;opacity:.85}
+.pv .em{font-size:36px;margin-bottom:10px;display:block}
+.pv .t{font-family:'Baloo 2',cursive;font-weight:600;font-size:14px;color:var(--ink);margin-bottom:5px}
+.pv .d{font-size:11px;font-weight:300;color:var(--ink2);line-height:1.6}
+.pv .soon{display:inline-block;margin-top:10px;font-family:'Fredoka',sans-serif;font-size:9.5px;
+  font-weight:500;color:var(--pink-deep);background:var(--pink-pale);padding:2px 10px;border-radius:12px}
+
+/* ════════ LEADERBOARD (โครงรอไว้) ════════ */
+.lb-card{padding:24px 22px;margin-bottom:16px}
+.lb-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.lb-trophy{font-size:26px}
+.lb-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:18px;color:var(--gold-deep)}
+.lb-empty{text-align:center;padding:30px 20px;color:var(--ink3)}
+.lb-empty .big{font-size:40px;margin-bottom:10px}
+.lb-empty .tx{font-size:13px;font-weight:300}
+.lb-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;
+  background:rgba(255,255,255,.6);margin-bottom:8px;border:1px solid rgba(0,0,0,.04)}
+.lb-rank{font-family:'Baloo 2',cursive;font-weight:800;font-size:18px;width:32px;text-align:center;flex-shrink:0}
+.lb-row:nth-child(1) .lb-rank{color:var(--gold-deep)}
+.lb-row:nth-child(2) .lb-rank{color:#9aa0b0}
+.lb-row:nth-child(3) .lb-rank{color:#c8915a}
+.lb-name{flex:1;font-size:13.5px;font-weight:400;color:var(--ink)}
+.lb-score{font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:var(--teal);flex-shrink:0}
+.lb-note{font-family:'Fredoka',sans-serif;font-size:10.5px;font-weight:400;color:var(--ink3);text-align:center;margin-top:6px}
+
+/* ════════ REWARDS ════════ */
+.reward-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rw{padding:20px 12px;text-align:center;position:relative;overflow:hidden}
+.rw-medal{font-size:40px;margin-bottom:8px;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.12))}
+.rw-rank{font-family:'Fredoka',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:4px}
+.rw-prize{font-family:'Baloo 2',cursive;font-weight:600;font-size:13px;color:var(--ink);line-height:1.3}
+.rw-1{background:linear-gradient(145deg,#fff8e0,#ffe9a8)} .rw-1 .rw-rank{color:var(--gold-deep)}
+.rw-2{background:linear-gradient(145deg,#f0f2f7,#dde2ec)} .rw-2 .rw-rank{color:#8a92a6}
+.rw-3{background:linear-gradient(145deg,#fcefe0,#f7dcc0)} .rw-3 .rw-rank{color:#c8915a}
+
+/* ════════ REVEAL ════════ */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s,transform .65s}
+.reveal.in{opacity:1;transform:none}
+
+/* ════════ FOOTER ════════ */
+footer{position:relative;z-index:2;text-align:center;padding:36px 20px 32px;
+  border-top:2px solid rgba(245,122,168,.18);background:rgba(255,255,255,.5);
+  backdrop-filter:blur(8px);margin-top:20px}
+footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;filter:drop-shadow(0 4px 10px rgba(26,163,173,.28))}
+.foot-name{font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:var(--teal);margin-bottom:4px}
+.foot-tx{font-family:'Fredoka',sans-serif;font-size:11px;font-weight:400;color:var(--ink3);line-height:1.7}
+
+@media(max-width:600px){
+  nav{padding:10px 16px;flex-wrap:wrap}
+  .nav-primary{display:flex}
+  .nav-links{display:none;flex-direction:column;width:100%;gap:4px;margin-top:10px;
+    padding-top:10px;border-top:1.5px solid var(--pink-pale)}
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:14px;padding:10px 14px;border-radius:14px}
+  .brand-sub{font-size:8.5px}
+  .preview-grid{grid-template-columns:1fr}
+  .reward-grid{grid-template-columns:1fr}
+  .wrap{padding:0 14px 60px}
+}
+</style>
+</head>
+<body>
+
+<div class="decor" id="decor"></div>
+
+<!-- ░░ NAV ░░ -->
+<nav>
+  <a class="brand" href="index.html">
+    <img src="images/logo-transparent.png" alt="ChiwawaLand" />
+    <div>
+      <div class="brand-name">ChiWaWaLand</div>
+      <div class="brand-sub">Wawa BNK48 Thailand Fanclub</div>
+    </div>
+  </a>
+  <div class="nav-primary">
+    <a href="index.html" class="nav-token">🏠 หน้าหลัก</a>
+    <button class="nav-toggle" id="navToggle" aria-label="เมนู"><span></span><span></span><span></span></button>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">หน้าหลัก</a>
+    <a href="index.html#countdown">นับถอยหลัง</a>
+    <a href="index.html#calendar">ปฏิทิน</a>
+    <a href="token.html">🪙 Token สะสม</a>
+    <a href="activity.html" class="active">🎮 กิจกรรม</a>
+  </div>
+</nav>
+
+<!-- ░░ HERO ░░ -->
+<div class="act-hero">
+  <div class="act-tag reveal">🎮 Activity & Games · ChiwawaLand</div>
+  <span class="act-emoji reveal">🎡</span>
+  <div class="act-title reveal">กิจกรรมบ้านชิวาว่าแลนด์</div>
+  <div class="act-sub reveal">มาร่วมสนุก เล่นเกม สะสมคะแนน แข่งกันในแฟนด้อม! 🐶💕</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ░░ COMING SOON ░░ -->
+  <div class="card coming reveal">
+    <div class="coming-badge">⏳ COMING SOON</div>
+    <div class="coming-title">เร็วๆ นี้!</div>
+    <p class="coming-tx">รอพบกับกิจกรรมสนุกๆ และมินิเกมจากบ้านชิวาว่าแลนด์<br>มาเก็บคะแนนสะสม แข่งขันกัน และลุ้นรางวัลพิเศษไปด้วยกันนะคะ</p>
+    <div class="coming-dogs">🐶 🎀 🐶</div>
+  </div>
+
+  <!-- ░░ PREVIEW: สิ่งที่กำลังจะมา ░░ -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-pink">✨</div>
+    <div><div class="sec-title">กำลังจะมา</div><div class="sec-sub">What's coming</div></div>
+  </div>
+  <div class="preview-grid reveal">
+    <div class="card pv"><span class="em">🎯</span><div class="t">มินิเกม</div><div class="d">เกมน่ารักๆ เล่นง่าย สนุกได้ทุกวัน</div><span class="soon">เร็วๆ นี้</span></div>
+    <div class="card pv"><span class="em">🏆</span><div class="t">Leaderboard</div><div class="d">เก็บคะแนนสูงสุด แข่งกับเพื่อนในบ้าน</div><span class="soon">เร็วๆ นี้</span></div>
+    <div class="card pv"><span class="em">🎁</span><div class="t">รางวัลพิเศษ</div><div class="d">ลุ้นรางวัลสุดน่ารักจากบ้าน</div><span class="soon">เร็วๆ นี้</span></div>
+  </div>
+
+  <!-- ░░ LEADERBOARD (โครงรอไว้ พร้อมระบบ nickname) ░░ -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-gold">🏆</div>
+    <div><div class="sec-title">ตารางคะแนน</div><div class="sec-sub">Leaderboard · Top 5</div></div>
+  </div>
+  <div class="card lb-card reveal">
+    <div class="lb-head">
+      <span class="lb-trophy">🏆</span>
+      <span class="lb-title">อันดับคะแนนสูงสุด</span>
+    </div>
+    <!-- leaderboard จะแสดงตรงนี้เมื่อมีเกมแล้ว -->
+    <div id="leaderboard">
+      <div class="lb-empty">
+        <div class="big">🎮</div>
+        <div class="tx">ยังไม่มีคะแนน — รอเกมเปิดให้เล่นเร็วๆ นี้นะคะ!</div>
+      </div>
+    </div>
+    <div class="lb-note">* ระบบจะบันทึกชื่อเล่นและคะแนนสูงสุดของแต่ละคนไว้</div>
+  </div>
+
+  <!-- ░░ REWARDS PREVIEW ░░ -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-teal">🎁</div>
+    <div><div class="sec-title">รางวัลพิเศษ</div><div class="sec-sub">Special rewards</div></div>
+  </div>
+  <div class="reward-grid reveal">
+    <div class="card rw rw-1"><span class="rw-medal">🥇</span><div class="rw-rank">อันดับ 1</div><div class="rw-prize">รางวัลสุดพิเศษ<br>เร็วๆ นี้</div></div>
+    <div class="card rw rw-2"><span class="rw-medal">🥈</span><div class="rw-rank">อันดับ 2</div><div class="rw-prize">รางวัลน่ารัก<br>เร็วๆ นี้</div></div>
+    <div class="card rw rw-3"><span class="rw-medal">🥉</span><div class="rw-rank">อันดับ 3</div><div class="rw-prize">รางวัลพิเศษ<br>เร็วๆ นี้</div></div>
+  </div>
+
+</div>
+
+<!-- ░░ FOOTER ░░ -->
+<footer>
+  <img src="images/logo-transparent.png" alt="ChiwawaLand" />
+  <div class="foot-name">🐶 บ้านชิวาว่าแลนด์ · ChiWaWaLand</div>
+  <div class="foot-tx">
+    made with ♡ by Wawa BNK48 Thailand Fanclub<br>
+    ไม่มีส่วนเกี่ยวข้องกับ BNK48 หรือ iAM อย่างเป็นทางการ
+  </div>
+</footer>
+
+<script>
+/* reveal on scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* เมนูสามขีดบนมือถือ */
+const navToggle=document.getElementById('navToggle');
+const navLinks=document.getElementById('navLinks');
+if(navToggle&&navLinks){
+  navToggle.addEventListener('click',()=>{navLinks.classList.toggle('open');navToggle.classList.toggle('open')});
+  navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navLinks.classList.remove('open');navToggle.classList.remove('open')}));
+}
+
+/* floating decor */
+const decor=document.getElementById('decor');
+const bits=[
+  '<svg viewBox="0 0 40 40"><path d="M20 20c-4-7-15-8-17-3-1 4 4 8 9 7 3-1 6-3 8-4z" fill="#f57aa8"/><path d="M20 20c4-7 15-8 17-3 1 4-4 8-9 7-3-1-6-3-8-4z" fill="#1aa3ad"/><circle cx="20" cy="20" r="4" fill="#fff"/></svg>',
+  '<svg viewBox="0 0 40 40"><path d="M20 6l3 9 9.5.8-7.2 6.2 2.2 9.2L20 26l-8.5 5.2 2.2-9.2L6.5 15.8 16 15l4-9z" fill="#e8c060"/></svg>',
+  '<svg viewBox="0 0 40 40"><circle cx="14" cy="22" r="7" fill="#fff"/><circle cx="24" cy="20" r="9" fill="#fff"/><circle cx="30" cy="24" r="6" fill="#fff"/></svg>',
+  '<svg viewBox="0 0 40 40"><path d="M20 10c-7 0-12 5-12 12 0 9 12 16 12 16s12-7 12-16c0-7-5-12-12-12z" fill="#f9b8d2"/></svg>',
+  '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="11" fill="#8ec9f0"/><circle cx="20" cy="20" r="5" fill="#fff"/></svg>',
+];
+const N=window.innerWidth<600?8:14;
+for(let i=0;i<N;i++){
+  const el=document.createElement('div');
+  el.className='dec '+'abcd'[i%4];
+  const sz=18+Math.random()*28;
+  el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:${(0.2+Math.random()*0.28).toFixed(2)}`;
+  el.innerHTML=bits[i%bits.length];
+  decor.appendChild(el);
+}
+
+/* ════════════════════════════════════════════════
+   LEADERBOARD — โครงระบบรอไว้ (ยังไม่เปิดใช้)
+   เมื่อมีมินิเกมแล้ว เกมจะเรียก saveScore(nickname, score)
+   เพื่อบันทึกคะแนนสูงสุดของแต่ละชื่อเล่น แล้วแสดง Top 5
+   หมายเหตุ: ตอนนี้เก็บในเครื่องผู้เล่นแต่ละคน (ทดสอบได้)
+   ภายหลังถ้าอยากให้ทุกคนเห็นคะแนนร่วมกัน ต้องต่อฐานข้อมูลกลาง
+   ════════════════════════════════════════════════ */
+const LB_KEY='chiwawaland_scores';
+
+function getScores(){
+  try{return JSON.parse(localStorage.getItem(LB_KEY))||[]}catch(e){return []}
+}
+function saveScore(nickname,score){
+  if(!nickname)return;
+  let list=getScores();
+  const existing=list.find(x=>x.name===nickname);
+  if(existing){ if(score>existing.score) existing.score=score; }
+  else list.push({name:nickname,score:score});
+  localStorage.setItem(LB_KEY,JSON.stringify(list));
+  renderLeaderboard();
+}
+function renderLeaderboard(){
+  const list=getScores().sort((a,b)=>b.score-a.score).slice(0,5);
+  const box=document.getElementById('leaderboard');
+  if(!list.length){
+    box.innerHTML='<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — รอเกมเปิดให้เล่นเร็วๆ นี้นะคะ!</div></div>';
+    return;
+  }
+  box.innerHTML=list.map((x,i)=>{
+    const medal=['🥇','🥈','🥉','4','5'][i];
+    return `<div class="lb-row"><div class="lb-rank">${medal}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.score.toLocaleString()}</div></div>`;
+  }).join('');
+}
+renderLeaderboard();
+/* เผยฟังก์ชันไว้ให้มินิเกมในอนาคตเรียกใช้ */
+window.saveScore=saveScore;
+</script>
+</body>
+</html>

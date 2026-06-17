@@ -67,10 +67,20 @@ nav{
 .brand img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(26,163,173,.3))}
 .brand-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:var(--teal);letter-spacing:.3px;line-height:1}
 .brand-sub{font-family:'Fredoka',sans-serif;font-size:9.5px;font-weight:500;color:var(--pink-deep);letter-spacing:1.5px;text-transform:uppercase}
-.nav-links{display:flex;gap:2px}
+.nav-links{display:flex;gap:2px;align-items:center}
 .nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s}
 .nav-links a:hover{background:var(--pink-pale);color:var(--pink-deep);transform:translateY(-1px)}
 .nav-links a.active{background:linear-gradient(120deg,var(--gold),var(--gold-deep));color:#fff;font-weight:600}
+.nav-primary{display:none;align-items:center;gap:8px}
+.nav-token{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;text-decoration:none;
+  padding:8px 16px;border-radius:30px;color:#fff;box-shadow:0 4px 12px rgba(232,90,146,.3)}
+.nav-toggle{width:42px;height:38px;border:none;border-radius:12px;cursor:pointer;
+  background:var(--pink-pale);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:4px;padding:0;transition:.2s}
+.nav-toggle span{width:18px;height:2.5px;border-radius:3px;background:var(--pink-deep);transition:.3s}
+.nav-toggle.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 
 /* ════════ HERO BANNER ════════ */
 .token-hero{
@@ -222,9 +232,25 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;
 .foot-tx{font-family:'Fredoka',sans-serif;font-size:11px;font-weight:400;color:var(--ink3);line-height:1.7}
 
 @media(max-width:600px){
-  nav{padding:10px 16px}
-  .nav-links a{font-size:11px;padding:5px 10px}
-  .stats-row{grid-template-columns:1fr 1fr}
+  nav{padding:10px 16px;flex-wrap:wrap}
+  .nav-primary{display:flex}
+  .nav-links{display:none;flex-direction:column;width:100%;gap:4px;margin-top:10px;
+    padding-top:10px;border-top:1.5px solid var(--pink-pale)}
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:14px;padding:10px 14px;border-radius:14px}
+  .brand-sub{font-size:8.5px}
+  .stats-row{grid-template-columns:1fr}
+  /* กันตัวเลขใหญ่ล้นจอ */
+  .token-hero{padding:32px 16px 38px}
+  .coin-wrap,.coin{width:140px;height:140px}
+  .tc-number{font-size:clamp(44px,16vw,64px);letter-spacing:-1px}
+  .tc-coin-row{gap:10px}
+  .tc-coin-mini{width:44px;height:44px}
+  .token-card{padding:30px 18px 28px}
+  .wrap{padding:0 14px 60px}
+  .hist-item{gap:11px;padding:13px 14px}
+  .hist-t{font-size:12.5px}
+  .info-card p{word-break:break-word;overflow-wrap:anywhere}
 }
 </style>
 </head>
@@ -241,11 +267,18 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;
       <div class="brand-sub">Wawa BNK48 Thailand Fanclub</div>
     </div>
   </a>
-  <div class="nav-links">
+  <div class="nav-primary">
+    <a href="index.html" class="nav-token" style="background:linear-gradient(120deg,var(--pink),var(--pink-deep))">🏠 หน้าหลัก</a>
+    <button class="nav-toggle" id="navToggle" aria-label="เมนู">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-links" id="navLinks">
     <a href="index.html">หน้าหลัก</a>
     <a href="index.html#countdown">นับถอยหลัง</a>
     <a href="index.html#calendar">ปฏิทิน</a>
     <a href="token.html" class="active">🪙 Token สะสม</a>
+    <a href="activity.html">🎮 กิจกรรม</a>
   </div>
 </nav>
 
@@ -385,6 +418,20 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;
 /* reveal on scroll */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* เมนูสามขีดบนมือถือ */
+const navToggle=document.getElementById('navToggle');
+const navLinks=document.getElementById('navLinks');
+if(navToggle&&navLinks){
+  navToggle.addEventListener('click',()=>{
+    navLinks.classList.toggle('open');
+    navToggle.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    navLinks.classList.remove('open');
+    navToggle.classList.remove('open');
+  }));
+}
 
 /* floating decor */
 const decor=document.getElementById('decor');
