@@ -59,7 +59,7 @@ body::before{
 nav{
   position:sticky;top:0;z-index:60;
   display:flex;align-items:center;justify-content:space-between;
-  padding:12px 30px;
+  padding:12px 30px;min-height:64px;
   background:rgba(255,255,255,.78);
   backdrop-filter:blur(18px) saturate(1.5);
   border-bottom:2px solid rgba(245,122,168,.18);
@@ -71,7 +71,7 @@ nav{
 .nav-links{display:flex;gap:2px;align-items:center}
 .nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s}
 .nav-links a:hover{background:var(--pink-pale);color:var(--pink-deep);transform:translateY(-1px)}
-.nav-links .nav-token-full{display:none}
+.nav-links .nav-token-full{display:inline-block;background:linear-gradient(120deg,#e8c060,#c89020);color:#fff;font-weight:600}
 /* primary cluster (token + hamburger) — hidden on desktop */
 .nav-primary{display:none;align-items:center;gap:8px}
 .nav-token{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;text-decoration:none;
