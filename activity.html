@@ -60,7 +60,7 @@ nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-con
 .brand-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:var(--teal);letter-spacing:.3px;line-height:1}
 .brand-sub{font-family:'Fredoka',sans-serif;font-size:9.5px;font-weight:500;color:var(--pink-deep);letter-spacing:1.5px;text-transform:uppercase}
 .nav-links{display:flex;gap:2px;align-items:center}
-.nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s}
+.nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s;line-height:1.6;display:inline-flex;align-items:center}
 .nav-links a:hover{background:var(--pink-pale);color:var(--pink-deep);transform:translateY(-1px)}
 .nav-links a.active{background:linear-gradient(120deg,var(--pink),var(--pink-deep));color:#fff;font-weight:600}
 .nav-primary{display:none;align-items:center;gap:8px}
@@ -197,8 +197,6 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;filter:d
   </div>
   <div class="nav-links" id="navLinks">
     <a href="index.html">หน้าหลัก</a>
-    <a href="index.html#countdown">นับถอยหลัง</a>
-    <a href="index.html#calendar">ปฏิทิน</a>
     <a href="token.html">🪙 Token สะสม</a>
     <a href="activity.html" class="active">🎮 กิจกรรม</a>
   </div>
@@ -236,7 +234,7 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;filter:d
   <!-- ░░ LEADERBOARD (โครงรอไว้ พร้อมระบบ nickname) ░░ -->
   <div class="sec-head reveal">
     <div class="sec-emoji e-gold">🏆</div>
-    <div><div class="sec-title">ตารางคะแนน</div><div class="sec-sub">Leaderboard · Top 5</div></div>
+    <div><div class="sec-title">ตารางคะแนน</div><div class="sec-sub">Leaderboard · Top 10</div></div>
   </div>
   <div class="card lb-card reveal">
     <div class="lb-head">
@@ -272,6 +270,7 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;filter:d
   <div class="foot-name">🐶 บ้านชิวาว่าแลนด์ · ChiWaWaLand</div>
   <div class="foot-tx">
     made with ♡ by Wawa BNK48 Thailand Fanclub<br>
+    เว็บแฟนคลับที่ไม่เป็นทางการ — จัดทำโดยแฟนคลับเพื่อแฟนคลับ<br>
     ไม่มีส่วนเกี่ยวข้องกับ BNK48 หรือ iAM อย่างเป็นทางการ
   </div>
 </footer>
@@ -311,7 +310,7 @@ for(let i=0;i<N;i++){
 /* ════════════════════════════════════════════════
    LEADERBOARD — โครงระบบรอไว้ (ยังไม่เปิดใช้)
    เมื่อมีมินิเกมแล้ว เกมจะเรียก saveScore(nickname, score)
-   เพื่อบันทึกคะแนนสูงสุดของแต่ละชื่อเล่น แล้วแสดง Top 5
+   เพื่อบันทึกคะแนนสูงสุดของแต่ละชื่อเล่น แล้วแสดง Top 10
    หมายเหตุ: ตอนนี้เก็บในเครื่องผู้เล่นแต่ละคน (ทดสอบได้)
    ภายหลังถ้าอยากให้ทุกคนเห็นคะแนนร่วมกัน ต้องต่อฐานข้อมูลกลาง
    ════════════════════════════════════════════════ */
@@ -330,14 +329,14 @@ function saveScore(nickname,score){
   renderLeaderboard();
 }
 function renderLeaderboard(){
-  const list=getScores().sort((a,b)=>b.score-a.score).slice(0,5);
+  const list=getScores().sort((a,b)=>b.score-a.score).slice(0,10);
   const box=document.getElementById('leaderboard');
   if(!list.length){
     box.innerHTML='<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — รอเกมเปิดให้เล่นเร็วๆ นี้นะคะ!</div></div>';
     return;
   }
   box.innerHTML=list.map((x,i)=>{
-    const medal=['🥇','🥈','🥉','4','5'][i];
+    const medal=['🥇','🥈','🥉','4','5','6','7','8','9','10'][i];
     return `<div class="lb-row"><div class="lb-rank">${medal}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.score.toLocaleString()}</div></div>`;
   }).join('');
 }

@@ -68,7 +68,7 @@ nav{
 .brand-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:var(--teal);letter-spacing:.3px;line-height:1}
 .brand-sub{font-family:'Fredoka',sans-serif;font-size:9.5px;font-weight:500;color:var(--pink-deep);letter-spacing:1.5px;text-transform:uppercase}
 .nav-links{display:flex;gap:2px;align-items:center}
-.nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s}
+.nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s;line-height:1.6;display:inline-flex;align-items:center}
 .nav-links a:hover{background:var(--pink-pale);color:var(--pink-deep);transform:translateY(-1px)}
 .nav-links a.active{background:linear-gradient(120deg,var(--gold),var(--gold-deep));color:#fff;font-weight:600}
 .nav-primary{display:none;align-items:center;gap:8px}
@@ -218,6 +218,29 @@ nav{
   color:var(--teal-deep);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .info-card p{font-size:13px;font-weight:300;color:var(--ink2);line-height:1.8}
 
+/* ════════ WALLET ════════ */
+.wallet-card{padding:24px 22px;margin-bottom:16px;
+  background:linear-gradient(145deg,rgba(214,242,243,.55),rgba(255,248,224,.45));
+  border:2px solid rgba(26,163,173,.25)}
+.wallet-intro{display:flex;gap:12px;align-items:flex-start;margin-bottom:18px}
+.wallet-ic{font-size:30px;flex-shrink:0;line-height:1}
+.wallet-intro p{font-size:13px;font-weight:300;color:var(--ink2);line-height:1.8}
+.wallet-addr-label{font-family:'Fredoka',sans-serif;font-size:11px;font-weight:500;
+  letter-spacing:1px;text-transform:uppercase;color:var(--teal-deep);margin-bottom:6px}
+.wallet-addr{font-family:'Fredoka',monospace,sans-serif;font-size:12.5px;font-weight:400;
+  color:var(--ink);background:rgba(255,255,255,.8);border:1.5px solid rgba(26,163,173,.2);
+  border-radius:12px;padding:12px 14px;word-break:break-all;line-height:1.5;margin-bottom:14px}
+.wallet-btns{display:flex;gap:10px;flex-wrap:wrap}
+.wallet-copy,.wallet-link{font-family:'Fredoka',sans-serif;font-size:12.5px;font-weight:500;
+  padding:11px 18px;border-radius:30px;cursor:pointer;border:none;text-decoration:none;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .2s,box-shadow .2s;flex:1;min-width:160px;text-align:center}
+.wallet-copy{background:rgba(255,255,255,.9);color:var(--teal-deep);border:1.5px solid rgba(26,163,173,.3)}
+.wallet-copy:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(26,163,173,.18)}
+.wallet-copy.copied{background:var(--teal);color:#fff;border-color:var(--teal)}
+.wallet-link{background:linear-gradient(120deg,var(--teal),var(--teal-deep));color:#fff;
+  box-shadow:0 6px 16px rgba(26,163,173,.25)}
+.wallet-link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(26,163,173,.35)}
+
 /* ════════ REVEAL ════════ */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s,transform .65s}
 .reveal.in{opacity:1;transform:none}
@@ -275,8 +298,6 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;
   </div>
   <div class="nav-links" id="navLinks">
     <a href="index.html">หน้าหลัก</a>
-    <a href="index.html#countdown">นับถอยหลัง</a>
-    <a href="index.html#calendar">ปฏิทิน</a>
     <a href="token.html" class="active">🪙 Token สะสม</a>
     <a href="activity.html">🎮 กิจกรรม</a>
   </div>
@@ -401,6 +422,27 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;
     </div> -->
   </div>
 
+  <!-- ░░ DIGITAL WALLET (ความโปร่งใส) ░░ -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-teal">🔐</div>
+    <div>
+      <div class="sec-title">กระเป๋าเงินดิจิทัล</div>
+      <div class="sec-sub">Wallet · Transparency</div>
+    </div>
+  </div>
+  <div class="card wallet-card reveal">
+    <div class="wallet-intro">
+      <span class="wallet-ic">🪙</span>
+      <p>กระเป๋าเงินดิจิทัลของบ้านชิวาว่าแลนด์ ทุกคนสามารถกดเข้าไปเช็กยอด BNK Token ได้ด้วยตัวเอง เพื่อความโปร่งใสของบ้านค่ะ 🐶💕</p>
+    </div>
+    <div class="wallet-addr-label">Wallet Address</div>
+    <div class="wallet-addr" id="walletAddr">0x1757beb5A5ed937fAFbA3E5088cc4Cb654A6522c</div>
+    <div class="wallet-btns">
+      <button class="wallet-copy" id="copyBtn" onclick="copyWallet()">📋 คัดลอก Address</button>
+      <a class="wallet-link" href="https://scan.tokenx.finance/address/0x1757beb5A5ed937fAFbA3E5088cc4Cb654A6522c?tab=tokens" target="_blank" rel="noopener">🔍 เช็กยอดบน TokenX Scan →</a>
+    </div>
+  </div>
+
 </div>
 
 <!-- ░░ FOOTER ░░ -->
@@ -432,6 +474,21 @@ if(navToggle&&navLinks){
     navToggle.classList.remove('open');
   }));
 }
+
+/* คัดลอก wallet address */
+function copyWallet(){
+  const addr=document.getElementById('walletAddr').textContent.trim();
+  const btn=document.getElementById('copyBtn');
+  navigator.clipboard.writeText(addr).then(()=>{
+    btn.textContent='✓ คัดลอกแล้ว!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='📋 คัดลอก Address';btn.classList.remove('copied')},2000);
+  }).catch(()=>{
+    btn.textContent='คัดลอกไม่สำเร็จ ลองใหม่';
+    setTimeout(()=>{btn.textContent='📋 คัดลอก Address'},2000);
+  });
+}
+window.copyWallet=copyWallet;
 
 /* floating decor */
 const decor=document.getElementById('decor');
