@@ -111,9 +111,9 @@ nav{
 @keyframes spin{to{transform:rotate(360deg)}}
 .hero-portrait .bow{position:absolute;top:-12px;right:2px;width:50px;height:50px;filter:drop-shadow(0 4px 8px rgba(232,90,146,.4));animation:bob 4s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
-.hero-name{font-family:'Mali',cursive;font-weight:700;font-size:clamp(40px,11vw,58px);line-height:1;
+.hero-name{font-family:'Mali',cursive;font-weight:700;font-size:clamp(40px,11vw,58px);line-height:1.25;
   background:linear-gradient(115deg,var(--pink-deep),var(--teal) 55%,var(--lilac));
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;padding-top:8px;
   display:inline-flex;align-items:center;gap:14px;justify-content:center}
 .hero-name svg{width:30px;height:30px;flex-shrink:0}
 .hero-en{font-family:'Fredoka',sans-serif;font-size:15px;font-weight:500;letter-spacing:7px;color:var(--ink3);margin-bottom:8px}
@@ -264,6 +264,7 @@ nav{
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
 .live-lbl{font-family:'Fredoka',sans-serif;font-size:11px;color:var(--pink-deep);font-weight:500}
 .post-tx{font-size:13.5px;font-weight:300;color:var(--ink);line-height:1.85}
+.post-img{display:block;width:100%;max-width:300px;margin:10px 0 0;border-radius:14px;object-fit:cover;aspect-ratio:1/1}
 
 /* ════════════════ GALLERY ════════════════ */
 .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
@@ -332,6 +333,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .countdown-wrap,.links-grid{grid-template-columns:1fr}
   .why-grid{grid-template-columns:1fr}
   .news-grid{grid-template-columns:1fr}
+  .post-img{max-width:100%;aspect-ratio:auto}
   .profile-grid{grid-template-columns:1fr}
   .pf.wide{grid-column:span 1}
   /* กันตัวอักษรตกขอบ */
@@ -643,9 +645,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
           <span class="post-bdg bg-post">โพสต์</span>
         </div>
         <div class="post-tx">ซื้อกางเกงยังไงให้จ่ายแค่5บาท(กฎคือ ตัวห้ามติดพื้น มือห้ามจับพื้น) อิอิ</div>
-        <!-- เพิ่มรูปตรงนี้ -->
-        <img src="images/iam48/post-1.jpg" alt="วาว่า" 
-        style="width:100%;border-radius:14px;margin-top:10px;object-fit:cover;">
+        <!-- เพิ่มรูปตรงนี้ (ใช้ class="post-img" รูปจะพอดีบนคอม เต็มจอบนมือถือ) -->
+        <img src="images/iam48/post-1.jpg" alt="วาว่า" class="post-img">
       </div>
       <div class="card post">
         <div class="post-top">
