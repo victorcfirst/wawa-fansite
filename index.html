@@ -14,7 +14,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Mitr:wght@200;300;400;500;600&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Mitr:wght@200;300;400;500;600&family=Fredoka:wght@400;500;600;700&family=Itim&family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
 /* ════════════════ RESET & TOKENS ════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -92,7 +92,8 @@ nav{
   animation:logoIn 1s cubic-bezier(.2,.9,.3,1.2) both,bobLogo 5s ease-in-out 1s infinite}
 @keyframes logoIn{from{opacity:0;transform:scale(.6) translateY(20px)}to{opacity:1;transform:none}}
 @keyframes bobLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.hero-welcome{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.hero-welcome{font-family:'Mali',cursive;font-size:16px;font-weight:600;letter-spacing:.5px;color:var(--teal);margin-bottom:12px;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.hero-welcome svg{width:24px;height:24px;flex-shrink:0;vertical-align:middle}
 .hero-card{max-width:560px;margin:0 auto;padding:28px 30px 34px;position:relative;
   background:rgba(255,255,255,.66);backdrop-filter:blur(16px);
   border:2px solid var(--white);border-radius:36px;box-shadow:var(--shadow)}
@@ -110,9 +111,11 @@ nav{
 @keyframes spin{to{transform:rotate(360deg)}}
 .hero-portrait .bow{position:absolute;top:-12px;right:2px;width:50px;height:50px;filter:drop-shadow(0 4px 8px rgba(232,90,146,.4));animation:bob 4s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
-.hero-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(48px,13vw,72px);line-height:.95;
+.hero-name{font-family:'Mali',cursive;font-weight:700;font-size:clamp(40px,11vw,58px);line-height:1;
   background:linear-gradient(115deg,var(--pink-deep),var(--teal) 55%,var(--lilac));
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;
+  display:inline-flex;align-items:center;gap:14px;justify-content:center}
+.hero-name svg{width:30px;height:30px;flex-shrink:0}
 .hero-en{font-family:'Fredoka',sans-serif;font-size:15px;font-weight:500;letter-spacing:7px;color:var(--ink3);margin-bottom:8px}
 .hero-full{font-size:13.5px;color:var(--ink2);margin-bottom:20px}
 .hero-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px}
@@ -152,6 +155,23 @@ nav{
 
 /* ════════════════ QUICK LINKS ════════════════ */
 .links-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+/* ── news cards ── */
+.news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.news-card{overflow:hidden;display:flex;flex-direction:column;transition:transform .28s,box-shadow .28s;padding:0}
+.news-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-pink)}
+.news-img{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden}
+.news-img img{width:100%;height:100%;object-fit:cover;display:none}
+.news-img img.loaded{display:block}
+.news-img .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:46px}
+.ni-1{background:linear-gradient(140deg,#ffe3ee,#f9c6df)}
+.ni-2{background:linear-gradient(140deg,#fff8e0,#ffe08a)}
+.ni-3{background:linear-gradient(140deg,#e3f1fc,#c5e4fa)}
+.ni-4{background:linear-gradient(140deg,#d6f2f3,#aee5e8)}
+.news-body{padding:16px 18px 18px;flex:1;display:flex;flex-direction:column}
+.news-tag{align-self:flex-start;font-family:'Fredoka',sans-serif;font-size:10px;font-weight:500;
+  letter-spacing:.5px;color:var(--pink-deep);background:var(--pink-pale);padding:3px 11px;border-radius:20px;margin-bottom:9px}
+.news-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:var(--ink);line-height:1.35;margin-bottom:8px}
+.news-text{font-size:12.5px;font-weight:300;color:var(--ink2);line-height:1.75}
 .qlink{display:flex;align-items:center;gap:14px;padding:16px 18px;text-decoration:none;position:relative;overflow:hidden;transition:transform .28s,box-shadow .28s}
 .qlink:hover{transform:translateY(-4px)}
 .qlink .ic{width:48px;height:48px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px}
@@ -311,6 +331,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .brand-sub{font-size:8.5px}
   .countdown-wrap,.links-grid{grid-template-columns:1fr}
   .why-grid{grid-template-columns:1fr}
+  .news-grid{grid-template-columns:1fr}
   .profile-grid{grid-template-columns:1fr}
   .pf.wide{grid-column:span 1}
   /* กันตัวอักษรตกขอบ */
@@ -351,11 +372,10 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   <!-- เมนูเต็ม (เลื่อนลงบนมือถือ / แถวเดียวบนจอใหญ่) -->
   <div class="nav-links" id="navLinks">
     <a href="#countdown">นับถอยหลัง</a>
-    <a href="#links">ลิงก์</a>
+    <a href="#news">ข่าวสาร</a>
     <a href="#profile">โปรไฟล์</a>
-    <a href="#timeline">เส้นทาง</a>
-    <a href="#iam48">iAM48</a>
-    <a href="#gallery">รูป</a>
+    <a href="#social">โซเชียล</a>
+    <a href="#gallery">แกลเลอรี่</a>
     <a href="#calendar">ปฏิทิน</a>
     <a href="token.html" class="nav-token-full">🪙 Token สะสม</a>
     <a href="activity.html" style="background:linear-gradient(120deg,#f57aa8,#e85a92);color:#fff;font-weight:600">🎮 กิจกรรม</a>
@@ -366,7 +386,11 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   <!-- 1. โลโก้ -->
   <img class="hero-logo" src="images/logo-transparent.png" alt="ChiwawaLand Logo" />
   <!-- 2. ยินดีต้อนรับ -->
-  <div class="hero-welcome">🐶 ยินดีต้อนรับสู่บ้านชิวาว่าแลนด์ 🐶</div>
+  <div class="hero-welcome">
+    <svg viewBox="0 0 32 32" fill="none"><ellipse cx="16" cy="21" rx="5.5" ry="10" fill="url(#cg1)"/><path d="M11 17H8.5a2 2 0 01-2-2v-2.5" stroke="#4ca54c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M21 21h2.5a2 2 0 002-2v-4" stroke="#4ca54c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><g transform="translate(16 8)"><circle cx="0" cy="-2.2" r="1.8" fill="#f57aa8"/><circle cx="2.1" cy="-0.7" r="1.8" fill="#f57aa8"/><circle cx="1.3" cy="1.8" r="1.8" fill="#f57aa8"/><circle cx="-1.3" cy="1.8" r="1.8" fill="#f57aa8"/><circle cx="-2.1" cy="-0.7" r="1.8" fill="#f57aa8"/><circle cx="0" cy="0" r="1.5" fill="#ffd166"/></g><circle cx="14" cy="21" r="1" fill="#fff" opacity=".6"/><circle cx="17.5" cy="24" r="1" fill="#fff" opacity=".6"/><defs><linearGradient id="cg1" x1="10" y1="11" x2="22" y2="31"><stop stop-color="#7ed47e"/><stop offset="1" stop-color="#4ca54c"/></linearGradient></defs></svg>
+    ยินดีต้อนรับสู่บ้านชิวาว่าแลนด์
+    <svg viewBox="0 0 32 32" fill="none"><ellipse cx="16" cy="21" rx="5.5" ry="10" fill="url(#cg2)"/><path d="M11 17H8.5a2 2 0 01-2-2v-2.5" stroke="#4ca54c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M21 21h2.5a2 2 0 002-2v-4" stroke="#4ca54c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><g transform="translate(16 8)"><circle cx="0" cy="-2.2" r="1.8" fill="#f57aa8"/><circle cx="2.1" cy="-0.7" r="1.8" fill="#f57aa8"/><circle cx="1.3" cy="1.8" r="1.8" fill="#f57aa8"/><circle cx="-1.3" cy="1.8" r="1.8" fill="#f57aa8"/><circle cx="-2.1" cy="-0.7" r="1.8" fill="#f57aa8"/><circle cx="0" cy="0" r="1.5" fill="#ffd166"/></g><circle cx="14" cy="21" r="1" fill="#fff" opacity=".6"/><circle cx="17.5" cy="24" r="1" fill="#fff" opacity=".6"/><defs><linearGradient id="cg2" x1="10" y1="11" x2="22" y2="31"><stop stop-color="#7ed47e"/><stop offset="1" stop-color="#4ca54c"/></linearGradient></defs></svg>
+  </div>
   <!-- 3. การ์ด: รูปวาว่า + ชื่อ -->
   <div class="hero-card reveal">
     <div class="hero-portrait">
@@ -383,7 +407,11 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
         <circle cx="30" cy="30" r="6" fill="#fff" stroke="#e85a92" stroke-width="1.5"/>
       </svg>
     </div>
-    <h1 class="hero-name">💙 วาว่า 💙</h1>
+    <h1 class="hero-name">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M16 27S4 19.5 4 11.5C4 7.4 7 5 10.3 5c2.3 0 4.3 1.3 5.7 3.3C17.4 6.3 19.4 5 21.7 5 25 5 28 7.4 28 11.5 28 19.5 16 27 16 27z" fill="url(#hg1)"/><ellipse cx="11" cy="12" rx="2.5" ry="3.5" fill="#fff" opacity=".55" transform="rotate(-20 11 12)"/><defs><linearGradient id="hg1" x1="4" y1="5" x2="28" y2="27"><stop stop-color="#ff9ec4"/><stop offset="1" stop-color="#e85a92"/></linearGradient></defs></svg>
+      วาว่า
+      <svg viewBox="0 0 32 32" fill="none"><path d="M16 27S4 19.5 4 11.5C4 7.4 7 5 10.3 5c2.3 0 4.3 1.3 5.7 3.3C17.4 6.3 19.4 5 21.7 5 25 5 28 7.4 28 11.5 28 19.5 16 27 16 27z" fill="url(#hg2)"/><ellipse cx="11" cy="12" rx="2.5" ry="3.5" fill="#fff" opacity=".55" transform="rotate(-20 11 12)"/><defs><linearGradient id="hg2" x1="4" y1="5" x2="28" y2="27"><stop stop-color="#8ec9f0"/><stop offset="1" stop-color="#5a9fd4"/></linearGradient></defs></svg>
+    </h1>
     <div class="hero-en">W · A · W · A</div>
     <div class="hero-full">พิมพ์นเรศ ลำใย · Phimnalrat Lumyai</div>
     <div class="hero-tags">
@@ -429,45 +457,81 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     </div>
   </section>
 
-  <section id="links">
+  <section id="news">
     <div class="sec-head reveal">
-      <div class="sec-emoji e-sun">🔗</div>
-      <div><div class="sec-title">ลิงก์สำคัญ</div><div class="sec-sub">Quick links & pre-order</div></div>
+      <div class="sec-emoji e-sun">📰</div>
+      <div><div class="sec-title">อัพเดตข่าวสารกับวาว่า</div><div class="sec-sub">Wawa's latest news</div></div>
     </div>
-    <div class="links-grid reveal">
-      <a class="card qlink ql-preorder" href="https://app.bnk48.com/shop" target="_blank" rel="noopener">
-        <div class="ic">🛍️</div>
-        <div class="tx"><div class="t">Pre-Order อัลบั้ม</div><div class="s">Ponytail to Shushu · 1,000฿</div></div>
-        <div class="arr">→</div>
-      </a>
-      <a class="card qlink ql-shop" href="https://app.bnk48.com" target="_blank" rel="noopener">
-        <div class="ic">🏬</div>
-        <div class="tx"><div class="t">iAM48 Shop</div><div class="s">สินค้าทางการของวง</div></div>
-        <div class="arr">→</div>
-      </a>
-      <a class="card qlink ql-iam" href="https://app.bnk48.com" target="_blank" rel="noopener">
-        <div class="ic">📱</div>
-        <div class="tx"><div class="t">iAM48 App</div><div class="s">โพสต์ & ไลฟ์ของวาว่า</div></div>
-        <div class="arr">→</div>
-      </a>
-      <a class="card qlink ql-yt" href="https://www.youtube.com/results?search_query=BNK48+Ponytail+to+Shushu" target="_blank" rel="noopener">
-        <div class="ic">▶️</div>
-        <div class="tx"><div class="t">Ponytail to Shushu MV</div><div class="s">ชมมิวสิควิดีโอล่าสุด</div></div>
-        <div class="arr">→</div>
-      </a>
-    </div>
-  </section>
+    <div class="news-grid reveal">
+      <!-- การ์ดข่าว 1 — แก้รูป/หัวข้อ/เนื้อหาได้เลย -->
+      <article class="card news-card">
+        <div class="news-img ni-1"><img src="images/news-1.jpg" alt=""><div class="ph">🎤</div></div>
+        <div class="news-body">
+          <span class="news-tag">การแสดง</span>
+          <h3 class="news-title">วาว่าขึ้นแสดงเพลงใหม่ Ponytail to Shushu</h3>
+          <p class="news-text">วาว่าได้ร่วมแสดงเพลงใหม่ล่าสุดของวงบนเวที Theater พร้อมโชว์การเต้นที่ฝึกซ้อมมาอย่างหนัก แฟนๆ ในบ้านชิวาว่าแลนด์ส่งเสียงเชียร์กันสุดพลัง 🎀</p>
+        </div>
+      </article>
+      <!-- การ์ดข่าว 2 -->
+      <article class="card news-card">
+        <div class="news-img ni-2"><img src="images/news-2.jpg" alt=""><div class="ph">🏆</div></div>
+        <div class="news-body">
+          <span class="news-tag">ความสำเร็จ</span>
+          <h3 class="news-title">ติด Undergirls อันดับ 21 ใน GE2025</h3>
+          <p class="news-text">ก้าวกระโดดครั้งสำคัญจากอันดับ 61 สู่ Undergirls เป็นครั้งแรก ด้วยพลังโหวตจากแฟนคลับทุกคน เป็นกำลังใจให้วาว่าเติบโตต่อไป 💪</p>
+        </div>
+      </article>
+      <!-- การ์ดข่าว 3 -->
+      <article class="card news-card">
+        <div class="news-img ni-3"><img src="images/news-3.jpg" alt=""><div class="ph">🤝</div></div>
+        <div class="news-body">
+          <span class="news-tag">อีเวนต์</span>
+          <h3 class="news-title">งาน Handshake ที่ผ่านมาอบอุ่นมาก</h3>
+          <p class="news-text">วาว่าได้พบปะพูดคุยกับแฟนๆ อย่างใกล้ชิดในงาน Handshake รอยยิ้มและความน่ารักทำเอาแฟนๆ ใจละลายกันไปตามๆ กัน 💕</p>
+        </div>
+      </article>
+      <!-- การ์ดข่าว 4 -->
+      <article class="card news-card">
+        <div class="news-img ni-4"><img src="images/news-4.jpg" alt=""><div class="ph">🌱</div></div>
+        <div class="news-body">
+          <span class="news-tag">เกร็ดน่ารัก</span>
+          <h3 class="news-title">วาว่ากับความรักในการปลูกต้นไม้</h3>
+          <p class="news-text">นอกจากบนเวที วาว่ายังมีงานอดิเรกน่ารักๆ อย่างการปลูกต้นไม้ โดยเฉพาะกระบองเพชร ซึ่งกลายเป็นอีกหนึ่งสัญลักษณ์ประจำตัวของเธอ 🌵</p>
+        </div>
+      </article>
 
-  <section id="why">
-    <div class="sec-head reveal">
-      <div class="sec-emoji e-pink">💖</div>
-      <div><div class="sec-title">ทำไมต้องโอชิวาว่า</div><div class="sec-sub">Why you'll love Wawa</div></div>
+      <!-- ════════════════════════════════════════════════════════
+           การ์ดข่าวสำรอง (ซ่อนไว้) - การ์ด 5 และ 6
+           ตอนนี้ซ่อนอยู่ หน้าเว็บจะแสดงแค่ 4 การ์ดแรกด้านบน
+
+           วิธีเปิดให้การ์ดสำรองแสดง:
+           1) ลบบรรทัดเปิดคอมเมนต์ (สัญลักษณ์เปิด) ที่อยู่ใต้บล็อกนี้ออก
+           2) ลบบรรทัดปิดคอมเมนต์ (สัญลักษณ์ปิด) ที่อยู่ก่อนปิด news-grid ออก
+           แก้รูป: เปลี่ยน images/news-5.jpg และ news-6.jpg
+           แก้ข้อความ: เปลี่ยน news-tag / news-title / news-text ได้เลย
+           ════════════════════════════════════════════════════════ -->
+
+      <!-- เริ่มซ่อนการ์ดสำรอง (ลบบรรทัดนี้เพื่อเปิดแสดง)
+      <article class="card news-card">
+        <div class="news-img ni-1"><img src="images/news-5.jpg" alt=""><div class="ph">🎂</div></div>
+        <div class="news-body">
+          <span class="news-tag">วันเกิด</span>
+          <h3 class="news-title">เตรียมฉลองวันเกิดวาว่า 11 สิงหาคม</h3>
+          <p class="news-text">บ้านชิวาว่าแลนด์กำลังเตรียมกิจกรรมพิเศษเพื่อฉลองวันเกิดให้วาว่า อย่าลืมมาร่วมส่งความสุขและกำลังใจให้น้องกันนะคะ 🎉</p>
+        </div>
+      </article>
+      <article class="card news-card">
+        <div class="news-img ni-2"><img src="images/news-6.jpg" alt=""><div class="ph">📸</div></div>
+        <div class="news-body">
+          <span class="news-tag">ภาพถ่าย</span>
+          <h3 class="news-title">เซ็ตภาพใหม่ล่าสุดของวาว่า</h3>
+          <p class="news-text">วาว่าปล่อยเซ็ตภาพถ่ายชุดใหม่ออกมาให้แฟนๆ ได้ชื่นชมความน่ารัก สดใสตามสไตล์ของน้อง ตามไปกดหัวใจให้กันได้เลยค่ะ 💕</p>
+        </div>
+      </article>
+      จบการ์ดสำรอง (ลบบรรทัดนี้เพื่อเปิดแสดง) -->
+
     </div>
-    <div class="why-grid reveal">
-      <div class="card why"><span class="em">🌸</span><div class="t">น่ารักสดใส</div><div class="d">รอยยิ้มและพลังงานบวกที่ทำให้ทุกคนยิ้มตาม</div></div>
-      <div class="card why"><span class="em">💃</span><div class="t">เต้นเก่งมาก ร้องเพลงก็เลิศ</div><div class="d">ทุ่มเทซ้อมทั้งเต้นและร้องเต็มที่ พัฒนาขึ้นทุกการแสดง ผลสอบล่าสุดเป็นอันดับที่ 2 ของทั้งวง</div></div>
-      <div class="card why"><span class="em">🌱</span><div class="t">โตวันโตคืน</div><div class="d">จาก Trainee สู่ Undergirls ด้วยความมุ่งมั่น</div></div>
-    </div>
+    <div class="gallery-note">📰 แก้ไขข่าวได้ใน index.html · ใส่รูปที่ images/news-1.jpg ถึง news-4.jpg (สำรอง 5-6)</div>
   </section>
 
   <section id="video">
@@ -550,6 +614,22 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     </div>
   </section>
 
+  <section id="gallery">
+    <div class="sec-head reveal">
+      <div class="sec-emoji e-pink">📸</div>
+      <div><div class="sec-title">แกลเลอรี่</div><div class="sec-sub">Photo gallery</div></div>
+    </div>
+    <div class="gallery reveal">
+      <div class="shot g1"><img src="images/wawa-1.jpg" alt=""><div class="ph">🌸</div></div>
+      <div class="shot g2"><img src="images/wawa-2.jpg" alt=""><div class="ph">💙</div></div>
+      <div class="shot g3"><img src="images/wawa-3.jpg" alt=""><div class="ph">🎀</div></div>
+      <div class="shot g4"><img src="images/wawa-4.jpg" alt=""><div class="ph">🐶</div></div>
+      <div class="shot g5"><img src="images/wawa-5.jpg" alt=""><div class="ph">✨</div></div>
+      <div class="shot g6"><img src="images/wawa-6.jpg" alt=""><div class="ph">💕</div></div>
+    </div>
+    <div class="gallery-note">🎀 เพิ่มรูปจริงได้ที่โฟลเดอร์ images/ (wawa-1.jpg ถึง wawa-6.jpg)</div>
+  </section>
+
   <section id="iam48">
     <div class="sec-head reveal">
       <div class="sec-emoji e-lilac">💬</div>
@@ -587,20 +667,16 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     </div>
   </section>
 
-  <section id="gallery">
+  <section id="why">
     <div class="sec-head reveal">
-      <div class="sec-emoji e-pink">📸</div>
-      <div><div class="sec-title">แกลเลอรี่</div><div class="sec-sub">Photo gallery</div></div>
+      <div class="sec-emoji e-pink">💖</div>
+      <div><div class="sec-title">ทำไมต้องโอชิวาว่า</div><div class="sec-sub">Why you'll love Wawa</div></div>
     </div>
-    <div class="gallery reveal">
-      <div class="shot g1"><img src="images/wawa-1.jpg" alt=""><div class="ph">🌸</div></div>
-      <div class="shot g2"><img src="images/wawa-2.jpg" alt=""><div class="ph">💙</div></div>
-      <div class="shot g3"><img src="images/wawa-3.jpg" alt=""><div class="ph">🎀</div></div>
-      <div class="shot g4"><img src="images/wawa-4.jpg" alt=""><div class="ph">🐶</div></div>
-      <div class="shot g5"><img src="images/wawa-5.jpg" alt=""><div class="ph">✨</div></div>
-      <div class="shot g6"><img src="images/wawa-6.jpg" alt=""><div class="ph">💕</div></div>
+    <div class="why-grid reveal">
+      <div class="card why"><span class="em">🌸</span><div class="t">น่ารักสดใส</div><div class="d">รอยยิ้มและพลังงานบวกที่ทำให้ทุกคนยิ้มตาม</div></div>
+      <div class="card why"><span class="em">💃</span><div class="t">เต้นเก่งมาก ร้องเพลงก็เลิศ</div><div class="d">ทุ่มเทซ้อมทั้งเต้นและร้องเต็มที่ พัฒนาขึ้นทุกการแสดง ผลสอบล่าสุดเป็นอันดับที่ 2 ของทั้งวง</div></div>
+      <div class="card why"><span class="em">🌱</span><div class="t">โตวันโตคืน</div><div class="d">จาก Trainee สู่ Undergirls ด้วยความมุ่งมั่น</div></div>
     </div>
-    <div class="gallery-note">🎀 เพิ่มรูปจริงได้ที่โฟลเดอร์ images/ (wawa-1.jpg ถึง wawa-6.jpg)</div>
   </section>
 
   <section id="calendar">
@@ -735,7 +811,7 @@ document.querySelectorAll('.soc-share').forEach(box=>{
   });
 });
 
-document.querySelectorAll('.frame img, .shot img').forEach(img=>{
+document.querySelectorAll('.frame img, .shot img, .news-img img').forEach(img=>{
   img.addEventListener('load',()=>{img.classList.add('loaded');const s=img.nextElementSibling;if(s)s.style.display='none'});
 });
 
