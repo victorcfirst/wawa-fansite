@@ -152,6 +152,63 @@ nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-con
 .rw-2{background:linear-gradient(145deg,#f0f2f7,#dde2ec)} .rw-2 .rw-rank{color:#8a92a6}
 .rw-3{background:linear-gradient(145deg,#fcefe0,#f7dcc0)} .rw-3 .rw-rank{color:#c8915a}
 
+/* ════════ GAME HUB ════════ */
+.game-hub-card{padding:18px;margin-bottom:16px}
+.gh-loading{text-align:center;padding:40px;color:var(--ink3);font-family:'Fredoka',sans-serif}
+.gh-name{margin-bottom:16px}
+.gh-name label{display:block;font-family:'Fredoka',sans-serif;font-size:12px;font-weight:500;color:var(--pink-deep);margin-bottom:6px}
+.gh-name input{width:100%;font-family:'Mitr',sans-serif;font-size:14px;padding:11px 16px;border-radius:14px;
+  border:2px solid var(--pink-pale);background:rgba(255,255,255,.8);color:var(--ink);outline:none;transition:.2s}
+.gh-name input:focus{border-color:var(--pink)}
+.gh-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gh-card{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 12px;border:2px solid var(--white);
+  border-radius:18px;background:rgba(255,255,255,.7);cursor:pointer;transition:transform .2s,box-shadow .2s;
+  box-shadow:var(--shadow);text-align:center}
+.gh-card:hover{transform:translateY(-4px)}
+.gh-card.off{opacity:.5;cursor:default}
+.gh-card.off:hover{transform:none}
+.gh-emoji{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;background:color-mix(in srgb,var(--gc) 18%,white)}
+.gh-t{font-family:'Baloo 2',cursive;font-weight:700;font-size:14px;color:var(--ink)}
+.gh-d{font-size:11px;font-weight:300;color:var(--ink3);line-height:1.5}
+.gh-go{font-family:'Fredoka',sans-serif;font-size:12px;font-weight:600;color:#fff;background:var(--gc);
+  padding:4px 16px;border-radius:20px;margin-top:2px}
+.gh-soon{font-family:'Fredoka',sans-serif;font-size:10.5px;color:var(--ink3);background:rgba(0,0,0,.05);padding:3px 12px;border-radius:20px}
+.gh-stage{display:flex;flex-direction:column;align-items:center}
+.g-back{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;border:none;background:var(--pink-pale);
+  color:var(--pink-deep);padding:6px 14px;border-radius:20px;cursor:pointer}
+.rt-wrap,.pc-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px}
+.rt-top{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:320px;gap:10px}
+.rt-song{font-family:'Baloo 2',cursive;font-weight:700;font-size:14px;color:var(--ink);flex:1;text-align:center}
+.rt-score,.pc-stat{font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:var(--teal);min-width:46px;text-align:right}
+.rt-combo{height:20px;font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:var(--gold);letter-spacing:1px}
+#rtCanvas,#pcCanvas{border-radius:16px;background:linear-gradient(160deg,#fff7fb,#f0f8fc);
+  border:2px solid var(--pink-pale);max-width:100%;touch-action:none}
+.rt-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:320px}
+.rt-key{height:48px;border:none;border-radius:14px;background:var(--kc);color:#fff;font-family:'Baloo 2',cursive;
+  font-weight:700;font-size:18px;cursor:pointer;opacity:.85;transition:transform .08s,opacity .08s;box-shadow:0 4px 10px rgba(0,0,0,.1)}
+.rt-key.on{transform:scale(.92);opacity:1}
+.rt-hint{font-family:'Fredoka',sans-serif;font-size:11px;color:var(--ink3);text-align:center;max-width:320px;line-height:1.5}
+.gh-pick{display:flex;align-items:center;gap:10px;width:100%;max-width:340px;margin-bottom:6px}
+.gh-pick-t{font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:var(--ink);flex:1;text-align:center}
+.gh-songs{display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px}
+.gh-song{border:2px solid var(--white);border-left:5px solid var(--gc);border-radius:14px;background:rgba(255,255,255,.8);
+  padding:14px 16px;cursor:pointer;text-align:left;transition:transform .2s;box-shadow:var(--shadow)}
+.gh-song:hover{transform:translateX(4px)}
+.gh-song-t{font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:var(--ink)}
+.gh-song-s{font-size:11px;color:var(--ink3);margin-top:2px}
+.gh-result{text-align:center;padding:30px 20px}
+.gh-res-emoji{font-size:50px;margin-bottom:10px}
+.gh-res-title{font-family:'Baloo 2',cursive;font-weight:800;font-size:22px;color:var(--pink-deep)}
+.gh-res-game{font-family:'Fredoka',sans-serif;font-size:13px;color:var(--ink3);margin-top:4px}
+.gh-res-score{font-family:'Baloo 2',cursive;font-weight:800;font-size:48px;color:var(--gold);line-height:1.1;margin:8px 0}
+.gh-res-combo{font-size:13px;color:var(--teal);font-weight:500}
+.gh-res-name{font-size:12px;color:var(--ink3);margin-top:6px}
+.gh-res-btns{display:flex;gap:10px;justify-content:center;margin-top:20px}
+.gh-res-btns button{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;padding:10px 20px;border-radius:30px;border:none;cursor:pointer}
+.gh-btn-again{background:linear-gradient(120deg,var(--pink),var(--pink-deep));color:#fff}
+.gh-btn-home{background:var(--pink-pale);color:var(--pink-deep)}
+
 /* ════════ REVEAL ════════ */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s,transform .65s}
 .reveal.in{opacity:1;transform:none}
@@ -212,26 +269,16 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;filter:d
 
 <div class="wrap">
 
-  <!-- ░░ COMING SOON ░░ -->
-  <div class="card coming reveal">
-    <div class="coming-badge">⏳ COMING SOON</div>
-    <div class="coming-title">เร็วๆ นี้!</div>
-    <p class="coming-tx">รอพบกับกิจกรรมสนุกๆ และมินิเกมจากบ้านชิวาว่าแลนด์<br>มาเก็บคะแนนสะสม แข่งขันกัน และลุ้นรางวัลพิเศษไปด้วยกันนะคะ</p>
-    <div class="coming-dogs">🐶 🎀 🐶</div>
-  </div>
-
-  <!-- ░░ PREVIEW: สิ่งที่กำลังจะมา ░░ -->
+  <!-- ░░ GAME HUB ░░ -->
   <div class="sec-head reveal">
-    <div class="sec-emoji e-pink">✨</div>
-    <div><div class="sec-title">กำลังจะมา</div><div class="sec-sub">What's coming</div></div>
+    <div class="sec-emoji e-pink">🎮</div>
+    <div><div class="sec-title">มินิเกมวาว่า</div><div class="sec-sub">Wawa Mini Games · เล่นเก็บคะแนน</div></div>
   </div>
-  <div class="preview-grid reveal">
-    <div class="card pv"><span class="em">🎯</span><div class="t">มินิเกม</div><div class="d">เกมน่ารักๆ เล่นง่าย สนุกได้ทุกวัน</div><span class="soon">เร็วๆ นี้</span></div>
-    <div class="card pv"><span class="em">🏆</span><div class="t">Leaderboard</div><div class="d">เก็บคะแนนสูงสุด แข่งกับเพื่อนในบ้าน</div><span class="soon">เร็วๆ นี้</span></div>
-    <div class="card pv"><span class="em">🎁</span><div class="t">รางวัลพิเศษ</div><div class="d">ลุ้นรางวัลสุดน่ารักจากบ้าน</div><span class="soon">เร็วๆ นี้</span></div>
+  <div class="card game-hub-card reveal">
+    <div id="gameHub"><div class="gh-loading">กำลังโหลดเกม… 🎀</div></div>
   </div>
 
-  <!-- ░░ LEADERBOARD (โครงรอไว้ พร้อมระบบ nickname) ░░ -->
+  <!-- ░░ LEADERBOARD ░░ -->
   <div class="sec-head reveal">
     <div class="sec-emoji e-gold">🏆</div>
     <div><div class="sec-title">ตารางคะแนน</div><div class="sec-sub">Leaderboard · Top 10</div></div>
@@ -275,6 +322,8 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;filter:d
   </div>
 </footer>
 
+<script src="games/beatmaps.js"></script>
+<script src="games/games.js"></script>
 <script>
 /* reveal on scroll */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
@@ -308,41 +357,13 @@ for(let i=0;i<N;i++){
 }
 
 /* ════════════════════════════════════════════════
-   LEADERBOARD — โครงระบบรอไว้ (ยังไม่เปิดใช้)
-   เมื่อมีมินิเกมแล้ว เกมจะเรียก saveScore(nickname, score)
-   เพื่อบันทึกคะแนนสูงสุดของแต่ละชื่อเล่น แล้วแสดง Top 10
-   หมายเหตุ: ตอนนี้เก็บในเครื่องผู้เล่นแต่ละคน (ทดสอบได้)
-   ภายหลังถ้าอยากให้ทุกคนเห็นคะแนนร่วมกัน ต้องต่อฐานข้อมูลกลาง
+   GAME HUB — เกมและ leaderboard จัดการใน games/games.js
+   เฟส 1: เก็บคะแนนใน localStorage (ในเครื่องผู้เล่น)
+   เฟส 2: ต่อ Supabase เพื่อทำ leaderboard ส่วนกลาง (ดูคู่มือใน GAMES-README)
    ════════════════════════════════════════════════ */
-const LB_KEY='chiwawaland_scores';
-
-function getScores(){
-  try{return JSON.parse(localStorage.getItem(LB_KEY))||[]}catch(e){return []}
-}
-function saveScore(nickname,score){
-  if(!nickname)return;
-  let list=getScores();
-  const existing=list.find(x=>x.name===nickname);
-  if(existing){ if(score>existing.score) existing.score=score; }
-  else list.push({name:nickname,score:score});
-  localStorage.setItem(LB_KEY,JSON.stringify(list));
-  renderLeaderboard();
-}
-function renderLeaderboard(){
-  const list=getScores().sort((a,b)=>b.score-a.score).slice(0,10);
-  const box=document.getElementById('leaderboard');
-  if(!list.length){
-    box.innerHTML='<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — รอเกมเปิดให้เล่นเร็วๆ นี้นะคะ!</div></div>';
-    return;
-  }
-  box.innerHTML=list.map((x,i)=>{
-    const medal=['🥇','🥈','🥉','4','5','6','7','8','9','10'][i];
-    return `<div class="lb-row"><div class="lb-rank">${medal}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.score.toLocaleString()}</div></div>`;
-  }).join('');
-}
-renderLeaderboard();
-/* เผยฟังก์ชันไว้ให้มินิเกมในอนาคตเรียกใช้ */
-window.saveScore=saveScore;
+window.addEventListener('load', function () {
+  if (window.WawaGameHub) window.WawaGameHub.mount('gameHub');
+});
 </script>
 </body>
 </html>
