@@ -344,16 +344,23 @@
   }
 
   /* ════════════ PHOTO CATCH ════════════ */
+  /* BGM สำหรับ Photo Catch — วางไฟล์เพลงที่ games/bgm/photocatch.mp3 */
+  const PC_BGM_SRC = 'games/bgm/photocatch.mp3';
+
   function playPhotoCatch(host, onEnd) {
     const W = 320, H = 460;
     const state = {
       score: 0, lives: 3, items: [], basket: W / 2,
-      running: true, t0: performance.now(), spawn: 0, speed: 1, fb: []
+      running: false, t0: 0, spawn: 0, speed: 1, fb: []
     };
 
-    // โหลดรูป photocard ล่วงหน้า (ต้องอัพโหลด images/pc-normal.jpg และ images/pc-special.jpg)
-    const imgNormal = new Image(); imgNormal.src = 'images/pc-normal.jpg';
-    const imgSpecial = new Image(); imgSpecial.src = 'images/pc-special.jpg';
+    // โหลดรูป photocard (ไฟล์ images/pc-normal.png และ images/pc-special.png)
+    const imgNormal = new Image(); imgNormal.src = 'images/pc-normal.png';
+    const imgSpecial = new Image(); imgSpecial.src = 'images/pc-special.png';
+
+    // BGM
+    const bgm = new Audio(PC_BGM_SRC);
+    bgm.loop = true; bgm.volume = 0.45;
 
     host.innerHTML = '';
     const wrap = el('div', 'pc-wrap');
@@ -363,11 +370,40 @@
         <div class="rt-song">Photo Catch</div>
         <div class="pc-stat">❤️<span id="pcLives">3</span> · <span id="pcScore">0</span></div>
       </div>
-      <canvas id="pcCanvas" width="${W}" height="${H}"></canvas>
-      <div class="rt-hint">เลื่อนตะกร้าซ้าย-ขวา รับการ์ดวาว่า 💖 เลี่ยงระเบิด • การ์ด ★SP★ = +50!</div>
+      <div class="pc-playfield">
+        <canvas id="pcCanvas" width="${W}" height="${H}"></canvas>
+        <div class="pc-overlay" id="pcOverlay">
+          <div class="rt-ready-box">
+            <div class="rt-ready-title">🎴 Photo Catch</div>
+            <div class="rt-ready-sub">เลื่อนตะกร้ารับการ์ดวาว่า เลี่ยงระเบิด!</div>
+            <div class="pc-rules">
+              <div class="pc-rule-item">
+                <img src="images/pc-normal.png" class="pc-rule-img" alt="การ์ดปกติ" />
+                <div class="pc-rule-lbl">+10 คะแนน</div>
+                <div class="pc-rule-sub">การ์ดปกติ</div>
+              </div>
+              <div class="pc-rule-item">
+                <img src="images/pc-special.png" class="pc-rule-img pc-rule-sp" alt="Special" />
+                <div class="pc-rule-lbl sp">+50 คะแนน</div>
+                <div class="pc-rule-sub">การ์ด ★Special★</div>
+              </div>
+              <div class="pc-rule-item">
+                <div class="pc-bomb-icon">💣<span class="pc-bomb-tag">บด</span></div>
+                <div class="pc-rule-lbl bomb">-1 ชีวิต!</div>
+                <div class="pc-rule-sub">ระเบิด</div>
+              </div>
+            </div>
+            <div class="pc-lives-hint">❤️❤️❤️ มี 3 ชีวิต • ยิ่งนานยิ่งเร็ว!</div>
+            <button class="rt-ready-btn" id="pcStartBtn">▶ เริ่มเล่น!</button>
+          </div>
+        </div>
+      </div>
+      <div class="rt-hint">เลื่อนตะกร้าซ้าย-ขวา • ★SP★ หายาก ตกเร็ว ได้ +50!</div>
     `;
     host.appendChild(wrap);
     const cvs = $('#pcCanvas', wrap), ctx = cvs.getContext('2d');
+    const overlay = $('#pcOverlay', wrap);
+    const startBtn = $('#pcStartBtn', wrap);
 
     function moveTo(clientX) {
       const r = cvs.getBoundingClientRect();
@@ -375,9 +411,19 @@
     }
     cvs.addEventListener('touchmove', e => { e.preventDefault(); moveTo(e.touches[0].clientX); }, { passive: false });
     cvs.addEventListener('mousemove', e => moveTo(e.clientX));
-    $('.g-back', wrap).addEventListener('click', () => { state.running = false; onEnd(null); });
 
-    function finish() { state.running = false; onEnd({ game: 'Photo Catch', score: state.score }); }
+    function stopBgm() { bgm.pause(); bgm.currentTime = 0; }
+    $('.g-back', wrap).addEventListener('click', () => { state.running = false; stopBgm(); onEnd(null); });
+
+    startBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      state.t0 = performance.now();
+      state.running = true;
+      bgm.play().catch(() => {});
+      requestAnimationFrame(frame);
+    });
+
+    function finish() { state.running = false; stopBgm(); onEnd({ game: 'Photo Catch', score: state.score }); }
 
     function drawBomb(x, y) {
       // ลำตัวระเบิด
@@ -502,7 +548,7 @@
       if (state.lives <= 0) { finish(); return; }
       requestAnimationFrame(frame);
     }
-    requestAnimationFrame(frame);
+    // frame เริ่มเมื่อกด "เริ่มเล่น!" — ดูที่ startBtn.addEventListener ด้านบน
   }
   function roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
