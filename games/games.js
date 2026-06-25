@@ -76,7 +76,7 @@
      ปรับตามความรู้สึกขณะเล่นจริง — ค่า 0 = ใช้เวลาตรงตาม librosa beat detection */
   const SONGS = [
     { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: 'games/fancam/saikyou.mp4', noteOffset: 0 },
-    { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 85.0, color: C.gold, src: '', noteOffset: 0 }
+    { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 69.4, color: C.gold, src: 'games/fancam/Pumpkin.mp4', noteOffset: 0 }
   ];
   const BEATMAPS = window.WAWA_BEATMAPS || { saikyou: [], pumpkin: [] };
 
@@ -346,7 +346,14 @@
   /* ════════════ PHOTO CATCH ════════════ */
   function playPhotoCatch(host, onEnd) {
     const W = 320, H = 460;
-    const state = { score: 0, lives: 3, items: [], basket: W / 2, running: true, t0: performance.now(), spawn: 0, speed: 1 };
+    const state = {
+      score: 0, lives: 3, items: [], basket: W / 2,
+      running: true, t0: performance.now(), spawn: 0, speed: 1, fb: []
+    };
+
+    // โหลดรูป photocard ล่วงหน้า (ต้องอัพโหลด images/pc-normal.jpg และ images/pc-special.jpg)
+    const imgNormal = new Image(); imgNormal.src = 'images/pc-normal.jpg';
+    const imgSpecial = new Image(); imgSpecial.src = 'images/pc-special.jpg';
 
     host.innerHTML = '';
     const wrap = el('div', 'pc-wrap');
@@ -357,7 +364,7 @@
         <div class="pc-stat">❤️<span id="pcLives">3</span> · <span id="pcScore">0</span></div>
       </div>
       <canvas id="pcCanvas" width="${W}" height="${H}"></canvas>
-      <div class="rt-hint">เลื่อนตะกร้าซ้าย-ขวา รับการ์ดวาว่า 💖 เลี่ยงระเบิด 💣</div>
+      <div class="rt-hint">เลื่อนตะกร้าซ้าย-ขวา รับการ์ดวาว่า 💖 เลี่ยงระเบิด • การ์ด ★SP★ = +50!</div>
     `;
     host.appendChild(wrap);
     const cvs = $('#pcCanvas', wrap), ctx = cvs.getContext('2d');
@@ -368,45 +375,129 @@
     }
     cvs.addEventListener('touchmove', e => { e.preventDefault(); moveTo(e.touches[0].clientX); }, { passive: false });
     cvs.addEventListener('mousemove', e => moveTo(e.clientX));
-
     $('.g-back', wrap).addEventListener('click', () => { state.running = false; onEnd(null); });
 
     function finish() { state.running = false; onEnd({ game: 'Photo Catch', score: state.score }); }
 
+    function drawBomb(x, y) {
+      // ลำตัวระเบิด
+      const g = ctx.createRadialGradient(x - 4, y - 4, 2, x, y, 14);
+      g.addColorStop(0, '#505050'); g.addColorStop(1, '#111');
+      ctx.fillStyle = g;
+      ctx.shadowColor = '#ff3355'; ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+      // แสงสะท้อน
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.beginPath(); ctx.ellipse(x - 5, y - 5, 4, 2.5, -0.5, 0, Math.PI * 2); ctx.fill();
+      // ชนวน
+      ctx.strokeStyle = '#c87020'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x + 9, y - 12);
+      ctx.bezierCurveTo(x + 17, y - 20, x + 7, y - 26, x + 13, y - 32);
+      ctx.stroke(); ctx.lineCap = 'butt';
+      // ประกายไฟ
+      ctx.fillStyle = '#ffee22'; ctx.shadowColor = '#ff9900'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(x + 13, y - 32, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+      // ข้อความ "บด"
+      ctx.font = 'bold 10px Mitr, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.85)'; ctx.strokeText('บด', x, y + 1);
+      ctx.fillStyle = '#ff4466'; ctx.fillText('บด', x, y + 1);
+      ctx.textBaseline = 'alphabetic';
+    }
+
+    function drawCard(x, y, special) {
+      const w = 26, h = 36, rx = 4;
+      ctx.save();
+      roundRect(ctx, x - w / 2, y - h / 2, w, h, rx); ctx.clip();
+      const img = special ? imgSpecial : imgNormal;
+      if (img.complete && img.naturalWidth > 0) {
+        ctx.drawImage(img, x - w / 2, y - h / 2, w, h);
+      } else {
+        // fallback gradient ถ้ายังโหลดรูปไม่เสร็จ
+        const grd = ctx.createLinearGradient(x - w / 2, y - h / 2, x + w / 2, y + h / 2);
+        if (special) { grd.addColorStop(0, '#ffa8b8'); grd.addColorStop(1, '#c03060'); }
+        else { grd.addColorStop(0, '#b8d8f8'); grd.addColorStop(1, '#5090d0'); }
+        ctx.fillStyle = grd; ctx.fillRect(x - w / 2, y - h / 2, w, h);
+        ctx.fillStyle = '#fff'; ctx.font = '14px serif'; ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle'; ctx.fillText(special ? '⭐' : '💖', x, y);
+        ctx.textBaseline = 'alphabetic';
+      }
+      ctx.restore();
+      // ขอบการ์ด
+      ctx.shadowColor = special ? '#e8c060' : '#a8d0f0'; ctx.shadowBlur = special ? 10 : 4;
+      ctx.strokeStyle = special ? '#e8c060' : '#a8d8f8'; ctx.lineWidth = special ? 2.5 : 2;
+      roundRect(ctx, x - w / 2, y - h / 2, w, h, rx); ctx.stroke();
+      ctx.shadowBlur = 0;
+      // ป้าย SP
+      if (special) {
+        ctx.fillStyle = '#e8c060'; ctx.font = 'bold 6px Fredoka, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.fillText('★SP★', x, y + h / 2 - 1);
+        ctx.textBaseline = 'alphabetic';
+      }
+    }
+
     function frame() {
       if (!state.running) return;
-      const dt = 16;
-      state.spawn -= dt;
+      const now = performance.now() / 1000;
+      state.spawn -= 16;
       const elapsed = (performance.now() - state.t0) / 1000;
       state.speed = 1 + elapsed / 30;
+
       if (state.spawn <= 0) {
         state.spawn = 720 / state.speed;
-        const bomb = Math.random() < 0.22;
-        state.items.push({ x: 28 + Math.random() * (W - 56), y: -20, bomb, vy: (1.6 + Math.random() * 1.2) * state.speed });
+        const roll = Math.random();
+        const bomb = roll < 0.22;
+        // ~10% ของ spawn ที่ไม่ใช่ระเบิด = การ์ด Special
+        const special = !bomb && Math.random() < 0.10;
+        state.items.push({
+          x: 28 + Math.random() * (W - 56), y: -28, bomb, special,
+          vy: (1.6 + Math.random() * 1.2) * state.speed * (special ? 1.4 : 1.0)
+        });
       }
+
       ctx.clearRect(0, 0, W, H);
-      // items
+
       for (const it of state.items) {
         it.y += it.vy;
-        if (it.bomb) {
-          ctx.font = '26px serif'; ctx.textAlign = 'center'; ctx.fillText('💣', it.x, it.y);
-        } else {
-          ctx.fillStyle = C.pink; ctx.strokeStyle = C.white; ctx.lineWidth = 2;
-          roundRect(ctx, it.x - 13, it.y - 16, 26, 32, 5); ctx.fill(); ctx.stroke();
-          ctx.fillStyle = C.white; ctx.font = '14px serif'; ctx.textAlign = 'center'; ctx.fillText('💖', it.x, it.y + 3);
-        }
-        // catch check
+        if (it.bomb) drawBomb(it.x, it.y);
+        else drawCard(it.x, it.y, it.special);
+
+        // ตรวจรับ
         if (it.y > H - 56 && it.y < H - 20 && Math.abs(it.x - state.basket) < 40) {
-          if (it.bomb) { state.lives--; $('#pcLives', wrap).textContent = state.lives; }
-          else { state.score += 10; $('#pcScore', wrap).textContent = state.score; }
+          if (it.bomb) {
+            state.lives--; $('#pcLives', wrap).textContent = state.lives;
+            state.fb.push({ x: it.x, y: it.y, txt: '💥', col: '#ff4466', t: now });
+          } else if (it.special) {
+            state.score += 50; $('#pcScore', wrap).textContent = state.score;
+            state.fb.push({ x: it.x, y: it.y, txt: 'SPECIAL! +50', col: C.gold, t: now });
+          } else {
+            state.score += 10; $('#pcScore', wrap).textContent = state.score;
+            state.fb.push({ x: it.x, y: it.y, txt: '+10', col: C.teal, t: now });
+          }
           it.y = H + 100;
         }
       }
       state.items = state.items.filter(it => it.y < H + 40);
-      // basket
+
+      // ข้อความ feedback ลอยขึ้น
+      state.fb = state.fb.filter(f => now - f.t < 0.7);
+      for (const f of state.fb) {
+        const age = now - f.t;
+        ctx.shadowColor = f.col; ctx.shadowBlur = 8;
+        ctx.fillStyle = f.col; ctx.globalAlpha = Math.max(0, 1 - age / 0.7);
+        ctx.font = 'bold 13px Fredoka, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(f.txt, f.x, f.y - age * 40);
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      }
+
+      // ตะกร้า
       ctx.fillStyle = C.teal; ctx.strokeStyle = C.white; ctx.lineWidth = 3;
       roundRect(ctx, state.basket - 30, H - 42, 60, 30, 10); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = C.white; ctx.font = '16px serif'; ctx.textAlign = 'center'; ctx.fillText('🧺', state.basket, H - 20);
+      ctx.fillStyle = C.white; ctx.font = '16px serif'; ctx.textAlign = 'center';
+      ctx.fillText('🧺', state.basket, H - 20);
 
       if (state.lives <= 0) { finish(); return; }
       requestAnimationFrame(frame);
