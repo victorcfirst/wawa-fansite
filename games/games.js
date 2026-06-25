@@ -71,9 +71,9 @@
   /* ════════════ SONG LIST (Rhythm Tap) ════════════
      🎬 ใส่คลิปแฟนแคม: เปลี่ยน src เป็นพาธไฟล์วิดีโอ เช่น "games/fancam/saikyou.mp4"
         แล้วตั้ง USE_VIDEO = true ด้านล่าง — เกมจะ sync กับวิดีโออัตโนมัติ */
-  const USE_VIDEO = true;
+  const USE_VIDEO = false;
   const SONGS = [
-    { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: 'games/fancam/saikyou.mp4' },
+    { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: '' },
     { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 85.0, color: C.gold, src: '' }
   ];
   const BEATMAPS = window.WAWA_BEATMAPS || { saikyou: [], pumpkin: [] };
@@ -96,18 +96,27 @@
         <div class="rt-score"><span id="rtScore">0</span></div>
       </div>
       <div class="rt-combo" id="rtCombo"></div>
-      <canvas id="rtCanvas" width="${RT.W}" height="${RT.H}"></canvas>
+      <div class="rt-playfield">
+        <video id="rtVideo" playsinline muted></video>
+        <canvas id="rtCanvas" width="${RT.W}" height="${RT.H}"></canvas>
+      </div>
       <div class="rt-keys">
         ${RT.KEYS.map((k, i) => `<button class="rt-key" data-lane="${i}" style="--kc:${LANE_COLORS[i]}">${k}</button>`).join('')}
       </div>
       <div class="rt-hint">แตะปุ่มสีให้ตรงจังหวะที่โน้ตถึงเส้น • บนคอมใช้ปุ่ม A S D F ได้</div>
-      <video id="rtVideo" playsinline style="display:none"></video>
     `;
     host.appendChild(wrap);
 
     const cvs = $('#rtCanvas', wrap), ctx = cvs.getContext('2d');
     const video = $('#rtVideo', wrap);
-    if (USE_VIDEO && song.src) { video.src = song.src; video.currentTime = 0; video.play().catch(() => {}); }
+    const hasVideo = USE_VIDEO && song.src;
+    if (hasVideo) {
+      video.src = song.src;
+      video.muted = false;       // ผู้ใช้กดเลือกเพลงแล้ว = มี gesture เปิดเสียงได้
+      video.currentTime = 0;
+      video.play().catch(() => { /* ถ้าเสียงโดนบล็อก ลองเล่นแบบ mute */ video.muted = true; video.play().catch(()=>{}); });
+      cvs.classList.add('rt-canvas-overlay'); // พื้นหลัง canvas โปร่งใสให้เห็นวิดีโอ
+    }
 
     const now = () => (USE_VIDEO && song.src && video.readyState > 0) ? video.currentTime : (performance.now() / 1000 - state.t0);
 
