@@ -257,6 +257,25 @@ nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-con
 .rt-grade-dot{color:var(--ink3)}
 .rt-grade-btns{display:flex;gap:10px;justify-content:center}
 
+/* ════════ PHOTO CATCH READY SCREEN ════════ */
+.pc-playfield{position:relative;width:320px;max-width:100%}
+.pc-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(46,42,68,.9);border-radius:14px;z-index:10}
+.pc-rules{display:flex;justify-content:center;gap:10px;margin:14px 0 10px;flex-wrap:wrap}
+.pc-rule-item{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:72px}
+.pc-rule-img{width:46px;height:64px;object-fit:cover;border-radius:7px;
+  border:2px solid rgba(255,255,255,0.35);box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.pc-rule-img.pc-rule-sp{border-color:#e8c060;box-shadow:0 3px 12px rgba(232,192,96,.4)}
+.pc-rule-lbl{font-family:'Baloo 2',cursive;font-weight:700;font-size:12px;color:#8ec9f0}
+.pc-rule-lbl.sp{color:#e8c060}
+.pc-rule-lbl.bomb{color:#ff8fab}
+.pc-rule-sub{font-family:'Fredoka',sans-serif;font-size:10px;color:rgba(255,255,255,.55)}
+.pc-bomb-icon{font-size:34px;line-height:1;position:relative;display:flex;align-items:center;justify-content:center}
+.pc-bomb-tag{position:absolute;font-family:'Mitr',sans-serif;font-size:9px;font-weight:600;
+  color:#ff4466;background:rgba(0,0,0,.7);padding:0 4px;border-radius:5px;top:50%;left:50%;
+  transform:translate(-50%,-50%);pointer-events:none}
+.pc-lives-hint{font-family:'Fredoka',sans-serif;font-size:12px;color:#b89cf0;margin-bottom:16px}
+
 /* ════════ REVEAL ════════ */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s,transform .65s}
 .reveal.in{opacity:1;transform:none}
