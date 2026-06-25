@@ -72,14 +72,16 @@
      🎬 ใส่คลิปแฟนแคม: เปลี่ยน src เป็นพาธไฟล์วิดีโอ เช่น "games/fancam/saikyou.mp4"
         แล้วตั้ง USE_VIDEO = true ด้านล่าง — เกมจะ sync กับวิดีโออัตโนมัติ */
   const USE_VIDEO = true;
+  /* noteOffset (วินาที): บวก = เลื่อนโน้ตช้าลง (ตีทีหลัง), ลบ = เลื่อนเร็วขึ้น (ตีก่อน)
+     ปรับตามความรู้สึกขณะเล่นจริง — ค่า 0 = ใช้เวลาตรงตาม librosa beat detection */
   const SONGS = [
-    { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: 'games/fancam/saikyou.mp4' },
-    { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 85.0, color: C.gold, src: '' }
+    { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: 'games/fancam/saikyou.mp4', noteOffset: 0 },
+    { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 85.0, color: C.gold, src: '', noteOffset: 0 }
   ];
   const BEATMAPS = window.WAWA_BEATMAPS || { saikyou: [], pumpkin: [] };
 
   /* ════════════ RHYTHM TAP ════════════ */
-  const RT = { W: 320, H: 480, LANES: 4, HIT_Y: 410, TOL: 52, PXPS: 260, KEYS: ['A', 'S', 'D', 'F'] };
+  const RT = { W: 320, H: 480, LANES: 4, HIT_Y: 410, TOL: 55, PXPS: 220, KEYS: ['A', 'S', 'D', 'F'] };
   const rtX = (i) => { const m = 20, s = (RT.W - m * 2) / RT.LANES; return m + s * i + s / 2; };
 
   const GRADE_COLOR = { SS: '#e8c060', S: '#d4930a', A: '#1aa3ad', B: '#8ec9f0', C: '#b89cf0', D: '#f57aa8' };
@@ -96,7 +98,8 @@
   }
 
   function playRhythm(host, song, onEnd) {
-    const notes = (BEATMAPS[song.id] || []).map(n => ({ ...n, hit: false, miss: false }));
+    const off = song.noteOffset || 0;
+    const notes = (BEATMAPS[song.id] || []).map(n => ({ ...n, t: n.t + off, hit: false, miss: false }));
     const totalNotes = notes.length;
     const state = { score: 0, combo: 0, maxCombo: 0, fb: [], perfects: 0, goods: 0, misses: 0, t0: 0, running: false };
 
@@ -151,6 +154,8 @@
         statusEl.textContent = 'วิดีโอโหลดไม่ได้ — เล่นแบบไม่มีวิดีโอ';
         startBtn.disabled = false;
       }, { once: true });
+      // เมื่อวิดีโอจบ → จบเกมทันที (ไม่ต้องรอ timer)
+      video.addEventListener('ended', () => { if (state.running) finish(); }, { once: true });
     }
 
     const now = () => (hasVideo && video && video.readyState > 0) ? video.currentTime : (performance.now() / 1000 - state.t0);
@@ -274,15 +279,28 @@
       if (!state.running) return;
       const t = now();
       ctx.clearRect(0, 0, RT.W, RT.H);
-      // lanes
+      const m = 20, s = (RT.W - m * 2) / RT.LANES;
+      // lane separators
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= RT.LANES; i++) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.13)';
+        ctx.beginPath(); ctx.moveTo(m + s * i, 0); ctx.lineTo(m + s * i, RT.H); ctx.stroke();
+      }
+      // hit zone glow gradient
+      const zg = ctx.createLinearGradient(0, RT.HIT_Y - 50, 0, RT.HIT_Y + 26);
+      zg.addColorStop(0, 'rgba(26,163,173,0)'); zg.addColorStop(1, 'rgba(26,163,173,0.22)');
+      ctx.fillStyle = zg; ctx.fillRect(0, RT.HIT_Y - 50, RT.W, 76);
+      // target circles (hit zone markers)
       for (let i = 0; i < RT.LANES; i++) {
-        ctx.fillStyle = 'rgba(245,122,168,0.05)';
-        const m = 20, s = (RT.W - m * 2) / RT.LANES;
-        ctx.fillRect(m + s * i + 3, 0, s - 6, RT.H);
+        ctx.strokeStyle = LANE_COLORS[i]; ctx.lineWidth = 3; ctx.globalAlpha = 0.45;
+        ctx.beginPath(); ctx.arc(rtX(i), RT.HIT_Y, 19, 0, 7); ctx.stroke();
+        ctx.globalAlpha = 1;
       }
       // hit line
-      ctx.strokeStyle = 'rgba(26,163,173,0.5)'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(10, RT.HIT_Y); ctx.lineTo(RT.W - 10, RT.HIT_Y); ctx.stroke();
+      ctx.shadowColor = 'rgba(255,255,255,0.8)'; ctx.shadowBlur = 8;
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(m, RT.HIT_Y); ctx.lineTo(RT.W - m, RT.HIT_Y); ctx.stroke();
+      ctx.shadowBlur = 0;
       // notes
       const tolSec = RT.TOL / RT.PXPS;
       for (const n of notes) {
@@ -293,21 +311,29 @@
         }
         const y = RT.HIT_Y - (n.t - t) * RT.PXPS;
         if (y < -30 || y > RT.H + 30) continue;
-        const x = rtX(n.lane), r = 17;
+        const x = rtX(n.lane), r = 18;
+        ctx.globalAlpha = n.miss ? 0.2 : 1;
+        if (!n.miss) { ctx.shadowColor = LANE_COLORS[n.lane]; ctx.shadowBlur = 14; }
         ctx.fillStyle = LANE_COLORS[n.lane];
-        ctx.globalAlpha = n.miss ? 0.25 : 1;
         ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(255,255,255,0.88)'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.stroke();
+        if (!n.miss) {
+          ctx.fillStyle = 'rgba(255,255,255,0.55)';
+          ctx.beginPath(); ctx.arc(x - 5, y - 5, 5, 0, 7); ctx.fill();
+        }
         ctx.globalAlpha = 1;
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.beginPath(); ctx.arc(x - 5, y - 5, 4, 0, 7); ctx.fill();
       }
       // feedback text
       state.fb = state.fb.filter(f => t - f.t < 0.6);
       for (const f of state.fb) {
-        ctx.fillStyle = f.col; ctx.globalAlpha = Math.max(0, 1 - (t - f.t) / 0.6);
-        ctx.font = 'bold 15px Fredoka, sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(f.txt, f.x, f.y - 30 - (t - f.t) * 40);
-        ctx.globalAlpha = 1;
+        const age = t - f.t;
+        ctx.shadowColor = f.col; ctx.shadowBlur = 10;
+        ctx.fillStyle = f.col; ctx.globalAlpha = Math.max(0, 1 - age / 0.6);
+        ctx.font = 'bold 16px Fredoka, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(f.txt, f.x, f.y - 30 - age * 44);
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
       }
       // end check — with video, wait for full song.dur; without, end after last note
       const lastT = notes.length ? notes[notes.length - 1].t : 0;
