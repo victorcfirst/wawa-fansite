@@ -81,12 +81,26 @@
   /* ════════════ RHYTHM TAP ════════════ */
   const RT = { W: 320, H: 480, LANES: 4, HIT_Y: 410, TOL: 52, PXPS: 260, KEYS: ['A', 'S', 'D', 'F'] };
   const rtX = (i) => { const m = 20, s = (RT.W - m * 2) / RT.LANES; return m + s * i + s / 2; };
-  const RT_LEAD = (RT.HIT_Y + 24) / RT.PXPS + 0.4;
+
+  const GRADE_COLOR = { SS: '#e8c060', S: '#d4930a', A: '#1aa3ad', B: '#8ec9f0', C: '#b89cf0', D: '#f57aa8' };
+  function getGrade(perfects, goods, misses, total) {
+    if (total === 0) return 'D';
+    const acc = (perfects + goods * 0.6) / total;
+    const isFC = misses === 0;
+    if (isFC && perfects === total) return 'SS';
+    if (isFC && acc >= 0.85) return 'S';
+    if (acc >= 0.80) return 'A';
+    if (acc >= 0.65) return 'B';
+    if (acc >= 0.50) return 'C';
+    return 'D';
+  }
 
   function playRhythm(host, song, onEnd) {
     const notes = (BEATMAPS[song.id] || []).map(n => ({ ...n, hit: false, miss: false }));
-    const state = { score: 0, combo: 0, maxCombo: 0, fb: [], t0: performance.now() / 1000, running: true };
+    const totalNotes = notes.length;
+    const state = { score: 0, combo: 0, maxCombo: 0, fb: [], perfects: 0, goods: 0, misses: 0, t0: 0, running: false };
 
+    const hasVideo = USE_VIDEO && song.src;
     host.innerHTML = '';
     const wrap = el('div', 'rt-wrap');
     wrap.innerHTML = `
@@ -97,8 +111,18 @@
       </div>
       <div class="rt-combo" id="rtCombo"></div>
       <div class="rt-playfield">
-        <video id="rtVideo" playsinline muted></video>
-        <canvas id="rtCanvas" width="${RT.W}" height="${RT.H}"></canvas>
+        ${hasVideo ? '<video id="rtVideo" playsinline></video>' : ''}
+        <canvas id="rtCanvas" width="${RT.W}" height="${RT.H}"${hasVideo ? ' class="rt-canvas-overlay"' : ''}></canvas>
+        <div class="rt-overlay" id="rtOverlay">
+          <div class="rt-ready-box">
+            <div class="rt-ready-title">🎵 ${song.title}</div>
+            <div class="rt-ready-sub">${song.sub}</div>
+            <div class="rt-ready-status" id="rtStatus">${hasVideo ? 'กำลังโหลดวิดีโอ… 🎀' : 'พร้อมเล่นแล้ว!'}</div>
+            <button class="rt-ready-btn" id="rtStartBtn"${hasVideo ? ' disabled' : ''}>▶ เริ่มเล่น!</button>
+            <div class="rt-ready-hint">ใช้ปุ่ม A S D F หรือแตะปุ่มสี</div>
+          </div>
+        </div>
+        <div class="rt-countdown-overlay" id="rtCountdown"></div>
       </div>
       <div class="rt-keys">
         ${RT.KEYS.map((k, i) => `<button class="rt-key" data-lane="${i}" style="--kc:${LANE_COLORS[i]}">${k}</button>`).join('')}
@@ -108,17 +132,28 @@
     host.appendChild(wrap);
 
     const cvs = $('#rtCanvas', wrap), ctx = cvs.getContext('2d');
-    const video = $('#rtVideo', wrap);
-    const hasVideo = USE_VIDEO && song.src;
+    const video = hasVideo ? $('#rtVideo', wrap) : null;
+    const startBtn = $('#rtStartBtn', wrap);
+    const statusEl = $('#rtStatus', wrap);
+    const overlay = $('#rtOverlay', wrap);
+    const countdownEl = $('#rtCountdown', wrap);
+
     if (hasVideo) {
+      video.muted = true;
+      video.preload = 'auto';
       video.src = song.src;
-      video.muted = false;       // ผู้ใช้กดเลือกเพลงแล้ว = มี gesture เปิดเสียงได้
-      video.currentTime = 0;
-      video.play().catch(() => { /* ถ้าเสียงโดนบล็อก ลองเล่นแบบ mute */ video.muted = true; video.play().catch(()=>{}); });
-      cvs.classList.add('rt-canvas-overlay'); // พื้นหลัง canvas โปร่งใสให้เห็นวิดีโอ
+      video.load();
+      video.addEventListener('canplaythrough', () => {
+        statusEl.textContent = 'โหลดเสร็จแล้ว! พร้อมเล่น 🎉';
+        startBtn.disabled = false;
+      }, { once: true });
+      video.addEventListener('error', () => {
+        statusEl.textContent = 'วิดีโอโหลดไม่ได้ — เล่นแบบไม่มีวิดีโอ';
+        startBtn.disabled = false;
+      }, { once: true });
     }
 
-    const now = () => (USE_VIDEO && song.src && video.readyState > 0) ? video.currentTime : (performance.now() / 1000 - state.t0);
+    const now = () => (hasVideo && video && video.readyState > 0) ? video.currentTime : (performance.now() / 1000 - state.t0);
 
     function judge(lane) {
       if (!state.running) return;
@@ -135,7 +170,8 @@
         const perfect = bestDiff <= tolSec * 0.45;
         state.combo++; state.maxCombo = Math.max(state.maxCombo, state.combo);
         state.score += (perfect ? 100 : 60) + state.combo * 2;
-        state.fb.push({ x: rtX(lane), y: RT.HIT_Y, txt: perfect ? 'PERFECT' : 'GOOD', col: perfect ? C.gold : C.teal, t: t });
+        if (perfect) state.perfects++; else state.goods++;
+        state.fb.push({ x: rtX(lane), y: RT.HIT_Y, txt: perfect ? 'PERFECT' : 'GOOD', col: perfect ? C.gold : C.teal, t });
         $('#rtScore', wrap).textContent = state.score;
         const cb = $('#rtCombo', wrap);
         cb.textContent = state.combo > 2 ? state.combo + ' COMBO' : '';
@@ -145,27 +181,93 @@
       }
     }
 
-    // input
     wrap.querySelectorAll('.rt-key').forEach(btn => {
       const lane = +btn.dataset.lane;
-      const press = (e) => { e.preventDefault(); judge(lane); btn.classList.add('on'); setTimeout(() => btn.classList.remove('on'), 90); };
+      const press = (e) => { e.preventDefault(); if (!state.running) return; judge(lane); btn.classList.add('on'); setTimeout(() => btn.classList.remove('on'), 90); };
       btn.addEventListener('touchstart', press, { passive: false });
       btn.addEventListener('mousedown', press);
     });
     const keyHandler = (e) => {
+      if (!state.running) return;
       const i = RT.KEYS.indexOf(e.key.toUpperCase());
       if (i >= 0) { const b = wrap.querySelector(`.rt-key[data-lane="${i}"]`); if (b) { judge(i); b.classList.add('on'); setTimeout(() => b.classList.remove('on'), 90); } }
     };
     document.addEventListener('keydown', keyHandler);
 
-    function finish() {
-      state.running = false;
+    function cleanup() {
       document.removeEventListener('keydown', keyHandler);
-      if (USE_VIDEO) { try { video.pause(); } catch {} }
-      onEnd({ game: 'Rhythm Tap', score: state.score, maxCombo: state.maxCombo });
+      if (video) { try { video.pause(); } catch {} }
     }
 
-    $('.g-back', wrap).addEventListener('click', () => { state.running = false; document.removeEventListener('keydown', keyHandler); if (USE_VIDEO) { try { video.pause(); } catch {} } onEnd(null); });
+    function showGrade() {
+      cleanup();
+      recordScore('Rhythm Tap', state.score);
+      const grade = getGrade(state.perfects, state.goods, state.misses, totalNotes);
+      const accuracy = totalNotes > 0 ? Math.round((state.perfects + state.goods * 0.6) / totalNotes * 100) : 0;
+      const gcol = GRADE_COLOR[grade] || C.pink;
+      const gradeMsg = { SS: 'เพอร์เฟกต์ทุกโน้ต! สุดยอด! 🌟', S: 'ฟูลคอมโบ! เก่งมาก! 🎉', A: 'ยอดเยี่ยม! 💖', B: 'ดีมาก! 👍', C: 'พยายามอีกนิดนะ 💪', D: 'ฝึกต่อไปนะ 🎵' };
+      wrap.innerHTML = `
+        <div class="rt-grade-screen">
+          <div class="rt-grade-header">
+            <div class="rt-grade-title">${gradeMsg[grade] || 'จบเพลงแล้ว!'}</div>
+            <div class="rt-grade-song-name">${song.title}</div>
+          </div>
+          <div class="rt-grade-letter" style="color:${gcol};text-shadow:0 4px 20px ${gcol}66">${grade}</div>
+          <div class="rt-grade-score-val">${state.score.toLocaleString()}</div>
+          <div class="rt-grade-stats">
+            <div class="rt-stat perfect"><span>${state.perfects}</span>PERFECT</div>
+            <div class="rt-stat good"><span>${state.goods}</span>GOOD</div>
+            <div class="rt-stat miss"><span>${state.misses}</span>MISS</div>
+          </div>
+          <div class="rt-grade-info">
+            <span>แม่นยำ ${accuracy}%</span><span class="rt-grade-dot">·</span><span>คอมโบสูงสุด ${state.maxCombo}x</span>
+          </div>
+          <div class="rt-grade-btns">
+            <button class="gh-btn-again rt-grade-again">เล่นอีกครั้ง</button>
+            <button class="gh-btn-home rt-grade-home">กลับเมนูเกม</button>
+          </div>
+        </div>
+      `;
+      $('.rt-grade-again', wrap).addEventListener('click', () => playRhythm(host, song, onEnd));
+      $('.rt-grade-home', wrap).addEventListener('click', () => onEnd(null));
+    }
+
+    function finish() {
+      state.running = false;
+      showGrade();
+    }
+
+    $('.g-back', wrap).addEventListener('click', () => { state.running = false; cleanup(); onEnd(null); });
+
+    function startCountdown() {
+      overlay.style.display = 'none';
+      countdownEl.style.display = 'flex';
+      let count = 3;
+      countdownEl.textContent = count;
+      countdownEl.className = 'rt-countdown-overlay';
+      const tick = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdownEl.textContent = count;
+        } else if (count === 0) {
+          countdownEl.textContent = 'GO!';
+          countdownEl.classList.add('go');
+        } else {
+          clearInterval(tick);
+          countdownEl.style.display = 'none';
+          state.t0 = performance.now() / 1000;
+          state.running = true;
+          if (video) {
+            video.muted = false;
+            video.currentTime = 0;
+            video.play().catch(() => { video.muted = true; video.play().catch(() => {}); });
+          }
+          requestAnimationFrame(frame);
+        }
+      }, 1000);
+    }
+
+    startBtn.addEventListener('click', startCountdown);
 
     // render loop
     function frame() {
@@ -182,11 +284,15 @@
       ctx.strokeStyle = 'rgba(26,163,173,0.5)'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.moveTo(10, RT.HIT_Y); ctx.lineTo(RT.W - 10, RT.HIT_Y); ctx.stroke();
       // notes
+      const tolSec = RT.TOL / RT.PXPS;
       for (const n of notes) {
         if (n.hit) continue;
+        if (!n.miss && n.t < t - tolSec) {
+          n.miss = true; state.misses++; state.combo = 0;
+          const cb = $('#rtCombo', wrap); if (cb) cb.textContent = '';
+        }
         const y = RT.HIT_Y - (n.t - t) * RT.PXPS;
-        if (y < -30 || y > RT.H + 30) { if (n.t < t - 0.2 && !n.miss) { n.miss = true; } continue; }
-        if (n.t < t - RT.TOL / RT.PXPS && !n.miss) { n.miss = true; state.combo = 0; }
+        if (y < -30 || y > RT.H + 30) continue;
         const x = rtX(n.lane), r = 17;
         ctx.fillStyle = LANE_COLORS[n.lane];
         ctx.globalAlpha = n.miss ? 0.25 : 1;
@@ -203,12 +309,12 @@
         ctx.fillText(f.txt, f.x, f.y - 30 - (t - f.t) * 40);
         ctx.globalAlpha = 1;
       }
-      // end check
+      // end check — with video, wait for full song.dur; without, end after last note
       const lastT = notes.length ? notes[notes.length - 1].t : 0;
-      if (t > lastT + 1.5) { finish(); return; }
+      const endTime = (hasVideo ? Math.max(song.dur || 0, lastT) : lastT) + 1.5;
+      if (t > endTime) { finish(); return; }
       requestAnimationFrame(frame);
     }
-    requestAnimationFrame(frame);
   }
 
   /* ════════════ PHOTO CATCH ════════════ */
