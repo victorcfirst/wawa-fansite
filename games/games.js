@@ -71,9 +71,9 @@
   /* ════════════ SONG LIST (Rhythm Tap) ════════════
      🎬 ใส่คลิปแฟนแคม: เปลี่ยน src เป็นพาธไฟล์วิดีโอ เช่น "games/fancam/saikyou.mp4"
         แล้วตั้ง USE_VIDEO = true ด้านล่าง — เกมจะ sync กับวิดีโออัตโนมัติ */
-  const USE_VIDEO = false;
+  const USE_VIDEO = true;
   const SONGS = [
-    { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: '' },
+    { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: 'games/fancam/saikyou.mp4' },
     { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 85.0, color: C.gold, src: '' }
   ];
   const BEATMAPS = window.WAWA_BEATMAPS || { saikyou: [], pumpkin: [] };
@@ -486,19 +486,56 @@
       root.appendChild(c);
     }
 
-    function renderLeaderboard() {
-      // อัปเดต leaderboard ในหน้า (ใช้ element ที่มีอยู่)
+    const MEDALS = ['🥇', '🥈', '🥉', '4', '5', '6', '7', '8', '9', '10'];
+    const LB_TABS = [
+      { key: 'total', label: '🏆 รวมทุกเกม' },
+      { key: 'Rhythm Tap', label: '🎵 Rhythm Tap' },
+      { key: 'Photo Catch', label: '🧺 Photo Catch' },
+    ];
+    let lbActiveTab = 'total';
+
+    function renderLbRows(tab) {
       const lb = document.getElementById('leaderboard');
       if (!lb) return;
-      const totals = totalsFromBoard(BOARD).slice(0, 10);
-      if (!totals.length) {
-        lb.innerHTML = '<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — มาเป็นคนแรกกันเลย!</div></div>';
-        return;
+      let rows = [];
+      if (tab === 'total') {
+        rows = totalsFromBoard(BOARD).slice(0, 10).map((x, i) =>
+          `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.total.toLocaleString()}</div></div>`
+        );
+      } else {
+        rows = BOARD.filter(e => e.game === tab)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 10)
+          .map((x, i) =>
+            `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.score.toLocaleString()}</div></div>`
+          );
       }
-      lb.innerHTML = totals.map((x, i) => {
-        const medal = ['🥇', '🥈', '🥉', '4', '5', '6', '7', '8', '9', '10'][i];
-        return `<div class="lb-row"><div class="lb-rank">${medal}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.total.toLocaleString()}</div></div>`;
-      }).join('');
+      let content = lb.querySelector('.lb-content');
+      if (!content) { content = el('div', 'lb-content'); lb.appendChild(content); }
+      content.innerHTML = rows.length
+        ? rows.join('')
+        : '<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — มาเป็นคนแรกกันเลย!</div></div>';
+    }
+
+    function renderLeaderboard() {
+      const lb = document.getElementById('leaderboard');
+      if (!lb) return;
+      if (!lb.querySelector('.lb-tabs')) {
+        const tabBar = el('div', 'lb-tabs');
+        LB_TABS.forEach(t => {
+          const btn = el('button', 'lb-tab' + (t.key === lbActiveTab ? ' active' : ''), t.label);
+          btn.dataset.tab = t.key;
+          btn.addEventListener('click', () => {
+            lbActiveTab = t.key;
+            lb.querySelectorAll('.lb-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t.key));
+            renderLbRows(t.key);
+          });
+          tabBar.appendChild(btn);
+        });
+        lb.innerHTML = '';
+        lb.appendChild(tabBar);
+      }
+      renderLbRows(lbActiveTab);
     }
 
     renderHome();
