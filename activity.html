@@ -184,6 +184,11 @@ nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-con
 .rt-combo{height:20px;font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:var(--gold);letter-spacing:1px}
 #rtCanvas,#pcCanvas{border-radius:16px;background:linear-gradient(160deg,#fff7fb,#f0f8fc);
   border:2px solid var(--pink-pale);max-width:100%;touch-action:none}
+/* video background layer for rhythm tap */
+.rt-playfield{position:relative;width:320px;max-width:100%;border-radius:16px;overflow:hidden}
+.rt-playfield video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:16px;background:#000}
+.rt-playfield #rtCanvas{position:relative;display:block;width:100%;border:2px solid var(--pink-pale)}
+#rtCanvas.rt-canvas-overlay{background:rgba(255,255,255,0.18)}
 .rt-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:320px}
 .rt-key{height:48px;border:none;border-radius:14px;background:var(--kc);color:#fff;font-family:'Baloo 2',cursive;
   font-weight:700;font-size:18px;cursor:pointer;opacity:.85;transition:transform .08s,opacity .08s;box-shadow:0 4px 10px rgba(0,0,0,.1)}
