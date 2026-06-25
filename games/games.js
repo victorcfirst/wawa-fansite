@@ -72,14 +72,16 @@
      🎬 ใส่คลิปแฟนแคม: เปลี่ยน src เป็นพาธไฟล์วิดีโอ เช่น "games/fancam/saikyou.mp4"
         แล้วตั้ง USE_VIDEO = true ด้านล่าง — เกมจะ sync กับวิดีโออัตโนมัติ */
   const USE_VIDEO = true;
+  /* noteOffset (วินาที): บวก = เลื่อนโน้ตช้าลง (ตีทีหลัง), ลบ = เลื่อนเร็วขึ้น (ตีก่อน)
+     ปรับตามความรู้สึกขณะเล่นจริง — ค่า 0 = ใช้เวลาตรงตาม librosa beat detection */
   const SONGS = [
-    { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: 'games/fancam/saikyou.mp4' },
-    { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 85.0, color: C.gold, src: '' }
+    { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: 'games/fancam/saikyou.mp4', noteOffset: 0 },
+    { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 69.4, color: C.gold, src: 'games/fancam/Pumpkin.mp4', noteOffset: 0 }
   ];
   const BEATMAPS = window.WAWA_BEATMAPS || { saikyou: [], pumpkin: [] };
 
   /* ════════════ RHYTHM TAP ════════════ */
-  const RT = { W: 320, H: 480, LANES: 4, HIT_Y: 410, TOL: 52, PXPS: 260, KEYS: ['A', 'S', 'D', 'F'] };
+  const RT = { W: 320, H: 480, LANES: 4, HIT_Y: 410, TOL: 55, PXPS: 220, KEYS: ['A', 'S', 'D', 'F'] };
   const rtX = (i) => { const m = 20, s = (RT.W - m * 2) / RT.LANES; return m + s * i + s / 2; };
 
   const GRADE_COLOR = { SS: '#e8c060', S: '#d4930a', A: '#1aa3ad', B: '#8ec9f0', C: '#b89cf0', D: '#f57aa8' };
@@ -96,7 +98,8 @@
   }
 
   function playRhythm(host, song, onEnd) {
-    const notes = (BEATMAPS[song.id] || []).map(n => ({ ...n, hit: false, miss: false }));
+    const off = song.noteOffset || 0;
+    const notes = (BEATMAPS[song.id] || []).map(n => ({ ...n, t: n.t + off, hit: false, miss: false }));
     const totalNotes = notes.length;
     const state = { score: 0, combo: 0, maxCombo: 0, fb: [], perfects: 0, goods: 0, misses: 0, t0: 0, running: false };
 
@@ -151,6 +154,8 @@
         statusEl.textContent = 'วิดีโอโหลดไม่ได้ — เล่นแบบไม่มีวิดีโอ';
         startBtn.disabled = false;
       }, { once: true });
+      // เมื่อวิดีโอจบ → จบเกมทันที (ไม่ต้องรอ timer)
+      video.addEventListener('ended', () => { if (state.running) finish(); }, { once: true });
     }
 
     const now = () => (hasVideo && video && video.readyState > 0) ? video.currentTime : (performance.now() / 1000 - state.t0);
@@ -274,15 +279,28 @@
       if (!state.running) return;
       const t = now();
       ctx.clearRect(0, 0, RT.W, RT.H);
-      // lanes
+      const m = 20, s = (RT.W - m * 2) / RT.LANES;
+      // lane separators
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= RT.LANES; i++) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.13)';
+        ctx.beginPath(); ctx.moveTo(m + s * i, 0); ctx.lineTo(m + s * i, RT.H); ctx.stroke();
+      }
+      // hit zone glow gradient
+      const zg = ctx.createLinearGradient(0, RT.HIT_Y - 50, 0, RT.HIT_Y + 26);
+      zg.addColorStop(0, 'rgba(26,163,173,0)'); zg.addColorStop(1, 'rgba(26,163,173,0.22)');
+      ctx.fillStyle = zg; ctx.fillRect(0, RT.HIT_Y - 50, RT.W, 76);
+      // target circles (hit zone markers)
       for (let i = 0; i < RT.LANES; i++) {
-        ctx.fillStyle = 'rgba(245,122,168,0.05)';
-        const m = 20, s = (RT.W - m * 2) / RT.LANES;
-        ctx.fillRect(m + s * i + 3, 0, s - 6, RT.H);
+        ctx.strokeStyle = LANE_COLORS[i]; ctx.lineWidth = 3; ctx.globalAlpha = 0.45;
+        ctx.beginPath(); ctx.arc(rtX(i), RT.HIT_Y, 19, 0, 7); ctx.stroke();
+        ctx.globalAlpha = 1;
       }
       // hit line
-      ctx.strokeStyle = 'rgba(26,163,173,0.5)'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(10, RT.HIT_Y); ctx.lineTo(RT.W - 10, RT.HIT_Y); ctx.stroke();
+      ctx.shadowColor = 'rgba(255,255,255,0.8)'; ctx.shadowBlur = 8;
+      ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(m, RT.HIT_Y); ctx.lineTo(RT.W - m, RT.HIT_Y); ctx.stroke();
+      ctx.shadowBlur = 0;
       // notes
       const tolSec = RT.TOL / RT.PXPS;
       for (const n of notes) {
@@ -293,21 +311,29 @@
         }
         const y = RT.HIT_Y - (n.t - t) * RT.PXPS;
         if (y < -30 || y > RT.H + 30) continue;
-        const x = rtX(n.lane), r = 17;
+        const x = rtX(n.lane), r = 18;
+        ctx.globalAlpha = n.miss ? 0.2 : 1;
+        if (!n.miss) { ctx.shadowColor = LANE_COLORS[n.lane]; ctx.shadowBlur = 14; }
         ctx.fillStyle = LANE_COLORS[n.lane];
-        ctx.globalAlpha = n.miss ? 0.25 : 1;
         ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(255,255,255,0.88)'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.stroke();
+        if (!n.miss) {
+          ctx.fillStyle = 'rgba(255,255,255,0.55)';
+          ctx.beginPath(); ctx.arc(x - 5, y - 5, 5, 0, 7); ctx.fill();
+        }
         ctx.globalAlpha = 1;
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.beginPath(); ctx.arc(x - 5, y - 5, 4, 0, 7); ctx.fill();
       }
       // feedback text
       state.fb = state.fb.filter(f => t - f.t < 0.6);
       for (const f of state.fb) {
-        ctx.fillStyle = f.col; ctx.globalAlpha = Math.max(0, 1 - (t - f.t) / 0.6);
-        ctx.font = 'bold 15px Fredoka, sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(f.txt, f.x, f.y - 30 - (t - f.t) * 40);
-        ctx.globalAlpha = 1;
+        const age = t - f.t;
+        ctx.shadowColor = f.col; ctx.shadowBlur = 10;
+        ctx.fillStyle = f.col; ctx.globalAlpha = Math.max(0, 1 - age / 0.6);
+        ctx.font = 'bold 16px Fredoka, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(f.txt, f.x, f.y - 30 - age * 44);
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
       }
       // end check — with video, wait for full song.dur; without, end after last note
       const lastT = notes.length ? notes[notes.length - 1].t : 0;
@@ -320,7 +346,14 @@
   /* ════════════ PHOTO CATCH ════════════ */
   function playPhotoCatch(host, onEnd) {
     const W = 320, H = 460;
-    const state = { score: 0, lives: 3, items: [], basket: W / 2, running: true, t0: performance.now(), spawn: 0, speed: 1 };
+    const state = {
+      score: 0, lives: 3, items: [], basket: W / 2,
+      running: true, t0: performance.now(), spawn: 0, speed: 1, fb: []
+    };
+
+    // โหลดรูป photocard ล่วงหน้า (ต้องอัพโหลด images/pc-normal.jpg และ images/pc-special.jpg)
+    const imgNormal = new Image(); imgNormal.src = 'images/pc-normal.jpg';
+    const imgSpecial = new Image(); imgSpecial.src = 'images/pc-special.jpg';
 
     host.innerHTML = '';
     const wrap = el('div', 'pc-wrap');
@@ -331,7 +364,7 @@
         <div class="pc-stat">❤️<span id="pcLives">3</span> · <span id="pcScore">0</span></div>
       </div>
       <canvas id="pcCanvas" width="${W}" height="${H}"></canvas>
-      <div class="rt-hint">เลื่อนตะกร้าซ้าย-ขวา รับการ์ดวาว่า 💖 เลี่ยงระเบิด 💣</div>
+      <div class="rt-hint">เลื่อนตะกร้าซ้าย-ขวา รับการ์ดวาว่า 💖 เลี่ยงระเบิด • การ์ด ★SP★ = +50!</div>
     `;
     host.appendChild(wrap);
     const cvs = $('#pcCanvas', wrap), ctx = cvs.getContext('2d');
@@ -342,45 +375,129 @@
     }
     cvs.addEventListener('touchmove', e => { e.preventDefault(); moveTo(e.touches[0].clientX); }, { passive: false });
     cvs.addEventListener('mousemove', e => moveTo(e.clientX));
-
     $('.g-back', wrap).addEventListener('click', () => { state.running = false; onEnd(null); });
 
     function finish() { state.running = false; onEnd({ game: 'Photo Catch', score: state.score }); }
 
+    function drawBomb(x, y) {
+      // ลำตัวระเบิด
+      const g = ctx.createRadialGradient(x - 4, y - 4, 2, x, y, 14);
+      g.addColorStop(0, '#505050'); g.addColorStop(1, '#111');
+      ctx.fillStyle = g;
+      ctx.shadowColor = '#ff3355'; ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+      // แสงสะท้อน
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.beginPath(); ctx.ellipse(x - 5, y - 5, 4, 2.5, -0.5, 0, Math.PI * 2); ctx.fill();
+      // ชนวน
+      ctx.strokeStyle = '#c87020'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x + 9, y - 12);
+      ctx.bezierCurveTo(x + 17, y - 20, x + 7, y - 26, x + 13, y - 32);
+      ctx.stroke(); ctx.lineCap = 'butt';
+      // ประกายไฟ
+      ctx.fillStyle = '#ffee22'; ctx.shadowColor = '#ff9900'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(x + 13, y - 32, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+      // ข้อความ "บด"
+      ctx.font = 'bold 10px Mitr, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.85)'; ctx.strokeText('บด', x, y + 1);
+      ctx.fillStyle = '#ff4466'; ctx.fillText('บด', x, y + 1);
+      ctx.textBaseline = 'alphabetic';
+    }
+
+    function drawCard(x, y, special) {
+      const w = 26, h = 36, rx = 4;
+      ctx.save();
+      roundRect(ctx, x - w / 2, y - h / 2, w, h, rx); ctx.clip();
+      const img = special ? imgSpecial : imgNormal;
+      if (img.complete && img.naturalWidth > 0) {
+        ctx.drawImage(img, x - w / 2, y - h / 2, w, h);
+      } else {
+        // fallback gradient ถ้ายังโหลดรูปไม่เสร็จ
+        const grd = ctx.createLinearGradient(x - w / 2, y - h / 2, x + w / 2, y + h / 2);
+        if (special) { grd.addColorStop(0, '#ffa8b8'); grd.addColorStop(1, '#c03060'); }
+        else { grd.addColorStop(0, '#b8d8f8'); grd.addColorStop(1, '#5090d0'); }
+        ctx.fillStyle = grd; ctx.fillRect(x - w / 2, y - h / 2, w, h);
+        ctx.fillStyle = '#fff'; ctx.font = '14px serif'; ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle'; ctx.fillText(special ? '⭐' : '💖', x, y);
+        ctx.textBaseline = 'alphabetic';
+      }
+      ctx.restore();
+      // ขอบการ์ด
+      ctx.shadowColor = special ? '#e8c060' : '#a8d0f0'; ctx.shadowBlur = special ? 10 : 4;
+      ctx.strokeStyle = special ? '#e8c060' : '#a8d8f8'; ctx.lineWidth = special ? 2.5 : 2;
+      roundRect(ctx, x - w / 2, y - h / 2, w, h, rx); ctx.stroke();
+      ctx.shadowBlur = 0;
+      // ป้าย SP
+      if (special) {
+        ctx.fillStyle = '#e8c060'; ctx.font = 'bold 6px Fredoka, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.fillText('★SP★', x, y + h / 2 - 1);
+        ctx.textBaseline = 'alphabetic';
+      }
+    }
+
     function frame() {
       if (!state.running) return;
-      const dt = 16;
-      state.spawn -= dt;
+      const now = performance.now() / 1000;
+      state.spawn -= 16;
       const elapsed = (performance.now() - state.t0) / 1000;
       state.speed = 1 + elapsed / 30;
+
       if (state.spawn <= 0) {
         state.spawn = 720 / state.speed;
-        const bomb = Math.random() < 0.22;
-        state.items.push({ x: 28 + Math.random() * (W - 56), y: -20, bomb, vy: (1.6 + Math.random() * 1.2) * state.speed });
+        const roll = Math.random();
+        const bomb = roll < 0.22;
+        // ~10% ของ spawn ที่ไม่ใช่ระเบิด = การ์ด Special
+        const special = !bomb && Math.random() < 0.10;
+        state.items.push({
+          x: 28 + Math.random() * (W - 56), y: -28, bomb, special,
+          vy: (1.6 + Math.random() * 1.2) * state.speed * (special ? 1.4 : 1.0)
+        });
       }
+
       ctx.clearRect(0, 0, W, H);
-      // items
+
       for (const it of state.items) {
         it.y += it.vy;
-        if (it.bomb) {
-          ctx.font = '26px serif'; ctx.textAlign = 'center'; ctx.fillText('💣', it.x, it.y);
-        } else {
-          ctx.fillStyle = C.pink; ctx.strokeStyle = C.white; ctx.lineWidth = 2;
-          roundRect(ctx, it.x - 13, it.y - 16, 26, 32, 5); ctx.fill(); ctx.stroke();
-          ctx.fillStyle = C.white; ctx.font = '14px serif'; ctx.textAlign = 'center'; ctx.fillText('💖', it.x, it.y + 3);
-        }
-        // catch check
+        if (it.bomb) drawBomb(it.x, it.y);
+        else drawCard(it.x, it.y, it.special);
+
+        // ตรวจรับ
         if (it.y > H - 56 && it.y < H - 20 && Math.abs(it.x - state.basket) < 40) {
-          if (it.bomb) { state.lives--; $('#pcLives', wrap).textContent = state.lives; }
-          else { state.score += 10; $('#pcScore', wrap).textContent = state.score; }
+          if (it.bomb) {
+            state.lives--; $('#pcLives', wrap).textContent = state.lives;
+            state.fb.push({ x: it.x, y: it.y, txt: '💥', col: '#ff4466', t: now });
+          } else if (it.special) {
+            state.score += 50; $('#pcScore', wrap).textContent = state.score;
+            state.fb.push({ x: it.x, y: it.y, txt: 'SPECIAL! +50', col: C.gold, t: now });
+          } else {
+            state.score += 10; $('#pcScore', wrap).textContent = state.score;
+            state.fb.push({ x: it.x, y: it.y, txt: '+10', col: C.teal, t: now });
+          }
           it.y = H + 100;
         }
       }
       state.items = state.items.filter(it => it.y < H + 40);
-      // basket
+
+      // ข้อความ feedback ลอยขึ้น
+      state.fb = state.fb.filter(f => now - f.t < 0.7);
+      for (const f of state.fb) {
+        const age = now - f.t;
+        ctx.shadowColor = f.col; ctx.shadowBlur = 8;
+        ctx.fillStyle = f.col; ctx.globalAlpha = Math.max(0, 1 - age / 0.7);
+        ctx.font = 'bold 13px Fredoka, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(f.txt, f.x, f.y - age * 40);
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      }
+
+      // ตะกร้า
       ctx.fillStyle = C.teal; ctx.strokeStyle = C.white; ctx.lineWidth = 3;
       roundRect(ctx, state.basket - 30, H - 42, 60, 30, 10); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = C.white; ctx.font = '16px serif'; ctx.textAlign = 'center'; ctx.fillText('🧺', state.basket, H - 20);
+      ctx.fillStyle = C.white; ctx.font = '16px serif'; ctx.textAlign = 'center';
+      ctx.fillText('🧺', state.basket, H - 20);
 
       if (state.lives <= 0) { finish(); return; }
       requestAnimationFrame(frame);
