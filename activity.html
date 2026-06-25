@@ -140,6 +140,13 @@ nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-con
 .lb-name{flex:1;font-size:13.5px;font-weight:400;color:var(--ink)}
 .lb-score{font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:var(--teal);flex-shrink:0}
 .lb-note{font-family:'Fredoka',sans-serif;font-size:10.5px;font-weight:400;color:var(--ink3);text-align:center;margin-top:6px}
+.lb-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.lb-tab{font-family:'Fredoka',sans-serif;font-size:12px;font-weight:500;padding:6px 14px;
+  border-radius:20px;border:2px solid rgba(232,192,96,.25);background:rgba(255,255,255,.7);
+  color:var(--ink2);cursor:pointer;transition:.2s}
+.lb-tab:hover{background:var(--gold-pale);border-color:var(--gold)}
+.lb-tab.active{background:var(--gold);border-color:var(--gold-deep);color:#fff;font-weight:600}
+.lb-content{}
 
 /* ════════ REWARDS ════════ */
 .reward-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
