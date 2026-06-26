@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════════════
    WAWA GAME HUB — vanilla JS (แปลงจาก React)
    ธีมพาสเทลบ้านชิวาว่าแลนด์ · Rhythm Tap + Photo Catch
-   Leaderboard: localStorage (เฟส 1) — เตรียมต่อ Supabase ได้ (เฟส 2)
+   Leaderboard: Supabase (เฟส 2) · fallback localStorage
    ══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -14,22 +14,39 @@
   };
   const LANE_COLORS = [C.pink, C.lilac, C.gold, C.teal];
 
-  /* ════════════ LEADERBOARD STORAGE ════════════
-     เฟส 1: localStorage (เก็บในเครื่องผู้เล่น)
-     เฟส 2: เปลี่ยน loadBoard/saveBest ให้ดึง/เขียน Supabase
-     โครงสร้าง entry: { name, game, score, date }
-     ════════════════════════════════════════════ */
+  /* ════════════ LEADERBOARD — Supabase ════════════
+     entry: { name, game, score, date }
+     fallback: localStorage (ถ้า network ล้มเหลว)
+     ================================================ */
+  const SB_URL = 'https://hvxtghogabswrrficaxa.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2eHRnaG9nYWJzd3JyZmljYXhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NTc5NTEsImV4cCI6MjA5ODAzMzk1MX0.J6UFi4qlzOiHck5XCt1cZqIgJCLd7YCxgGH5etC2aEg';
   const BOARD_KEY = 'wawa_leaderboard_v2';
 
-  function loadBoard() {
-    try { return JSON.parse(localStorage.getItem(BOARD_KEY)) || []; }
-    catch { return []; }
+  async function sbFetch(path, opts = {}) {
+    const r = await fetch(SB_URL + '/rest/v1/' + path, {
+      ...opts,
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+        ...(opts.headers || {})
+      }
+    });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json().catch(() => null);
   }
-  function saveBoard(b) {
-    try { localStorage.setItem(BOARD_KEY, JSON.stringify(b)); }
-    catch (e) { console.error('storage error', e); }
+
+  // คะแนนรวม = ผลรวมคะแนนสูงสุดจากทุกเกมของคนนั้น
+  function totalsFromBoard(board) {
+    const m = {};
+    board.forEach(e => {
+      if (!m[e.name]) m[e.name] = { name: e.name, total: 0 };
+      m[e.name].total += e.score;
+    });
+    return Object.values(m).sort((a, b) => b.total - a.total);
   }
-  // เก็บเฉพาะคะแนนสูงสุดของแต่ละคนในแต่ละเกม
+
+  // เก็บเฉพาะคะแนนสูงสุดต่อคนต่อเกม (ใช้ใน fallback localStorage)
   function upsertBest(board, entry) {
     const next = board.map(e => ({ ...e }));
     const i = next.findIndex(e => e.name === entry.name && e.game === entry.game);
@@ -38,25 +55,32 @@
     else if (entry.score > next[i].score) { next[i] = entry; isNewBest = true; }
     return { board: next, isNewBest };
   }
-  // คะแนนรวม = ผลรวมคะแนนสูงสุดจากทุกเกมของคนนั้น
-  function totalsFromBoard(board) {
-    const m = {};
-    board.forEach(e => {
-      if (!m[e.name]) m[e.name] = { name: e.name, total: 0, games: {} };
-      m[e.name].total += e.score;
-      m[e.name].games[e.game] = e.score;
-    });
-    return Object.values(m).sort((a, b) => b.total - a.total);
-  }
 
-  let BOARD = loadBoard();
   let NICK = '';
 
-  function recordScore(game, score) {
-    const entry = { name: NICK || 'Guest', game, score, date: new Date().toLocaleDateString('th-TH') };
-    const { board, isNewBest } = upsertBest(BOARD, entry);
-    BOARD = board; saveBoard(BOARD);
-    return isNewBest;
+  async function recordScore(game, score) {
+    const name = NICK || 'Guest';
+    const date = new Date().toLocaleDateString('th-TH');
+    try {
+      const existing = await sbFetch(
+        `leaderboard?name=eq.${encodeURIComponent(name)}&game=eq.${encodeURIComponent(game)}&select=score`
+      );
+      if (score <= (existing?.[0]?.score ?? -1)) return false;
+      await sbFetch('leaderboard', {
+        method: 'POST',
+        headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify({ name, game, score, date, updated_at: new Date().toISOString() })
+      });
+      return true;
+    } catch (e) {
+      console.error('recordScore error', e);
+      try {
+        const board = JSON.parse(localStorage.getItem(BOARD_KEY)) || [];
+        const { board: next, isNewBest } = upsertBest(board, { name, game, score, date });
+        localStorage.setItem(BOARD_KEY, JSON.stringify(next));
+        return isNewBest;
+      } catch { return false; }
+    }
   }
 
   /* ════════════ DOM HELPERS ════════════ */
@@ -206,7 +230,7 @@
 
     function showGrade() {
       cleanup();
-      recordScore('Rhythm Tap', state.score);
+      recordScore('Rhythm Tap', state.score); // async fire-and-forget
       const grade = getGrade(state.perfects, state.goods, state.misses, totalNotes);
       const accuracy = totalNotes > 0 ? Math.round((state.perfects + state.goods * 0.6) / totalNotes * 100) : 0;
       const gcol = GRADE_COLOR[grade] || C.pink;
@@ -574,15 +598,22 @@
     function renderHome() {
       root.innerHTML = '';
       const c = el('div', 'gh');
+
       // nickname
       const nameRow = el('div', 'gh-name');
       nameRow.innerHTML = `
         <label>ชื่อเล่นของคุณ</label>
-        <input id="ghNick" type="text" maxlength="14" placeholder="ใส่ชื่อเล่นก่อนเล่น" value="${NICK}">
+        <div class="gh-nick-row">
+          <input id="ghNick" type="text" maxlength="14" placeholder="ใส่ชื่อเล่นก่อนเล่น" value="${NICK}">
+          <button id="ghNickBtn" class="gh-nick-btn">${NICK ? 'เปลี่ยนชื่อ' : 'ยืนยัน ›'}</button>
+        </div>
+        ${NICK ? `<div class="gh-nick-hello">สวัสดี, <strong>${NICK}</strong>! 🐶</div>` : ''}
       `;
       c.appendChild(nameRow);
-      // game grid
+
+      // game grid — hidden until nick is confirmed
       const grid = el('div', 'gh-grid');
+      if (!NICK) grid.classList.add('gh-grid-locked');
       GAMES.forEach(g => {
         const card = el('button', 'gh-card' + (g.on ? '' : ' off'));
         card.style.setProperty('--gc', g.col);
@@ -591,14 +622,28 @@
           <div class="gh-info"><div class="gh-t">${g.title}</div><div class="gh-d">${g.desc}</div></div>
           ${g.on ? '<div class="gh-go">เล่น ›</div>' : '<div class="gh-soon">เร็วๆ นี้</div>'}
         `;
-        if (g.on) card.addEventListener('click', () => {
-          NICK = ($('#ghNick', root).value || '').trim();
-          startGame(g.id);
-        });
+        if (g.on) card.addEventListener('click', () => { startGame(g.id); });
         grid.appendChild(card);
       });
       c.appendChild(grid);
       root.appendChild(c);
+
+      // confirm / change button
+      $('#ghNickBtn', c).addEventListener('click', () => {
+        const val = ($('#ghNick', c).value || '').trim();
+        if (!val) {
+          const inp = $('#ghNick', c);
+          inp.focus(); inp.style.borderColor = 'var(--pink-deep)';
+          return;
+        }
+        NICK = val;
+        renderHome();
+      });
+      // allow Enter key in input
+      $('#ghNick', c).addEventListener('keydown', e => {
+        if (e.key === 'Enter') $('#ghNickBtn', c).click();
+      });
+
       renderLeaderboard();
     }
 
@@ -606,9 +651,9 @@
       root.innerHTML = '';
       const stage = el('div', 'gh-stage');
       root.appendChild(stage);
-      const onEnd = (result) => {
+      const onEnd = async (result) => {
         if (result) {
-          const isNew = recordScore(result.game, result.score);
+          const isNew = await recordScore(result.game, result.score);
           showResult(result, isNew);
         } else renderHome();
       };
@@ -657,27 +702,34 @@
     ];
     let lbActiveTab = 'total';
 
-    function renderLbRows(tab) {
+    async function renderLbRows(tab) {
       const lb = document.getElementById('leaderboard');
       if (!lb) return;
-      let rows = [];
-      if (tab === 'total') {
-        rows = totalsFromBoard(BOARD).slice(0, 10).map((x, i) =>
-          `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.total.toLocaleString()}</div></div>`
-        );
-      } else {
-        rows = BOARD.filter(e => e.game === tab)
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 10)
-          .map((x, i) =>
-            `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.score.toLocaleString()}</div></div>`
-          );
-      }
       let content = lb.querySelector('.lb-content');
       if (!content) { content = el('div', 'lb-content'); lb.appendChild(content); }
-      content.innerHTML = rows.length
-        ? rows.join('')
-        : '<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — มาเป็นคนแรกกันเลย!</div></div>';
+      content.innerHTML = '<div class="lb-loading">⏳ กำลังโหลด...</div>';
+      try {
+        let rows = [];
+        if (tab === 'total') {
+          const data = await sbFetch('leaderboard?select=name,score,game&order=score.desc');
+          rows = totalsFromBoard(data || []).slice(0, 10).map((x, i) =>
+            `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.total.toLocaleString()}</div></div>`
+          );
+        } else {
+          const data = await sbFetch(
+            `leaderboard?game=eq.${encodeURIComponent(tab)}&select=name,score&order=score.desc&limit=10`
+          );
+          rows = (data || []).map((x, i) =>
+            `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.score.toLocaleString()}</div></div>`
+          );
+        }
+        content.innerHTML = rows.length
+          ? rows.join('')
+          : '<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — มาเป็นคนแรกกันเลย!</div></div>';
+      } catch (e) {
+        console.error('leaderboard fetch error', e);
+        content.innerHTML = '<div class="lb-empty"><div class="tx">⚠️ โหลดไม่สำเร็จ — ลองรีเฟรชหน้า</div></div>';
+      }
     }
 
     function renderLeaderboard() {
