@@ -574,15 +574,22 @@
     function renderHome() {
       root.innerHTML = '';
       const c = el('div', 'gh');
+
       // nickname
       const nameRow = el('div', 'gh-name');
       nameRow.innerHTML = `
         <label>ชื่อเล่นของคุณ</label>
-        <input id="ghNick" type="text" maxlength="14" placeholder="ใส่ชื่อเล่นก่อนเล่น" value="${NICK}">
+        <div class="gh-nick-row">
+          <input id="ghNick" type="text" maxlength="14" placeholder="ใส่ชื่อเล่นก่อนเล่น" value="${NICK}">
+          <button id="ghNickBtn" class="gh-nick-btn">${NICK ? 'เปลี่ยนชื่อ' : 'ยืนยัน ›'}</button>
+        </div>
+        ${NICK ? `<div class="gh-nick-hello">สวัสดี, <strong>${NICK}</strong>! 🐶</div>` : ''}
       `;
       c.appendChild(nameRow);
-      // game grid
+
+      // game grid — hidden until nick is confirmed
       const grid = el('div', 'gh-grid');
+      if (!NICK) grid.classList.add('gh-grid-locked');
       GAMES.forEach(g => {
         const card = el('button', 'gh-card' + (g.on ? '' : ' off'));
         card.style.setProperty('--gc', g.col);
@@ -591,14 +598,28 @@
           <div class="gh-info"><div class="gh-t">${g.title}</div><div class="gh-d">${g.desc}</div></div>
           ${g.on ? '<div class="gh-go">เล่น ›</div>' : '<div class="gh-soon">เร็วๆ นี้</div>'}
         `;
-        if (g.on) card.addEventListener('click', () => {
-          NICK = ($('#ghNick', root).value || '').trim();
-          startGame(g.id);
-        });
+        if (g.on) card.addEventListener('click', () => { startGame(g.id); });
         grid.appendChild(card);
       });
       c.appendChild(grid);
       root.appendChild(c);
+
+      // confirm / change button
+      $('#ghNickBtn', c).addEventListener('click', () => {
+        const val = ($('#ghNick', c).value || '').trim();
+        if (!val) {
+          const inp = $('#ghNick', c);
+          inp.focus(); inp.style.borderColor = 'var(--pink-deep)';
+          return;
+        }
+        NICK = val;
+        renderHome();
+      });
+      // allow Enter key in input
+      $('#ghNick', c).addEventListener('keydown', e => {
+        if (e.key === 'Enter') $('#ghNickBtn', c).click();
+      });
+
       renderLeaderboard();
     }
 

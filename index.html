@@ -74,9 +74,10 @@ nav{
 .nav-links .nav-token-full{display:inline-block;background:linear-gradient(120deg,#e8c060,#c89020);color:#fff;font-weight:600}
 /* primary cluster (token + hamburger) — hidden on desktop */
 .nav-primary{display:none;align-items:center;gap:8px}
-.nav-token{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;text-decoration:none;
-  padding:8px 16px;border-radius:30px;background:linear-gradient(120deg,#e8c060,#c89020);
-  color:#fff;box-shadow:0 4px 12px rgba(200,152,10,.3)}
+.nav-token{display:flex;align-items:center;justify-content:center;width:40px;height:40px;
+  text-decoration:none;border-radius:50%;background:linear-gradient(135deg,#7b2fff,#5000d6);
+  box-shadow:0 4px 12px rgba(80,0,214,.35)}
+.nav-token img{width:26px;height:26px;object-fit:contain}
 .nav-act{display:flex;align-items:center;justify-content:center;width:40px;height:40px;
   border-radius:30px;text-decoration:none;font-size:18px;flex-shrink:0;
   background:linear-gradient(120deg,#f57aa8,#e85a92);box-shadow:0 4px 12px rgba(232,90,146,.3)}
@@ -224,6 +225,8 @@ nav{
 .tl.p2::before{box-shadow:0 0 0 2px var(--sky);background:var(--sky)}
 .tl.p3::before{box-shadow:0 0 0 2px var(--pink);background:var(--pink)}
 .tl.p4::before{box-shadow:0 0 0 2px var(--lilac);background:var(--lilac)}
+.tl.p5::before{box-shadow:0 0 0 2px var(--pink-deep);background:var(--pink-deep)}
+.tl.p6::before{box-shadow:0 0 0 2px #c89020;background:#c89020}
 .tl-card{padding:14px 18px}
 .tl-year{font-family:'Baloo 2',cursive;font-weight:700;font-size:13px;color:var(--teal-deep);display:inline-block;margin-bottom:3px}
 .tl-t{font-size:14px;font-weight:400;color:var(--ink)}
@@ -382,7 +385,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   </a>
   <!-- เมนูหลัก (โชว์เด่นเสมอ) -->
   <div class="nav-primary">
-    <a href="token.html" class="nav-token">🪙 Token</a>
+    <a href="token.html" class="nav-token" aria-label="Token สะสม"><img src="images/BNKtoken-logo-transparent.png" alt="BNK Token"></a>
     <a href="activity.html" class="nav-act" aria-label="กิจกรรม">🎮</a>
     <button class="nav-toggle" id="navToggle" aria-label="เมนู">
       <span></span><span></span><span></span>
