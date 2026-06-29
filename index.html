@@ -329,17 +329,19 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}
 .reveal.in{opacity:1;transform:none}
 
-@media(max-width:600px){
-  nav{padding:10px 16px;flex-wrap:wrap}
-  /* แสดงปุ่ม Token + สามขีด */
-  .nav-primary{display:flex}
+@media(max-width:768px){
+  nav{padding:10px 16px;flex-wrap:nowrap}
+  .brand{flex:1;min-width:0;overflow:hidden}
+  .brand-name{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .brand-sub{display:none}
+  /* แสดงปุ่ม Token + Activity + สามขีด */
+  .nav-primary{display:flex;flex-shrink:0}
   /* เมนูเต็มยุบลงเป็น dropdown */
   .nav-links{display:none;flex-direction:column;width:100%;gap:4px;margin-top:10px;
     padding-top:10px;border-top:1.5px solid var(--pink-pale)}
   .nav-links.open{display:flex}
   .nav-links a{font-size:14px;padding:10px 14px;border-radius:14px}
   .nav-links .nav-token-full{display:block;background:linear-gradient(120deg,#e8c060,#c89020);color:#fff;font-weight:600}
-  .brand-sub{font-size:8.5px}
   .countdown-wrap,.links-grid{grid-template-columns:1fr}
   .why-grid{grid-template-columns:repeat(3,1fr);gap:7px}
   .why{padding:14px 7px}
