@@ -56,7 +56,16 @@
     return { board: next, isNewBest };
   }
 
-  let NICK = '';
+  const PROFILE_KEY = 'wawa_profile_v1';
+  let NICK = '', OPENCHAT = '', PHONE = '';
+  try {
+    const p = JSON.parse(localStorage.getItem(PROFILE_KEY)) || {};
+    NICK = p.nick || ''; OPENCHAT = p.openchat || ''; PHONE = p.phone || '';
+  } catch {}
+
+  function saveProfile() {
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify({ nick: NICK, openchat: OPENCHAT, phone: PHONE })); } catch {}
+  }
 
   async function recordScore(game, score) {
     const name = NICK || 'Guest';
@@ -69,7 +78,7 @@
       await sbFetch('leaderboard', {
         method: 'POST',
         headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-        body: JSON.stringify({ name, game, score, date, updated_at: new Date().toISOString() })
+        body: JSON.stringify({ name, game, score, date, openchat: OPENCHAT, phone: PHONE, updated_at: new Date().toISOString() })
       });
       return true;
     } catch (e) {
@@ -599,13 +608,23 @@
       root.innerHTML = '';
       const c = el('div', 'gh');
 
-      // nickname
+      // nickname + extra profile fields
       const nameRow = el('div', 'gh-name');
       nameRow.innerHTML = `
         <label>ชื่อเล่นของคุณ</label>
         <div class="gh-nick-row">
           <input id="ghNick" type="text" maxlength="14" placeholder="ใส่ชื่อเล่นก่อนเล่น" value="${NICK}">
           <button id="ghNickBtn" class="gh-nick-btn">${NICK ? 'เปลี่ยนชื่อ' : 'ยืนยัน ›'}</button>
+        </div>
+        <div class="gh-extra-row">
+          <div class="gh-extra-field">
+            <label>ชื่อใน Openchat สำหรับยืนยันตัวตน <span class="gh-optional">(Optional)</span></label>
+            <input id="ghOpenchat" type="text" maxlength="40" placeholder="ชื่อใน Line Openchat" value="${OPENCHAT}">
+          </div>
+          <div class="gh-extra-field">
+            <label>เบอร์โทร <span class="gh-optional">(optional)</span></label>
+            <input id="ghPhone" type="tel" maxlength="20" placeholder="สำหรับรับรางวัล" value="${PHONE}">
+          </div>
         </div>
         ${NICK ? `<div class="gh-nick-hello">สวัสดี, <strong>${NICK}</strong>! 🐶</div>` : ''}
       `;
@@ -628,7 +647,7 @@
       c.appendChild(grid);
       root.appendChild(c);
 
-      // confirm / change button
+      // confirm / change button — saves nick + openchat + phone
       $('#ghNickBtn', c).addEventListener('click', () => {
         const val = ($('#ghNick', c).value || '').trim();
         if (!val) {
@@ -637,9 +656,12 @@
           return;
         }
         NICK = val;
+        OPENCHAT = ($('#ghOpenchat', c).value || '').trim();
+        PHONE = ($('#ghPhone', c).value || '').trim();
+        saveProfile();
         renderHome();
       });
-      // allow Enter key in input
+      // allow Enter key in nick input
       $('#ghNick', c).addEventListener('keydown', e => {
         if (e.key === 'Enter') $('#ghNickBtn', c).click();
       });
