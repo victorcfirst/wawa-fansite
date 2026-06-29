@@ -618,7 +618,7 @@
         </div>
         <div class="gh-extra-row">
           <div class="gh-extra-field">
-            <label>ชื่อใน Openchat <span class="gh-optional">(สำหรับยืนยันตัวตน)</span></label>
+            <label>ชื่อใน Openchat สำหรับยืนยันตัวตน <span class="gh-optional">(Optional)</span></label>
             <input id="ghOpenchat" type="text" maxlength="40" placeholder="ชื่อใน Line Openchat" value="${OPENCHAT}">
           </div>
           <div class="gh-extra-field">
