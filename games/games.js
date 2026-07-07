@@ -36,14 +36,18 @@
     return r.json().catch(() => null);
   }
 
-  // คะแนนรวม = ผลรวมคะแนนสูงสุดจากทุกเกมของคนนั้น
+  // คะแนนรวม = ผลรวมคะแนน *สูงสุด* ต่อเกมต่อคน (defensive: กัน duplicate row)
   function totalsFromBoard(board) {
     const m = {};
     board.forEach(e => {
-      if (!m[e.name]) m[e.name] = { name: e.name, total: 0 };
-      m[e.name].total += e.score;
+      if (!m[e.name]) m[e.name] = { name: e.name, games: {} };
+      const cur = m[e.name].games[e.game] ?? -1;
+      if (e.score > cur) m[e.name].games[e.game] = e.score;
     });
-    return Object.values(m).sort((a, b) => b.total - a.total);
+    return Object.values(m).map(p => ({
+      name: p.name,
+      total: Object.values(p.games).reduce((s, v) => s + v, 0)
+    })).sort((a, b) => b.total - a.total);
   }
 
   // เก็บเฉพาะคะแนนสูงสุดต่อคนต่อเกม (ใช้ใน fallback localStorage)
@@ -71,11 +75,13 @@
     const name = NICK || 'Guest';
     const date = new Date().toLocaleDateString('th-TH');
     try {
+      // sort desc + limit 1 เพื่อให้ได้คะแนนสูงสุดเสมอ แม้มี duplicate row
       const existing = await sbFetch(
-        `leaderboard?name=eq.${encodeURIComponent(name)}&game=eq.${encodeURIComponent(game)}&select=score`
+        `leaderboard?name=eq.${encodeURIComponent(name)}&game=eq.${encodeURIComponent(game)}&select=score&order=score.desc&limit=1`
       );
       if (score <= (existing?.[0]?.score ?? -1)) return false;
-      await sbFetch('leaderboard', {
+      // on_conflict=name,game บังคับให้ Supabase UPDATE row เดิมแทน INSERT ใหม่
+      await sbFetch('leaderboard?on_conflict=name,game', {
         method: 'POST',
         headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
         body: JSON.stringify({ name, game, score, date, openchat: OPENCHAT, phone: PHONE, updated_at: new Date().toISOString() })
