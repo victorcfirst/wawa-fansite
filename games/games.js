@@ -74,17 +74,24 @@
   async function recordScore(game, score) {
     const name = NICK || 'Guest';
     const date = new Date().toLocaleDateString('th-TH');
+    const payload = { name, game, score, date, openchat: OPENCHAT, phone: PHONE };
+
+    // บันทึก history ทุกรอบ (fire-and-forget — ไม่บล็อกการเล่น)
+    sbFetch('leaderboard_history', {
+      method: 'POST',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ ...payload, played_at: new Date().toISOString() })
+    }).catch(e => console.warn('history insert failed', e));
+
     try {
-      // sort desc + limit 1 เพื่อให้ได้คะแนนสูงสุดเสมอ แม้มี duplicate row
       const existing = await sbFetch(
         `leaderboard?name=eq.${encodeURIComponent(name)}&game=eq.${encodeURIComponent(game)}&select=score&order=score.desc&limit=1`
       );
       if (score <= (existing?.[0]?.score ?? -1)) return false;
-      // on_conflict=name,game บังคับให้ Supabase UPDATE row เดิมแทน INSERT ใหม่
       await sbFetch('leaderboard?on_conflict=name,game', {
         method: 'POST',
         headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-        body: JSON.stringify({ name, game, score, date, openchat: OPENCHAT, phone: PHONE, updated_at: new Date().toISOString() })
+        body: JSON.stringify({ ...payload, updated_at: new Date().toISOString() })
       });
       return true;
     } catch (e) {
