@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GE6 · ChiwawaLand</title>
+<meta name="description" content="การเลือกตั้ง GE6 ของ BNK48&CGM48 — บ้านชิวาว่าแลนด์ 🗳️" />
+
+<link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+<meta name="theme-color" content="#1aa3ad" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Mitr:wght@200;300;400;500;600&family=Fredoka:wght@400;500;600;700&family=Itim&family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ════════ RESET & TOKENS ════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#1aa3ad; --teal-deep:#127d86; --teal-pale:#d6f2f3;
+  --pink:#f57aa8; --pink-deep:#e85a92; --pink-pale:#ffe3ee;
+  --sky:#8ec9f0; --sky-pale:#e3f1fc;
+  --lilac:#b89cf0; --lilac-deep:#7c4fd4; --lilac-pale:#efe7fd;
+  --gold:#e8c060; --gold-deep:#c8980a; --gold-pale:#fff8e0;
+  --ge6a:#9b59b6; --ge6b:#6c3483;
+  --ink:#2e2a44; --ink2:#5f5980; --ink3:#9a93b8;
+  --white:#ffffff;
+  --shadow:0 10px 30px rgba(80,120,160,.13);
+  --shadow-ge6:0 14px 36px rgba(108,52,131,.28);
+  --r-lg:28px; --r-md:20px; --r-sm:14px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Mitr',sans-serif;font-weight:300;color:var(--ink);
+  background:#faf7ff;min-height:100vh;overflow-x:hidden;position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 10% 8%,rgba(155,89,182,.16),transparent 30%),
+    radial-gradient(circle at 88% 6%,rgba(142,201,240,.18),transparent 28%),
+    radial-gradient(circle at 85% 72%,rgba(184,156,240,.2),transparent 32%),
+    radial-gradient(circle at 8% 82%,rgba(26,163,173,.12),transparent 28%),
+    linear-gradient(170deg,#faf7ff 0%,#f0f7fc 55%,#f9f3ff 100%);
+}
+::selection{background:var(--lilac);color:#fff}
+
+/* ════════ FLOATING DECOR ════════ */
+.decor{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.dec{position:absolute;animation:float 15s ease-in-out infinite}
+.dec.b{animation-duration:19s;animation-delay:-4s}
+.dec.c{animation-duration:23s;animation-delay:-9s}
+.dec.d{animation-duration:17s;animation-delay:-6s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-30px) rotate(10deg)}}
+
+/* ════════ NAV ════════ */
+nav{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 30px;min-height:64px;
+  background:rgba(255,255,255,.82);
+  backdrop-filter:blur(18px) saturate(1.5);
+  border-bottom:2px solid rgba(155,89,182,.2);
+}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex:1;min-width:0}
+.brand img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(26,163,173,.3));flex-shrink:0}
+.brand-name{font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:var(--teal);letter-spacing:.3px;line-height:1}
+.brand-sub{display:none}
+.nav-links{display:flex;gap:2px;align-items:center;flex-wrap:nowrap}
+.nav-links a{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:30px;transition:.25s;line-height:1.6;display:inline-flex;align-items:center;white-space:nowrap}
+.nav-links a:hover{background:var(--lilac-pale);color:var(--ge6a);transform:translateY(-1px)}
+.nav-links a.active{background:linear-gradient(120deg,var(--ge6a),var(--ge6b));color:#fff;font-weight:600}
+.nav-primary{display:none;align-items:center;gap:8px;flex-shrink:0}
+.nav-home{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;text-decoration:none;
+  padding:8px 14px;border-radius:30px;background:linear-gradient(120deg,var(--pink),var(--pink-deep));
+  color:#fff;box-shadow:0 4px 12px rgba(232,90,146,.3);white-space:nowrap}
+.nav-toggle{width:42px;height:38px;border:none;border-radius:12px;cursor:pointer;
+  background:var(--lilac-pale);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:4px;padding:0;transition:.2s}
+.nav-toggle span{width:18px;height:2.5px;border-radius:3px;background:var(--ge6a);transition:.3s}
+.nav-toggle.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* ════════ HERO ════════ */
+.ge6-hero{
+  position:relative;z-index:2;
+  padding:48px 24px 56px;text-align:center;
+}
+.ge6-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Fredoka',sans-serif;font-size:12px;font-weight:500;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--ge6b);
+  background:rgba(239,231,253,.9);border:1.5px solid rgba(155,89,182,.3);
+  padding:6px 20px;border-radius:30px;margin-bottom:24px;
+  box-shadow:0 4px 14px rgba(108,52,131,.12);
+  backdrop-filter:blur(8px);
+}
+.ge6-title{
+  font-family:'Mali',cursive;font-weight:700;
+  font-size:clamp(38px,10vw,64px);line-height:1.15;
+  background:linear-gradient(125deg,var(--ge6a),var(--teal) 50%,var(--lilac));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:10px;
+}
+.ge6-sub{
+  font-family:'Fredoka',sans-serif;font-size:15px;font-weight:400;
+  color:var(--ink2);margin-bottom:28px;
+}
+
+/* ════════ LAYOUT ════════ */
+.wrap{position:relative;z-index:2;max-width:820px;margin:0 auto;padding:0 20px 80px}
+.card{background:rgba(255,255,255,.78);backdrop-filter:blur(12px);border:2px solid var(--white);border-radius:var(--r-md);box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;gap:13px;margin:52px 0 20px}
+.sec-emoji{width:46px;height:46px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:var(--shadow)}
+.e-ge6{background:linear-gradient(135deg,#efe7fd,#d5b8f5)}
+.e-teal{background:linear-gradient(135deg,var(--teal-pale),#b8e8ea)}
+.e-pink{background:linear-gradient(135deg,var(--pink-pale),#ffc9de)}
+.e-sun{background:linear-gradient(135deg,#fff2cc,#ffe08a)}
+.sec-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:25px;color:var(--ink);line-height:1.1}
+.sec-sub{font-family:'Fredoka',sans-serif;font-size:11.5px;font-weight:400;color:var(--ink3);letter-spacing:.5px}
+.sec-head::after{content:'';flex:1;height:3px;border-radius:3px;background:linear-gradient(to right,rgba(155,89,182,.4),transparent)}
+
+/* ════════ COUNTDOWN ════════ */
+.ge6-cd{
+  padding:32px 28px;
+  background:linear-gradient(135deg,var(--ge6a),var(--ge6b));
+  border-color:rgba(255,255,255,.35);
+  position:relative;overflow:hidden;text-align:center;
+}
+.ge6-cd::before{
+  content:'🗳️';position:absolute;font-size:96px;opacity:.1;
+  right:-16px;top:-8px;transform:rotate(15deg);pointer-events:none;
+}
+.cd-label{font-family:'Fredoka',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:8px}
+.cd-event-name{font-family:'Mali',cursive;font-weight:700;font-size:22px;color:#fff;margin-bottom:4px;line-height:1.2}
+.cd-target-date{font-size:13px;color:rgba(255,255,255,.8);margin-bottom:22px}
+.cd-timer{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cd-unit{background:rgba(255,255,255,.18);border-radius:16px;padding:14px 18px;text-align:center;min-width:72px;backdrop-filter:blur(4px)}
+.cd-num{font-family:'Baloo 2',cursive;font-weight:800;font-size:32px;color:#fff;line-height:1;display:block}
+.cd-u{font-family:'Fredoka',sans-serif;font-size:10px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;display:block}
+.cd-done{font-family:'Mali',cursive;font-size:20px;color:#fff;margin-top:8px;display:none}
+
+/* steps strip */
+.ge6-steps{display:flex;gap:0;margin-top:20px;border-radius:var(--r-sm);overflow:hidden;border:2px solid rgba(255,255,255,.15)}
+.ge6-step{flex:1;text-align:center;padding:10px 6px;font-family:'Fredoka',sans-serif;font-size:11px;font-weight:500;letter-spacing:.3px;color:rgba(255,255,255,.7);background:rgba(255,255,255,.08);transition:.3s;cursor:default;line-height:1.3}
+.ge6-step+.ge6-step{border-left:1.5px solid rgba(255,255,255,.12)}
+.ge6-step.done{color:rgba(255,255,255,.55);text-decoration:line-through;background:rgba(255,255,255,.04)}
+.ge6-step.current{background:rgba(255,255,255,.28);color:#fff;font-weight:600;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}
+.ge6-step .step-date{display:block;font-size:9px;opacity:.7;margin-top:2px;font-weight:400}
+
+/* ════════ DONATION CARD ════════ */
+.donate-card{padding:28px 28px 24px;margin-top:4px}
+.donate-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.donate-title .dt-badge{font-family:'Fredoka',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(120deg,var(--ge6a),var(--ge6b));color:#fff;padding:3px 12px;border-radius:20px}
+.donate-bank{display:flex;align-items:center;gap:16px;background:var(--lilac-pale);border:1.5px solid rgba(155,89,182,.2);border-radius:16px;padding:18px 20px;margin-bottom:14px}
+.bank-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1a56db,#1034a6);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+.bank-info{flex:1;min-width:0}
+.bank-name{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:3px}
+.bank-acc{font-family:'Baloo 2',cursive;font-weight:700;font-size:22px;color:var(--ink);letter-spacing:.5px;line-height:1.1}
+.bank-holder{font-size:12px;color:var(--ink3);margin-top:3px}
+.copy-btn{font-family:'Fredoka',sans-serif;font-size:12px;font-weight:600;padding:8px 16px;border-radius:20px;border:2px solid rgba(155,89,182,.4);background:rgba(255,255,255,.8);color:var(--ge6a);cursor:pointer;transition:.2s;white-space:nowrap;flex-shrink:0}
+.copy-btn:hover{background:var(--ge6a);color:#fff;border-color:var(--ge6a)}
+.copy-btn.copied{background:linear-gradient(120deg,#27ae60,#1e8449);border-color:#27ae60;color:#fff}
+.donate-note{font-size:11.5px;font-weight:300;color:var(--ink3);line-height:1.7}
+.donate-note b{font-weight:500;color:var(--ink2)}
+
+/* ════════ TABS ════════ */
+.tab-nav{display:flex;gap:8px;padding:6px;background:rgba(255,255,255,.6);border:2px solid var(--white);border-radius:var(--r-lg);backdrop-filter:blur(10px);box-shadow:var(--shadow);margin-bottom:28px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex:1;min-width:fit-content;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:500;color:var(--ink2);background:transparent;border:none;border-radius:20px;padding:10px 16px;cursor:pointer;transition:.25s;white-space:nowrap;line-height:1.3;text-align:center}
+.tab-btn:hover{background:var(--lilac-pale);color:var(--ge6a)}
+.tab-btn.active{background:linear-gradient(120deg,var(--ge6a),var(--ge6b));color:#fff;font-weight:600;box-shadow:0 6px 16px rgba(108,52,131,.3)}
+
+/* tab panels */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ════════ กิจกรรม PANEL ════════ */
+.act-section-label{
+  font-family:'Fredoka',sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--ge6a);background:var(--lilac-pale);
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 14px;border-radius:20px;margin-bottom:16px;
+}
+.act-grid{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.act-card{padding:22px 24px;display:flex;gap:18px;align-items:flex-start;transition:transform .25s,box-shadow .25s}
+.act-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-ge6)}
+.act-icon{width:52px;height:52px;border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.act-body{flex:1;min-width:0}
+.act-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.act-tag{font-family:'Fredoka',sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:12px;line-height:1.3}
+.tag-open{background:rgba(39,174,96,.15);color:#1a7a44}
+.tag-closed{background:rgba(149,165,166,.15);color:#7f8c8d}
+.tag-upcoming{background:rgba(26,163,173,.15);color:var(--teal-deep)}
+.act-date{font-family:'Fredoka',sans-serif;font-size:11px;color:var(--ink3)}
+.act-name{font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:var(--ink);margin-bottom:5px;line-height:1.25}
+.act-desc{font-size:12.5px;font-weight:300;color:var(--ink2);line-height:1.7}
+.act-link{display:inline-flex;align-items:center;gap:5px;font-family:'Fredoka',sans-serif;font-size:12px;font-weight:600;color:var(--ge6a);text-decoration:none;margin-top:8px;padding:5px 14px;border:1.5px solid rgba(155,89,182,.35);border-radius:20px;transition:.2s}
+.act-link:hover{background:var(--ge6a);color:#fff;border-color:var(--ge6a)}
+
+/* empty state */
+.act-empty{text-align:center;padding:36px 20px;color:var(--ink3);font-family:'Fredoka',sans-serif;font-size:14px}
+.act-empty .em{font-size:40px;display:block;margin-bottom:8px}
+
+/* ════════ TOKEN PANEL ════════ */
+.token-redirect{text-align:center;padding:48px 24px}
+.token-redirect .tr-coin{font-size:72px;margin-bottom:20px;display:block;animation:bob 4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.token-redirect .tr-title{font-family:'Mali',cursive;font-weight:700;font-size:22px;color:var(--ink);margin-bottom:8px}
+.token-redirect .tr-desc{font-size:13.5px;color:var(--ink2);margin-bottom:28px;line-height:1.75}
+.btn-ge6{display:inline-flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;text-decoration:none;padding:14px 32px;border-radius:30px;background:linear-gradient(120deg,var(--ge6a),var(--ge6b));color:#fff;box-shadow:var(--shadow-ge6);transition:.25s}
+.btn-ge6:hover{transform:translateY(-3px);box-shadow:0 18px 48px rgba(108,52,131,.4)}
+
+/* ════════ STATEMENT PANEL ════════ */
+.stmt-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.stmt-update{font-family:'Fredoka',sans-serif;font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:5px}
+.stmt-cards{display:flex;flex-direction:column;gap:14px}
+.stmt-card{padding:20px 24px}
+.stmt-card-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.stmt-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1.5px solid rgba(155,89,182,.08)}
+.stmt-row:last-child{border-bottom:none;padding-bottom:0}
+.stmt-label{font-size:12.5px;color:var(--ink2)}
+.stmt-value{font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:var(--ink)}
+.stmt-value.plus{color:#27ae60}
+.stmt-value.minus{color:var(--pink-deep)}
+.stmt-note{font-size:11px;color:var(--ink3);margin-top:4px;font-weight:300;line-height:1.6}
+.stmt-img-wrap{margin-top:16px;border:2px dashed rgba(155,89,182,.25);border-radius:16px;padding:20px;text-align:center;background:rgba(239,231,253,.3)}
+.stmt-img-wrap img{max-width:100%;border-radius:10px;display:block;margin:0 auto}
+.stmt-img-ph{color:var(--ink3);font-size:13px;padding:24px 0;font-family:'Fredoka',sans-serif}
+.stmt-img-ph .em{font-size:40px;display:block;margin-bottom:8px}
+
+/* ════════ ประกาศ PANEL ════════ */
+.ann-list{display:flex;flex-direction:column;gap:14px}
+.ann-card{padding:22px 24px;position:relative}
+.ann-pin{position:absolute;top:16px;right:16px;font-size:16px}
+.ann-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ann-type{font-family:'Fredoka',sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:12px}
+.type-important{background:rgba(231,76,60,.12);color:#c0392b}
+.type-info{background:rgba(26,163,173,.12);color:var(--teal-deep)}
+.type-update{background:rgba(155,89,182,.12);color:var(--ge6b)}
+.ann-date{font-family:'Fredoka',sans-serif;font-size:11px;color:var(--ink3)}
+.ann-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:var(--ink);margin-bottom:6px;line-height:1.3}
+.ann-body{font-size:12.5px;font-weight:300;color:var(--ink2);line-height:1.75}
+
+.ann-empty{text-align:center;padding:36px 20px;color:var(--ink3);font-family:'Fredoka',sans-serif;font-size:14px}
+.ann-empty .em{font-size:40px;display:block;margin-bottom:8px}
+
+/* ════════ REVEAL ════════ */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+
+/* ════════ FOOTER ════════ */
+footer{position:relative;z-index:2;text-align:center;padding:44px 20px 40px;border-top:2px solid rgba(155,89,182,.15);background:rgba(255,255,255,.5);backdrop-filter:blur(8px);margin-top:30px}
+footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:drop-shadow(0 5px 12px rgba(26,163,173,.3))}
+.foot-name{font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:var(--teal);margin-bottom:4px}
+.foot-tx{font-family:'Fredoka',sans-serif;font-size:11.5px;font-weight:400;color:var(--ink3);line-height:1.7}
+
+/* ════════ MOBILE ════════ */
+@media(max-width:768px){
+  nav{padding:10px 16px;flex-wrap:nowrap}
+  .nav-primary{display:flex}
+  .nav-links{display:none;flex-direction:column;width:100%;gap:4px;margin-top:10px;
+    padding-top:10px;border-top:1.5px solid var(--lilac-pale);flex-wrap:wrap}
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:14px;padding:10px 14px;border-radius:14px}
+  nav{flex-wrap:wrap}
+  .ge6-cd{padding:24px 18px}
+  .cd-timer{gap:8px}
+  .cd-unit{padding:10px 12px;min-width:60px}
+  .cd-num{font-size:26px}
+  .ge6-steps{flex-wrap:nowrap;overflow-x:auto}
+  .ge6-step{min-width:90px}
+  .donate-bank{flex-wrap:wrap;gap:12px}
+  .tab-btn{font-size:13px;padding:9px 12px}
+  .act-card{flex-direction:column;gap:12px}
+  .act-icon{width:44px;height:44px;font-size:22px}
+  .stmt-header{flex-direction:column;gap:8px}
+  .stmt-row{flex-wrap:wrap;gap:6px}
+  .wrap{padding:0 14px 60px}
+}
+@media(max-width:420px){
+  .cd-timer{gap:6px}
+  .cd-unit{padding:8px 8px;min-width:50px}
+  .cd-num{font-size:22px}
+  .cd-u{font-size:9px}
+}
+</style>
+</head>
+<body>
+
+<div class="decor" id="decor"></div>
+
+<!-- ░░ NAV ░░ -->
+<nav>
+  <a class="brand" href="index.html">
+    <img src="images/logo-transparent.png" alt="ChiwawaLand" />
+    <div>
+      <div class="brand-name">ChiWaWaLand</div>
+      <div class="brand-sub">Wawa BNK48 Thailand Fanclub</div>
+    </div>
+  </a>
+  <div class="nav-primary">
+    <a href="index.html" class="nav-home">🏠 หน้าหลัก</a>
+    <button class="nav-toggle" id="navToggle" aria-label="เมนู">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">หน้าหลัก</a>
+    <a href="token.html">🪙 Token สะสม</a>
+    <a href="activity.html">🎮 กิจกรรม</a>
+    <a href="ge6.html" class="active">🗳️ GE6</a>
+  </div>
+</nav>
+
+<!-- ░░ HERO ░░ -->
+<header class="ge6-hero">
+  <div class="ge6-badge">🗳️ BNK48 &amp; CGM48 General Election 6</div>
+  <h1 class="ge6-title">GE6<br>ChiwawaLand</h1>
+  <p class="ge6-sub">ร่วมสนับสนุนวาว่าในการเลือกตั้งครั้งสำคัญ</p>
+</header>
+
+<!-- ░░ MAIN ░░ -->
+<main class="wrap">
+
+  <!-- ── COUNTDOWN ── -->
+  <div class="card ge6-cd reveal">
+    <div class="cd-label">นับถอยหลัง</div>
+    <div class="cd-event-name">วันเริ่มโหวต GE6 🗳️</div>
+    <div class="cd-target-date">1 ตุลาคม 2569 · เวลา 12:00 น.</div>
+    <div class="cd-timer" id="cdTimer">
+      <div class="cd-unit"><span class="cd-num" id="cdD">--</span><span class="cd-u">วัน</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cdH">--</span><span class="cd-u">ชั่วโมง</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cdM">--</span><span class="cd-u">นาที</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cdS">--</span><span class="cd-u">วินาที</span></div>
+    </div>
+    <div class="cd-done" id="cdDone">🎉 เริ่มโหวตแล้ว! ไปหนุนวาว่ากันเลย!</div>
+
+    <!-- ขั้นตอนสำคัญ -->
+    <div class="ge6-steps" id="ge6Steps">
+      <div class="ge6-step" data-date="2026-09-01">
+        ประกาศ GE6
+        <span class="step-date">1 ก.ย. 2569</span>
+      </div>
+      <div class="ge6-step" data-date="2026-10-01T05:00:00Z">
+        เริ่มโหวต
+        <span class="step-date">1 ต.ค. 2569</span>
+      </div>
+      <div class="ge6-step" data-date="2026-10-31">
+        สิ้นสุดโหวต
+        <span class="step-date">31 ต.ค. 2569</span>
+      </div>
+      <div class="ge6-step" data-date="2026-11-15">
+        ประกาศผล
+        <span class="step-date">15 พ.ย. 2569</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DONATION ── -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-ge6">💜</div>
+    <div><div class="sec-title">บัญชีบ้านแฟนด้อม</div><div class="sec-sub">DONATION ACCOUNT · GE6</div></div>
+  </div>
+
+  <div class="card donate-card reveal">
+    <div class="donate-title">
+      บัญชีรับบริจาค GE6
+      <span class="dt-badge">Official</span>
+    </div>
+    <div class="donate-bank">
+      <div class="bank-logo">🏦</div>
+      <div class="bank-info">
+        <div class="bank-name">ธนาคาร — กรุณาระบุชื่อธนาคาร</div>
+        <div class="bank-acc" id="bankAcc">000-0-00000-0</div>
+        <div class="bank-holder">ชื่อบัญชี: บ้านชิวาว่าแลนด์ / ChiwawaLand</div>
+      </div>
+      <button class="copy-btn" id="copyBtn" onclick="copyAcc()">คัดลอก</button>
+    </div>
+    <p class="donate-note">
+      <b>หมายเหตุ:</b> กรุณาโอนพร้อมระบุชื่อ-นามสกุล และแจ้งสลิปในกลุ่มหรือ Openchat ทุกครั้ง
+      · เพื่อการตรวจสอบที่โปร่งใส ยอดทั้งหมดจะแสดงในแท็บ Statement
+    </p>
+  </div>
+
+  <!-- ── TABS ── -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-teal">✨</div>
+    <div><div class="sec-title">ข้อมูล GE6</div><div class="sec-sub">ACTIVITIES · TOKEN · STATEMENT · ANNOUNCEMENTS</div></div>
+  </div>
+
+  <div class="tab-nav reveal" role="tablist">
+    <button class="tab-btn active" onclick="switchTab('activities',this)" role="tab" aria-selected="true">🎉 กิจกรรม</button>
+    <button class="tab-btn" onclick="switchTab('token',this)" role="tab">🪙 Token</button>
+    <button class="tab-btn" onclick="switchTab('statement',this)" role="tab">📊 Statement</button>
+    <button class="tab-btn" onclick="switchTab('announce',this)" role="tab">📢 ประกาศ</button>
+  </div>
+
+  <!-- ═══ TAB: กิจกรรม ═══ -->
+  <div class="tab-panel active" id="tab-activities">
+
+    <!-- กิจกรรมที่เปิดอยู่ / กำลังจะมา -->
+    <div class="act-section-label">🟢 กิจกรรมที่เปิดอยู่ / กำลังจะมา</div>
+    <div class="act-grid" id="openActivities">
+      <!-- placeholder — แก้ไขตรงนี้เพื่อเพิ่มกิจกรรม -->
+      <div class="card act-card">
+        <div class="act-icon" style="background:linear-gradient(135deg,#efe7fd,#d5b8f5)">🗳️</div>
+        <div class="act-body">
+          <div class="act-meta">
+            <span class="act-tag tag-upcoming">เร็วๆ นี้</span>
+            <span class="act-date">1 ต.ค. 2569 เป็นต้นไป</span>
+          </div>
+          <div class="act-name">รณรงค์โหวต GE6</div>
+          <div class="act-desc">ร่วมกันสนับสนุนวาว่า #วาว่า #GE6 ทุกแพลตฟอร์ม — รายละเอียดเพิ่มเติมจะประกาศเร็วๆ นี้</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- กิจกรรมที่ปิดแล้ว -->
+    <div class="act-section-label" style="background:rgba(149,165,166,.1);color:#7f8c8d">⚫ กิจกรรมที่สิ้นสุดแล้ว</div>
+    <div class="act-grid" id="closedActivities">
+      <div class="act-empty">
+        <span class="em">🗂️</span>
+        ยังไม่มีกิจกรรมที่สิ้นสุดแล้ว
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ TAB: Token ═══ -->
+  <div class="tab-panel" id="tab-token">
+    <div class="card token-redirect">
+      <span class="tr-coin">🪙</span>
+      <div class="tr-title">BNK Token สะสม</div>
+      <div class="tr-desc">
+        ดูยอด Token ปัจจุบัน ประวัติการสะสม<br>
+        และรางวัลพิเศษสำหรับแฟนคลับได้ที่หน้า Token สะสม
+      </div>
+      <a href="token.html" class="btn-ge6">🪙 ไปหน้า Token สะสม →</a>
+    </div>
+  </div>
+
+  <!-- ═══ TAB: Statement ═══ -->
+  <div class="tab-panel" id="tab-statement">
+    <div class="stmt-cards">
+
+      <div class="card stmt-card">
+        <div class="stmt-header">
+          <div class="stmt-card-title">📊 สรุปยอด GE6</div>
+          <div class="stmt-update">
+            🕐 อัปเดตล่าสุด: <span id="stmtUpdated">—</span>
+          </div>
+        </div>
+        <div class="stmt-row">
+          <span class="stmt-label">ยอดรับบริจาครวม</span>
+          <span class="stmt-value plus" id="stmtTotal">฿ 0.00</span>
+        </div>
+        <div class="stmt-row">
+          <span class="stmt-label">ค่าใช้จ่าย GE6</span>
+          <span class="stmt-value minus" id="stmtSpent">฿ 0.00</span>
+        </div>
+        <div class="stmt-row">
+          <span class="stmt-label">ยอดคงเหลือ</span>
+          <span class="stmt-value" id="stmtBalance">฿ 0.00</span>
+        </div>
+        <p class="stmt-note">* ยอดอาจมีความล่าช้า 1-2 วัน · ข้อมูลทั้งหมดตรวจสอบได้จาก statement ด้านล่าง</p>
+      </div>
+
+      <div class="card stmt-card">
+        <div class="stmt-card-title">🧾 Statement ธนาคาร</div>
+        <div class="stmt-img-wrap" id="stmtImgWrap">
+          <div class="stmt-img-ph">
+            <span class="em">📄</span>
+            Statement จะแสดงที่นี่เมื่ออัปเดต
+          </div>
+        </div>
+        <p class="stmt-note" style="margin-top:12px">* อัปเดตทุก 7–14 วัน หรือเมื่อมีรายการสำคัญ</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ TAB: ประกาศ ═══ -->
+  <div class="tab-panel" id="tab-announce">
+    <div class="ann-list" id="annList">
+
+      <div class="card ann-card">
+        <span class="ann-pin">📌</span>
+        <div class="ann-meta">
+          <span class="ann-type type-important">สำคัญ</span>
+          <span class="ann-date">31 ก.ค. 2569</span>
+        </div>
+        <div class="ann-title">เปิดหน้า GE6 อย่างเป็นทางการ</div>
+        <div class="ann-body">
+          บ้านชิวาว่าแลนด์เปิดหน้ารวบรวมข้อมูล GE6 อย่างเป็นทางการแล้ว!
+          ติดตามกิจกรรม ยอดบริจาค และการอัปเดตล่าสุดได้ที่นี่เลยครับ 🐶💜
+        </div>
+      </div>
+
+      <!-- เพิ่มประกาศใหม่ด้านบน (ล่าสุดอยู่บนสุด) -->
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <img src="images/logo-transparent.png" alt="ChiwawaLand" />
+  <div class="foot-name">ChiWaWaLand</div>
+  <div class="foot-tx">บ้านชิวาว่าแลนด์ · Wawa BNK48 Thailand Fanclub<br>
+    <span style="font-size:10px;opacity:.7">GE6 · พลังแฟนคลับรวมใจ 💜</span>
+  </div>
+</footer>
+
+<script>
+/* ── decor ── */
+(function(){
+  const d = document.getElementById('decor');
+  const items = [
+    ['⭐',16,14,''],['💜',80,30,'b'],['🗳️',20,68,'c'],['✨',82,72,'d'],
+    ['🐾',48,12,'b'],['💫',68,52,'c'],['🎀',10,45,'d'],['🌟',55,85,'']
+  ];
+  items.forEach(([t,l,tp,cls])=>{
+    const s=document.createElement('div');
+    s.className='dec '+(cls||'');
+    s.style.cssText=`left:${l}%;top:${tp}%;font-size:${20+Math.random()*18}px;opacity:.25`;
+    s.textContent=t;d.appendChild(s);
+  });
+})();
+
+/* ── nav toggle ── */
+const navToggle = document.getElementById('navToggle');
+const navLinks  = document.getElementById('navLinks');
+navToggle.addEventListener('click',()=>{
+  const open = navLinks.classList.toggle('open');
+  navToggle.classList.toggle('open', open);
+});
+
+/* ── reveal observer ── */
+const ro = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+/* ── countdown ── */
+const VOTE_START = new Date('2026-10-01T05:00:00Z'); // 12:00 ICT
+
+function updateCd(){
+  const now = Date.now();
+  const diff = VOTE_START.getTime() - now;
+  if(diff <= 0){
+    document.getElementById('cdTimer').style.display='none';
+    document.getElementById('cdDone').style.display='block';
+    return;
+  }
+  const s = Math.floor(diff/1000);
+  const d = Math.floor(s/86400);
+  const h = Math.floor((s%86400)/3600);
+  const m = Math.floor((s%3600)/60);
+  const sc = s%60;
+  document.getElementById('cdD').textContent = String(d).padStart(2,'0');
+  document.getElementById('cdH').textContent = String(h).padStart(2,'0');
+  document.getElementById('cdM').textContent = String(m).padStart(2,'0');
+  document.getElementById('cdS').textContent = String(sc).padStart(2,'0');
+}
+updateCd();
+setInterval(updateCd, 1000);
+
+/* ── step highlight ── */
+(function(){
+  const now = Date.now();
+  const steps = document.querySelectorAll('.ge6-step');
+  let passedAll = true;
+  steps.forEach(s=>{
+    const d = new Date(s.dataset.date).getTime();
+    if(d < now){ s.classList.add('done'); }
+    else if(passedAll){ s.classList.add('current'); passedAll = false; }
+  });
+})();
+
+/* ── tabs ── */
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── copy account ── */
+function copyAcc(){
+  const acc = document.getElementById('bankAcc').textContent.replace(/\s/g,'');
+  navigator.clipboard.writeText(acc).then(()=>{
+    const btn = document.getElementById('copyBtn');
+    btn.textContent='✓ คัดลอกแล้ว';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='คัดลอก';btn.classList.remove('copied')},2200);
+  });
+}
+
+/* ── statement last-updated (update this string manually) ── */
+document.getElementById('stmtUpdated').textContent = '31 ก.ค. 2569';
+</script>
+</body>
+</html>
