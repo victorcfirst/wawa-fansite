@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════════════
    WAWA GAME HUB — vanilla JS (แปลงจาก React)
    ธีมพาสเทลบ้านชิวาว่าแลนด์ · Rhythm Tap + Photo Catch
-   Leaderboard: localStorage (เฟส 1) — เตรียมต่อ Supabase ได้ (เฟส 2)
+   Leaderboard: Supabase (เฟส 2) · fallback localStorage
    ══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -14,22 +14,43 @@
   };
   const LANE_COLORS = [C.pink, C.lilac, C.gold, C.teal];
 
-  /* ════════════ LEADERBOARD STORAGE ════════════
-     เฟส 1: localStorage (เก็บในเครื่องผู้เล่น)
-     เฟส 2: เปลี่ยน loadBoard/saveBest ให้ดึง/เขียน Supabase
-     โครงสร้าง entry: { name, game, score, date }
-     ════════════════════════════════════════════ */
+  /* ════════════ LEADERBOARD — Supabase ════════════
+     entry: { name, game, score, date }
+     fallback: localStorage (ถ้า network ล้มเหลว)
+     ================================================ */
+  const SB_URL = 'https://hvxtghogabswrrficaxa.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2eHRnaG9nYWJzd3JyZmljYXhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NTc5NTEsImV4cCI6MjA5ODAzMzk1MX0.J6UFi4qlzOiHck5XCt1cZqIgJCLd7YCxgGH5etC2aEg';
   const BOARD_KEY = 'wawa_leaderboard_v2';
 
-  function loadBoard() {
-    try { return JSON.parse(localStorage.getItem(BOARD_KEY)) || []; }
-    catch { return []; }
+  async function sbFetch(path, opts = {}) {
+    const r = await fetch(SB_URL + '/rest/v1/' + path, {
+      ...opts,
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+        ...(opts.headers || {})
+      }
+    });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json().catch(() => null);
   }
-  function saveBoard(b) {
-    try { localStorage.setItem(BOARD_KEY, JSON.stringify(b)); }
-    catch (e) { console.error('storage error', e); }
+
+  // คะแนนรวม = ผลรวมคะแนน *สูงสุด* ต่อเกมต่อคน (defensive: กัน duplicate row)
+  function totalsFromBoard(board) {
+    const m = {};
+    board.forEach(e => {
+      if (!m[e.name]) m[e.name] = { name: e.name, games: {} };
+      const cur = m[e.name].games[e.game] ?? -1;
+      if (e.score > cur) m[e.name].games[e.game] = e.score;
+    });
+    return Object.values(m).map(p => ({
+      name: p.name,
+      total: Object.values(p.games).reduce((s, v) => s + v, 0)
+    })).sort((a, b) => b.total - a.total);
   }
-  // เก็บเฉพาะคะแนนสูงสุดของแต่ละคนในแต่ละเกม
+
+  // เก็บเฉพาะคะแนนสูงสุดต่อคนต่อเกม (ใช้ใน fallback localStorage)
   function upsertBest(board, entry) {
     const next = board.map(e => ({ ...e }));
     const i = next.findIndex(e => e.name === entry.name && e.game === entry.game);
@@ -38,25 +59,50 @@
     else if (entry.score > next[i].score) { next[i] = entry; isNewBest = true; }
     return { board: next, isNewBest };
   }
-  // คะแนนรวม = ผลรวมคะแนนสูงสุดจากทุกเกมของคนนั้น
-  function totalsFromBoard(board) {
-    const m = {};
-    board.forEach(e => {
-      if (!m[e.name]) m[e.name] = { name: e.name, total: 0, games: {} };
-      m[e.name].total += e.score;
-      m[e.name].games[e.game] = e.score;
-    });
-    return Object.values(m).sort((a, b) => b.total - a.total);
+
+  const PROFILE_KEY = 'wawa_profile_v1';
+  let NICK = '', OPENCHAT = '', PHONE = '';
+  try {
+    const p = JSON.parse(localStorage.getItem(PROFILE_KEY)) || {};
+    NICK = p.nick || ''; OPENCHAT = p.openchat || ''; PHONE = p.phone || '';
+  } catch {}
+
+  function saveProfile() {
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify({ nick: NICK, openchat: OPENCHAT, phone: PHONE })); } catch {}
   }
 
-  let BOARD = loadBoard();
-  let NICK = '';
+  async function recordScore(game, score) {
+    const name = NICK || 'Guest';
+    const date = new Date().toLocaleDateString('th-TH');
+    const payload = { name, game, score, date, openchat: OPENCHAT, phone: PHONE };
 
-  function recordScore(game, score) {
-    const entry = { name: NICK || 'Guest', game, score, date: new Date().toLocaleDateString('th-TH') };
-    const { board, isNewBest } = upsertBest(BOARD, entry);
-    BOARD = board; saveBoard(BOARD);
-    return isNewBest;
+    // บันทึก history ทุกรอบ (fire-and-forget — ไม่บล็อกการเล่น)
+    sbFetch('leaderboard_history', {
+      method: 'POST',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ ...payload, played_at: new Date().toISOString() })
+    }).catch(e => console.warn('history insert failed', e));
+
+    try {
+      const existing = await sbFetch(
+        `leaderboard?name=eq.${encodeURIComponent(name)}&game=eq.${encodeURIComponent(game)}&select=score&order=score.desc&limit=1`
+      );
+      if (score <= (existing?.[0]?.score ?? -1)) return false;
+      await sbFetch('leaderboard?on_conflict=name,game', {
+        method: 'POST',
+        headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify({ ...payload, updated_at: new Date().toISOString() })
+      });
+      return true;
+    } catch (e) {
+      console.error('recordScore error', e);
+      try {
+        const board = JSON.parse(localStorage.getItem(BOARD_KEY)) || [];
+        const { board: next, isNewBest } = upsertBest(board, { name, game, score, date });
+        localStorage.setItem(BOARD_KEY, JSON.stringify(next));
+        return isNewBest;
+      } catch { return false; }
+    }
   }
 
   /* ════════════ DOM HELPERS ════════════ */
@@ -76,7 +122,7 @@
      ปรับตามความรู้สึกขณะเล่นจริง — ค่า 0 = ใช้เวลาตรงตาม librosa beat detection */
   const SONGS = [
     { id: 'saikyou', title: 'Saikyou Twintail', sub: 'บีตจากแฟนแคมจริง · 136 BPM', dur: 81.2, color: C.pink, src: 'games/fancam/saikyou.mp4', noteOffset: 0 },
-    { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 85.0, color: C.gold, src: '', noteOffset: 0 }
+    { id: 'pumpkin', title: 'Oh my Pumpkin', sub: 'บีตจากแฟนแคมจริง · 112 BPM', dur: 69.4, color: C.gold, src: 'games/fancam/Pumpkin.mp4', noteOffset: 0 }
   ];
   const BEATMAPS = window.WAWA_BEATMAPS || { saikyou: [], pumpkin: [] };
 
@@ -206,7 +252,7 @@
 
     function showGrade() {
       cleanup();
-      recordScore('Rhythm Tap', state.score);
+      recordScore('Rhythm Tap', state.score); // async fire-and-forget
       const grade = getGrade(state.perfects, state.goods, state.misses, totalNotes);
       const accuracy = totalNotes > 0 ? Math.round((state.perfects + state.goods * 0.6) / totalNotes * 100) : 0;
       const gcol = GRADE_COLOR[grade] || C.pink;
@@ -344,9 +390,23 @@
   }
 
   /* ════════════ PHOTO CATCH ════════════ */
+  /* BGM สำหรับ Photo Catch — วางไฟล์เพลงที่ games/bgm/photocatch.mp3 */
+  const PC_BGM_SRC = 'games/bgm/photocatch.mp3';
+
   function playPhotoCatch(host, onEnd) {
     const W = 320, H = 460;
-    const state = { score: 0, lives: 3, items: [], basket: W / 2, running: true, t0: performance.now(), spawn: 0, speed: 1 };
+    const state = {
+      score: 0, lives: 3, items: [], basket: W / 2,
+      running: false, t0: 0, spawn: 0, speed: 1, fb: []
+    };
+
+    // โหลดรูป photocard (ไฟล์ images/pc-normal.png และ images/pc-special.png)
+    const imgNormal = new Image(); imgNormal.src = 'images/pc-normal.png';
+    const imgSpecial = new Image(); imgSpecial.src = 'images/pc-special.png';
+
+    // BGM
+    const bgm = new Audio(PC_BGM_SRC);
+    bgm.loop = true; bgm.volume = 0.45;
 
     host.innerHTML = '';
     const wrap = el('div', 'pc-wrap');
@@ -356,11 +416,40 @@
         <div class="rt-song">Photo Catch</div>
         <div class="pc-stat">❤️<span id="pcLives">3</span> · <span id="pcScore">0</span></div>
       </div>
-      <canvas id="pcCanvas" width="${W}" height="${H}"></canvas>
-      <div class="rt-hint">เลื่อนตะกร้าซ้าย-ขวา รับการ์ดวาว่า 💖 เลี่ยงระเบิด 💣</div>
+      <div class="pc-playfield">
+        <canvas id="pcCanvas" width="${W}" height="${H}"></canvas>
+        <div class="pc-overlay" id="pcOverlay">
+          <div class="rt-ready-box">
+            <div class="rt-ready-title">🎴 Photo Catch</div>
+            <div class="rt-ready-sub">เลื่อนตะกร้ารับการ์ดวาว่า เลี่ยงระเบิด!</div>
+            <div class="pc-rules">
+              <div class="pc-rule-item">
+                <img src="images/pc-normal.png" class="pc-rule-img" alt="การ์ดปกติ" />
+                <div class="pc-rule-lbl">+10 คะแนน</div>
+                <div class="pc-rule-sub">การ์ดปกติ</div>
+              </div>
+              <div class="pc-rule-item">
+                <img src="images/pc-special.png" class="pc-rule-img pc-rule-sp" alt="Special" />
+                <div class="pc-rule-lbl sp">+50 คะแนน</div>
+                <div class="pc-rule-sub">การ์ด ★Special★</div>
+              </div>
+              <div class="pc-rule-item">
+                <div class="pc-bomb-icon">💣<span class="pc-bomb-tag">บด</span></div>
+                <div class="pc-rule-lbl bomb">-1 ชีวิต!</div>
+                <div class="pc-rule-sub">ระเบิด</div>
+              </div>
+            </div>
+            <div class="pc-lives-hint">❤️❤️❤️ มี 3 ชีวิต • ยิ่งนานยิ่งเร็ว!</div>
+            <button class="rt-ready-btn" id="pcStartBtn">▶ เริ่มเล่น!</button>
+          </div>
+        </div>
+      </div>
+      <div class="rt-hint">เลื่อนตะกร้าซ้าย-ขวา • ★SP★ หายาก ตกเร็ว ได้ +50!</div>
     `;
     host.appendChild(wrap);
     const cvs = $('#pcCanvas', wrap), ctx = cvs.getContext('2d');
+    const overlay = $('#pcOverlay', wrap);
+    const startBtn = $('#pcStartBtn', wrap);
 
     function moveTo(clientX) {
       const r = cvs.getBoundingClientRect();
@@ -369,49 +458,143 @@
     cvs.addEventListener('touchmove', e => { e.preventDefault(); moveTo(e.touches[0].clientX); }, { passive: false });
     cvs.addEventListener('mousemove', e => moveTo(e.clientX));
 
-    $('.g-back', wrap).addEventListener('click', () => { state.running = false; onEnd(null); });
+    function stopBgm() { bgm.pause(); bgm.currentTime = 0; }
+    $('.g-back', wrap).addEventListener('click', () => { state.running = false; stopBgm(); onEnd(null); });
 
-    function finish() { state.running = false; onEnd({ game: 'Photo Catch', score: state.score }); }
+    startBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      state.t0 = performance.now();
+      state.running = true;
+      bgm.play().catch(() => {});
+      requestAnimationFrame(frame);
+    });
+
+    function finish() { state.running = false; stopBgm(); onEnd({ game: 'Photo Catch', score: state.score }); }
+
+    function drawBomb(x, y) {
+      // ลำตัวระเบิด
+      const g = ctx.createRadialGradient(x - 4, y - 4, 2, x, y, 14);
+      g.addColorStop(0, '#505050'); g.addColorStop(1, '#111');
+      ctx.fillStyle = g;
+      ctx.shadowColor = '#ff3355'; ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+      // แสงสะท้อน
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.beginPath(); ctx.ellipse(x - 5, y - 5, 4, 2.5, -0.5, 0, Math.PI * 2); ctx.fill();
+      // ชนวน
+      ctx.strokeStyle = '#c87020'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x + 9, y - 12);
+      ctx.bezierCurveTo(x + 17, y - 20, x + 7, y - 26, x + 13, y - 32);
+      ctx.stroke(); ctx.lineCap = 'butt';
+      // ประกายไฟ
+      ctx.fillStyle = '#ffee22'; ctx.shadowColor = '#ff9900'; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(x + 13, y - 32, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+      // ข้อความ "บด"
+      ctx.font = 'bold 10px Mitr, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.85)'; ctx.strokeText('บด', x, y + 1);
+      ctx.fillStyle = '#ff4466'; ctx.fillText('บด', x, y + 1);
+      ctx.textBaseline = 'alphabetic';
+    }
+
+    function drawCard(x, y, special) {
+      const w = 26, h = 36, rx = 4;
+      ctx.save();
+      roundRect(ctx, x - w / 2, y - h / 2, w, h, rx); ctx.clip();
+      const img = special ? imgSpecial : imgNormal;
+      if (img.complete && img.naturalWidth > 0) {
+        ctx.drawImage(img, x - w / 2, y - h / 2, w, h);
+      } else {
+        // fallback gradient ถ้ายังโหลดรูปไม่เสร็จ
+        const grd = ctx.createLinearGradient(x - w / 2, y - h / 2, x + w / 2, y + h / 2);
+        if (special) { grd.addColorStop(0, '#ffa8b8'); grd.addColorStop(1, '#c03060'); }
+        else { grd.addColorStop(0, '#b8d8f8'); grd.addColorStop(1, '#5090d0'); }
+        ctx.fillStyle = grd; ctx.fillRect(x - w / 2, y - h / 2, w, h);
+        ctx.fillStyle = '#fff'; ctx.font = '14px serif'; ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle'; ctx.fillText(special ? '⭐' : '💖', x, y);
+        ctx.textBaseline = 'alphabetic';
+      }
+      ctx.restore();
+      // ขอบการ์ด
+      ctx.shadowColor = special ? '#e8c060' : '#a8d0f0'; ctx.shadowBlur = special ? 10 : 4;
+      ctx.strokeStyle = special ? '#e8c060' : '#a8d8f8'; ctx.lineWidth = special ? 2.5 : 2;
+      roundRect(ctx, x - w / 2, y - h / 2, w, h, rx); ctx.stroke();
+      ctx.shadowBlur = 0;
+      // ป้าย SP
+      if (special) {
+        ctx.fillStyle = '#e8c060'; ctx.font = 'bold 6px Fredoka, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.fillText('★SP★', x, y + h / 2 - 1);
+        ctx.textBaseline = 'alphabetic';
+      }
+    }
 
     function frame() {
       if (!state.running) return;
-      const dt = 16;
-      state.spawn -= dt;
+      const now = performance.now() / 1000;
+      state.spawn -= 16;
       const elapsed = (performance.now() - state.t0) / 1000;
       state.speed = 1 + elapsed / 30;
+
       if (state.spawn <= 0) {
         state.spawn = 720 / state.speed;
-        const bomb = Math.random() < 0.22;
-        state.items.push({ x: 28 + Math.random() * (W - 56), y: -20, bomb, vy: (1.6 + Math.random() * 1.2) * state.speed });
+        const roll = Math.random();
+        const bomb = roll < 0.22;
+        // ~10% ของ spawn ที่ไม่ใช่ระเบิด = การ์ด Special
+        const special = !bomb && Math.random() < 0.10;
+        state.items.push({
+          x: 28 + Math.random() * (W - 56), y: -28, bomb, special,
+          vy: (1.6 + Math.random() * 1.2) * state.speed * (special ? 1.4 : 1.0)
+        });
       }
+
       ctx.clearRect(0, 0, W, H);
-      // items
+
       for (const it of state.items) {
         it.y += it.vy;
-        if (it.bomb) {
-          ctx.font = '26px serif'; ctx.textAlign = 'center'; ctx.fillText('💣', it.x, it.y);
-        } else {
-          ctx.fillStyle = C.pink; ctx.strokeStyle = C.white; ctx.lineWidth = 2;
-          roundRect(ctx, it.x - 13, it.y - 16, 26, 32, 5); ctx.fill(); ctx.stroke();
-          ctx.fillStyle = C.white; ctx.font = '14px serif'; ctx.textAlign = 'center'; ctx.fillText('💖', it.x, it.y + 3);
-        }
-        // catch check
+        if (it.bomb) drawBomb(it.x, it.y);
+        else drawCard(it.x, it.y, it.special);
+
+        // ตรวจรับ
         if (it.y > H - 56 && it.y < H - 20 && Math.abs(it.x - state.basket) < 40) {
-          if (it.bomb) { state.lives--; $('#pcLives', wrap).textContent = state.lives; }
-          else { state.score += 10; $('#pcScore', wrap).textContent = state.score; }
+          if (it.bomb) {
+            state.lives--; $('#pcLives', wrap).textContent = state.lives;
+            state.fb.push({ x: it.x, y: it.y, txt: '💥', col: '#ff4466', t: now });
+          } else if (it.special) {
+            state.score += 50; $('#pcScore', wrap).textContent = state.score;
+            state.fb.push({ x: it.x, y: it.y, txt: 'SPECIAL! +50', col: C.gold, t: now });
+          } else {
+            state.score += 10; $('#pcScore', wrap).textContent = state.score;
+            state.fb.push({ x: it.x, y: it.y, txt: '+10', col: C.teal, t: now });
+          }
           it.y = H + 100;
         }
       }
       state.items = state.items.filter(it => it.y < H + 40);
-      // basket
+
+      // ข้อความ feedback ลอยขึ้น
+      state.fb = state.fb.filter(f => now - f.t < 0.7);
+      for (const f of state.fb) {
+        const age = now - f.t;
+        ctx.shadowColor = f.col; ctx.shadowBlur = 8;
+        ctx.fillStyle = f.col; ctx.globalAlpha = Math.max(0, 1 - age / 0.7);
+        ctx.font = 'bold 13px Fredoka, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(f.txt, f.x, f.y - age * 40);
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      }
+
+      // ตะกร้า
       ctx.fillStyle = C.teal; ctx.strokeStyle = C.white; ctx.lineWidth = 3;
       roundRect(ctx, state.basket - 30, H - 42, 60, 30, 10); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = C.white; ctx.font = '16px serif'; ctx.textAlign = 'center'; ctx.fillText('🧺', state.basket, H - 20);
+      ctx.fillStyle = C.white; ctx.font = '16px serif'; ctx.textAlign = 'center';
+      ctx.fillText('🧺', state.basket, H - 20);
 
       if (state.lives <= 0) { finish(); return; }
       requestAnimationFrame(frame);
     }
-    requestAnimationFrame(frame);
+    // frame เริ่มเมื่อกด "เริ่มเล่น!" — ดูที่ startBtn.addEventListener ด้านบน
   }
   function roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
@@ -437,15 +620,32 @@
     function renderHome() {
       root.innerHTML = '';
       const c = el('div', 'gh');
-      // nickname
+
+      // nickname + extra profile fields
       const nameRow = el('div', 'gh-name');
       nameRow.innerHTML = `
         <label>ชื่อเล่นของคุณ</label>
-        <input id="ghNick" type="text" maxlength="14" placeholder="ใส่ชื่อเล่นก่อนเล่น" value="${NICK}">
+        <div class="gh-nick-row">
+          <input id="ghNick" type="text" maxlength="14" placeholder="ใส่ชื่อเล่นก่อนเล่น" value="${NICK}">
+          <button id="ghNickBtn" class="gh-nick-btn">${NICK ? 'เปลี่ยนชื่อ' : 'ยืนยัน ›'}</button>
+        </div>
+        <div class="gh-extra-row">
+          <div class="gh-extra-field">
+            <label>ชื่อใน Openchat สำหรับยืนยันตัวตน <span class="gh-optional">(Optional)</span></label>
+            <input id="ghOpenchat" type="text" maxlength="40" placeholder="ชื่อใน Line Openchat" value="${OPENCHAT}">
+          </div>
+          <div class="gh-extra-field">
+            <label>เบอร์โทร <span class="gh-optional">(optional)</span></label>
+            <input id="ghPhone" type="tel" maxlength="20" placeholder="สำหรับรับรางวัล" value="${PHONE}">
+          </div>
+        </div>
+        ${NICK ? `<div class="gh-nick-hello">สวัสดี, <strong>${NICK}</strong>! 🐶</div>` : ''}
       `;
       c.appendChild(nameRow);
-      // game grid
+
+      // game grid — hidden until nick is confirmed
       const grid = el('div', 'gh-grid');
+      if (!NICK) grid.classList.add('gh-grid-locked');
       GAMES.forEach(g => {
         const card = el('button', 'gh-card' + (g.on ? '' : ' off'));
         card.style.setProperty('--gc', g.col);
@@ -454,14 +654,31 @@
           <div class="gh-info"><div class="gh-t">${g.title}</div><div class="gh-d">${g.desc}</div></div>
           ${g.on ? '<div class="gh-go">เล่น ›</div>' : '<div class="gh-soon">เร็วๆ นี้</div>'}
         `;
-        if (g.on) card.addEventListener('click', () => {
-          NICK = ($('#ghNick', root).value || '').trim();
-          startGame(g.id);
-        });
+        if (g.on) card.addEventListener('click', () => { startGame(g.id); });
         grid.appendChild(card);
       });
       c.appendChild(grid);
       root.appendChild(c);
+
+      // confirm / change button — saves nick + openchat + phone
+      $('#ghNickBtn', c).addEventListener('click', () => {
+        const val = ($('#ghNick', c).value || '').trim();
+        if (!val) {
+          const inp = $('#ghNick', c);
+          inp.focus(); inp.style.borderColor = 'var(--pink-deep)';
+          return;
+        }
+        NICK = val;
+        OPENCHAT = ($('#ghOpenchat', c).value || '').trim();
+        PHONE = ($('#ghPhone', c).value || '').trim();
+        saveProfile();
+        renderHome();
+      });
+      // allow Enter key in nick input
+      $('#ghNick', c).addEventListener('keydown', e => {
+        if (e.key === 'Enter') $('#ghNickBtn', c).click();
+      });
+
       renderLeaderboard();
     }
 
@@ -469,9 +686,9 @@
       root.innerHTML = '';
       const stage = el('div', 'gh-stage');
       root.appendChild(stage);
-      const onEnd = (result) => {
+      const onEnd = async (result) => {
         if (result) {
-          const isNew = recordScore(result.game, result.score);
+          const isNew = await recordScore(result.game, result.score);
           showResult(result, isNew);
         } else renderHome();
       };
@@ -520,27 +737,34 @@
     ];
     let lbActiveTab = 'total';
 
-    function renderLbRows(tab) {
+    async function renderLbRows(tab) {
       const lb = document.getElementById('leaderboard');
       if (!lb) return;
-      let rows = [];
-      if (tab === 'total') {
-        rows = totalsFromBoard(BOARD).slice(0, 10).map((x, i) =>
-          `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.total.toLocaleString()}</div></div>`
-        );
-      } else {
-        rows = BOARD.filter(e => e.game === tab)
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 10)
-          .map((x, i) =>
-            `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.score.toLocaleString()}</div></div>`
-          );
-      }
       let content = lb.querySelector('.lb-content');
       if (!content) { content = el('div', 'lb-content'); lb.appendChild(content); }
-      content.innerHTML = rows.length
-        ? rows.join('')
-        : '<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — มาเป็นคนแรกกันเลย!</div></div>';
+      content.innerHTML = '<div class="lb-loading">⏳ กำลังโหลด...</div>';
+      try {
+        let rows = [];
+        if (tab === 'total') {
+          const data = await sbFetch('leaderboard?select=name,score,game&order=score.desc');
+          rows = totalsFromBoard(data || []).slice(0, 10).map((x, i) =>
+            `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.total.toLocaleString()}</div></div>`
+          );
+        } else {
+          const data = await sbFetch(
+            `leaderboard?game=eq.${encodeURIComponent(tab)}&select=name,score&order=score.desc&limit=10`
+          );
+          rows = (data || []).map((x, i) =>
+            `<div class="lb-row"><div class="lb-rank">${MEDALS[i]}</div><div class="lb-name">${x.name}</div><div class="lb-score">${x.score.toLocaleString()}</div></div>`
+          );
+        }
+        content.innerHTML = rows.length
+          ? rows.join('')
+          : '<div class="lb-empty"><div class="big">🎮</div><div class="tx">ยังไม่มีคะแนน — มาเป็นคนแรกกันเลย!</div></div>';
+      } catch (e) {
+        console.error('leaderboard fetch error', e);
+        content.innerHTML = '<div class="lb-empty"><div class="tx">⚠️ โหลดไม่สำเร็จ — ลองรีเฟรชหน้า</div></div>';
+      }
     }
 
     function renderLeaderboard() {
