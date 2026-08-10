@@ -12,6 +12,8 @@
 | `mission-1.jpg` | กระดาน Mission 1 · The Awakening (สิ้นสุดแล้ว) |
 | `mission-0.jpg` | กระดาน Mission 0 · #RisingWithWawa (สิ้นสุดแล้ว) |
 | `announce-01.jpg` | แท็บประกาศ — ประกาศฉบับที่ 1 |
+| `wawa-ge6-form.jpg` | การ์ด "วาว่าส่งใบสมัครแล้ว" ใต้การ์ดนับถอยหลัง |
+| `statement-latest.jpg` | แท็บ Statement — รูป statement ล่าสุด |
 
 ## ข้อแนะนำ
 

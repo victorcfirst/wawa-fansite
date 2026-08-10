@@ -151,6 +151,26 @@ nav{
 .ge6-step.current{background:rgba(255,255,255,.28);color:#fff;font-weight:600;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}
 .ge6-step .step-date{display:block;font-size:9px;opacity:.7;margin-top:2px;font-weight:400}
 
+/* ════════ ใบสมัคร GE6 ════════ */
+.form-card{display:flex;gap:22px;padding:22px;margin-top:22px;align-items:flex-start}
+.form-shot{width:210px;flex-shrink:0;min-height:230px}
+.form-shot img{border-radius:12px}
+.form-body{flex:1;min-width:0}
+.form-title{font-family:'Mali',cursive;font-weight:700;font-size:21px;color:var(--ge6b);margin:8px 0 6px;line-height:1.3}
+.form-desc{font-size:12px;font-weight:300;color:var(--ink2);line-height:1.7;margin-bottom:14px}
+.form-rows{display:flex;flex-direction:column;gap:0;margin-bottom:14px}
+.form-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:8px 0;border-bottom:1.5px solid rgba(155,89,182,.1)}
+.form-row:last-child{border-bottom:none}
+.form-row span{font-family:'Fredoka',sans-serif;font-size:11.5px;color:var(--ink3);white-space:nowrap}
+.form-row b{font-family:'Baloo 2',cursive;font-weight:700;font-size:14px;color:var(--ink);text-align:right}
+.form-rank{color:var(--ge6a) !important;font-size:18px !important}
+.form-songs{background:var(--lilac-pale);border-radius:var(--r-sm);padding:14px 16px}
+.fs-label{font-family:'Fredoka',sans-serif;font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--ge6b);margin-bottom:8px}
+.form-songs ol{margin:0;padding-left:20px}
+.form-songs li{font-family:'Baloo 2',cursive;font-weight:600;font-size:13.5px;color:var(--ink);line-height:1.9}
+.fs-note{font-family:'Fredoka',sans-serif;font-size:10.5px;color:var(--ink3);margin-top:6px}
+
 /* ════════ DONATION CARD ════════ */
 .donate-card{padding:28px 28px 24px;margin-top:4px}
 .donate-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:18px;display:flex;align-items:center;gap:10px}
@@ -292,10 +312,16 @@ nav{
 .stmt-value.plus{color:#27ae60}
 .stmt-value.minus{color:var(--pink-deep)}
 .stmt-note{font-size:11px;color:var(--ink3);margin-top:4px;font-weight:300;line-height:1.6}
-.stmt-img-wrap{margin-top:16px;border:2px dashed rgba(155,89,182,.25);border-radius:16px;padding:20px;text-align:center;background:rgba(239,231,253,.3)}
-.stmt-img-wrap img{max-width:100%;border-radius:10px;display:block;margin:0 auto}
-.stmt-img-ph{color:var(--ink3);font-size:13px;padding:24px 0;font-family:'Fredoka',sans-serif}
-.stmt-img-ph .em{font-size:40px;display:block;margin-bottom:8px}
+.stmt-shot{margin-top:16px}
+/* แถบยืนยันว่าเคลียร์บัญชีก่อนเริ่มกิจกรรม */
+.stmt-clear{
+  display:flex;align-items:flex-start;gap:11px;
+  background:rgba(39,174,96,.09);border:1.5px solid rgba(39,174,96,.28);
+  border-radius:var(--r-sm);padding:12px 15px;margin-bottom:6px;
+  font-size:12px;font-weight:300;color:var(--ink2);line-height:1.65;
+}
+.stmt-clear .sc-ic{font-size:16px;line-height:1.3;flex-shrink:0}
+.stmt-clear b{display:block;font-family:'Baloo 2',cursive;font-weight:700;font-size:14px;color:#1a7a44}
 
 /* ════════ ประกาศ PANEL ════════ */
 .ann-list{display:flex;flex-direction:column;gap:14px}
@@ -347,6 +373,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .stmt-row{flex-wrap:wrap;gap:6px}
   .wrap{padding:0 14px 60px}
   .theme-shots{grid-template-columns:1fr}
+  .form-card{flex-direction:column;gap:16px}
+  .form-shot{width:100%;max-width:280px;margin:0 auto}
   .act-card.has-shot{padding:18px}
   .act-card.has-shot .act-head{gap:12px}
   .tk-stats{gap:8px}
@@ -390,8 +418,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
 
 <!-- ░░ HERO ░░ -->
 <header class="ge6-hero">
-  <div class="ge6-badge">🗳️ BNK48 &amp; CGM48 General Election 6</div>
-  <h1 class="ge6-title">GE6<br>ChiwawaLand</h1>
+  <div class="ge6-badge">🗳️ BNK48 &amp; CGM48 General Election 2026</div>
+  <h1 class="ge6-title">GE6<br>ChiWaWaLand</h1>
   <p class="ge6-sub">ร่วมสนับสนุนวาว่าในการเลือกตั้งครั้งสำคัญ</p>
 </header>
 
@@ -417,7 +445,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
         ประกาศ GE6
         <span class="step-date">26 ก.ค. 2569</span>
       </div>
-      <div class="ge6-step" data-date="2026-10-01T00:00:00+07:00" data-name="วันเริ่มโหวต GE6 🗳️" data-full="1 ตุลาคม 2569">
+      <div class="ge6-step" data-date="2026-10-01T12:00:00+07:00" data-name="วันเริ่มโหวต GE6 🗳️" data-full="1 ตุลาคม 2569 · 12:00 น.">
         เริ่มโหวต
         <span class="step-date">1 ต.ค. 2569</span>
       </div>
@@ -428,6 +456,32 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       <div class="ge6-step" data-date="2026-11-14T00:00:00+07:00" data-name="วันประกาศผล GE6 🏆" data-full="14 พฤศจิกายน 2569">
         ประกาศผล
         <span class="step-date">14 พ.ย. 2569</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ใบสมัคร GE6 ── -->
+  <div class="card form-card reveal">
+    <div class="shot form-shot">
+      <img src="images/ge6/wawa-ge6-form.jpg" alt="วาว่าถือแบบฟอร์มใบสมัคร BNK48 &amp; CGM48 Senbatsu General Election 2026" loading="lazy" />
+      <div class="shot-ph"><span class="em">📝</span>รูปใบสมัคร<br><small>images/ge6/wawa-ge6-form.jpg</small></div>
+    </div>
+    <div class="form-body">
+      <span class="mission-no">ใบสมัคร GE6</span>
+      <div class="form-title">วาว่าส่งใบสมัครแล้ว! 📝💜</div>
+      <p class="form-desc">
+        แบบฟอร์มใบสมัคร BNK48 &amp; CGM48 Senbatsu General Election 2026 ของเจ้าหญิงวาว่าของพวกเรา
+      </p>
+      <div class="form-rows">
+        <div class="form-row"><span>ชื่อ-นามสกุล</span><b>พิมพ์นลรัตน์ ลำใย</b></div>
+        <div class="form-row"><span>ชื่อเล่น</span><b>วาว่า · WAWA</b></div>
+        <div class="form-row"><span>วง / ทีมที่สังกัด</span><b>BNK48 Team BIII</b></div>
+        <div class="form-row"><span>อันดับที่คาดหวัง</span><b class="form-rank">21 ⭐</b></div>
+      </div>
+      <div class="form-songs">
+        <div class="fs-label">🎵 3 อันดับเพลงที่เลือกไว้</div>
+        <ol><li>Moto Kare Desu</li><li>Nagori Zakura</li><li>Suki-ish</li></ol>
+        <div class="fs-note">ต้นฉบับโดย AKB48 ทั้ง 3 เพลง</div>
       </div>
     </div>
   </div>
@@ -518,9 +572,9 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
               <b>ฉลองวันเกิดวาว่า</b> — ครบ 5,000 บาทภายในอาทิตย์นี้ Sponsor ทบเพิ่มให้อีก 5,000 บาท
             </div>
             <!-- ✏️ อัปเดตยอด: แก้ data-now (data-goal คือเป้า) -->
-            <div class="mp" data-now="0" data-goal="5000">
+            <div class="mp" data-now="1800" data-goal="5000">
               <div class="mp-bar"><div class="mp-fill"></div></div>
-              <div class="mp-txt"><span>SIGNAL POWER</span><b><span class="mp-now">0</span> / 5,000 บาท</b></div>
+              <div class="mp-txt"><span>SIGNAL POWER</span><b><span class="mp-now">1,800</span> / 5,000 บาท</b></div>
             </div>
           </div>
         </div>
@@ -599,12 +653,12 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       </div>
       <div class="tk-label">ยอดเหรียญสะสมทั้งหมด</div>
       <!-- ✏️ ยกยอดมาจาก token.html — แก้ที่นี่ให้ตรงกันเวลาอัปเดต -->
-      <div class="tk-big">390</div>
+      <div class="tk-big">990</div>
       <div class="tk-unit">BNK Token</div>
-      <div class="tk-updated"><span class="tk-dot"></span>อัปเดตล่าสุด: 15 มิ.ย. 2569</div>
+      <div class="tk-updated"><span class="tk-dot"></span>อัปเดตล่าสุด: 7 ส.ค. 2569</div>
 
       <div class="tk-stats">
-        <div class="tk-stat"><div class="tks-num" style="color:var(--gold-deep)">390</div><div class="tks-lbl">Token ทั้งหมด</div></div>
+        <div class="tk-stat"><div class="tks-num" style="color:var(--gold-deep)">990</div><div class="tks-lbl">Token ทั้งหมด</div></div>
         <div class="tk-stat"><div class="tks-num" style="color:var(--teal-deep)">1</div><div class="tks-lbl">กิจกรรมที่รอใช้</div></div>
         <div class="tk-stat"><div class="tks-num" style="color:var(--pink-deep)">0</div><div class="tks-lbl">ใช้ไปแล้ว</div></div>
       </div>
@@ -628,6 +682,13 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
             🕐 อัปเดตล่าสุด: <span id="stmtUpdated">—</span>
           </div>
         </div>
+        <div class="stmt-clear">
+          <span class="sc-ic">✅</span>
+          <div>
+            <b>เคลียร์บัญชีเป็น 0 บาท</b>
+            สำหรับการทำกิจกรรม GE6 ของบ้านชิวาว่าแลนด์
+          </div>
+        </div>
         <div class="stmt-row">
           <span class="stmt-label">ยอดรับบริจาครวม</span>
           <span class="stmt-value plus" id="stmtTotal">฿ 0.00</span>
@@ -645,13 +706,14 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
 
       <div class="card stmt-card">
         <div class="stmt-card-title">🧾 Statement ธนาคาร</div>
-        <div class="stmt-img-wrap" id="stmtImgWrap">
-          <div class="stmt-img-ph">
-            <span class="em">📄</span>
-            Statement จะแสดงที่นี่เมื่ออัปเดต
-          </div>
+        <div class="shot stmt-shot">
+          <img src="images/ge6/statement-latest.jpg" alt="รายการเดินบัญชีเงินฝากออมทรัพย์ ttb รอบ 1–31 ก.ค. 69" loading="lazy" />
+          <div class="shot-ph"><span class="em">📄</span>Statement ล่าสุด<br><small>images/ge6/statement-latest.jpg</small></div>
         </div>
-        <p class="stmt-note" style="margin-top:12px">* อัปเดตทุก 7–14 วัน หรือเมื่อมีรายการสำคัญ</p>
+        <p class="stmt-note" style="margin-top:12px">
+          รอบบัญชี 1 – 31 ก.ค. 2569 · ไม่มีรายการเคลื่อนไหว (เริ่มต้นที่ 0 บาท)<br>
+          * อัปเดตทุก 7–14 วัน หรือเมื่อมีรายการสำคัญ
+        </p>
       </div>
 
     </div>
