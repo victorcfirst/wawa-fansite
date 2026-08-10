@@ -16,6 +16,7 @@ create table if not exists birthday_wishes (
   name       text        not null,
   message    text        not null,
   color      smallint    not null default 0,
+  photo      text,                              -- URL รูปที่แนบ (null ถ้าไม่แนบ)
   created_at timestamptz not null default now()
 );
 
@@ -39,6 +40,48 @@ create policy "public insert wishes"
 
 > **หมายเหตุ:** ไม่ได้เปิด policy `update` / `delete` ไว้ — คนทั่วไปจึงแก้หรือลบคำอวยพรของคนอื่นไม่ได้
 > ถ้าแอดมินต้องการลบข้อความไม่เหมาะสม ให้ลบผ่านหน้า **Table Editor** ใน Supabase ได้เลย
+
+---
+
+## 1.5 สร้างที่เก็บรูป (Storage bucket) — สำหรับรูปแนบในการ์ด
+
+**วิธีที่ 1 — ผ่านหน้าเว็บ (ง่ายกว่า)**
+Supabase → **Storage** → **New bucket**
+- Name: `wish-photos`
+- **Public bucket: เปิด ✅** (สำคัญ — ไม่งั้นรูปจะไม่แสดง)
+- กด Create
+
+จากนั้นไป **SQL Editor** รันอันนี้เพื่อให้คนทั่วไปอัปโหลดได้:
+
+```sql
+-- ให้ทุกคนอัปโหลดรูปเข้า bucket wish-photos ได้
+create policy "public upload wish photos"
+  on storage.objects for insert
+  with check (bucket_id = 'wish-photos');
+
+-- ให้ทุกคนดูรูปได้
+create policy "public read wish photos"
+  on storage.objects for select
+  using (bucket_id = 'wish-photos');
+```
+
+**วิธีที่ 2 — SQL ล้วน**
+
+```sql
+insert into storage.buckets (id, name, public)
+values ('wish-photos', 'wish-photos', true)
+on conflict (id) do update set public = true;
+
+create policy "public upload wish photos"
+  on storage.objects for insert with check (bucket_id = 'wish-photos');
+create policy "public read wish photos"
+  on storage.objects for select using (bucket_id = 'wish-photos');
+```
+
+> รูปจะถูก**ย่อในเบราว์เซอร์ก่อนอัปโหลด** (ด้านยาวสุดเหลือ 1000px, JPEG คุณภาพ 82%)
+> ไฟล์ที่ขึ้นจริงมักเหลือราว 80–200KB ต่อรูป — พื้นที่ Storage ฟรี 1GB จึงรับได้หลายพันรูป
+>
+> ถ้ายังไม่สร้าง bucket หน้าเว็บยังใช้งานได้ปกติ แค่แนบรูปไม่ได้ (จะขึ้นว่า "อัปโหลดรูปไม่สำเร็จ — จะส่งเฉพาะข้อความให้นะ")
 
 ---
 

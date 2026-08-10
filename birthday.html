@@ -194,6 +194,26 @@ body.is-birthday .bd-today{display:block}
 .wf-swatch.sel{border-color:var(--ink);transform:translateY(-3px)}
 .wf-swatch.sel::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.35)}
 
+/* ── แนบรูป ── */
+.wf-photo-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  font-family:'Fredoka',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);
+  background:rgba(255,255,255,.85);border:2px dashed rgba(245,122,168,.4);
+  border-radius:14px;padding:13px;cursor:pointer;transition:.2s;
+}
+.wf-photo-btn:hover{border-color:var(--pink);background:var(--pink-pale);color:var(--pink-deep)}
+.wf-hint{font-family:'Fredoka',sans-serif;font-size:10.5px;color:var(--ink3);margin-top:6px;text-align:center}
+.wf-preview{position:relative;margin-top:10px;border-radius:14px;overflow:hidden;
+  border:2px solid rgba(245,122,168,.3);display:none}
+.wf-preview.on{display:block}
+.wf-preview img{width:100%;max-height:240px;object-fit:cover;display:block}
+.wf-preview-x{
+  position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;
+  background:rgba(0,0,0,.6);color:#fff;border:none;cursor:pointer;
+  font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.wf-preview-x:hover{background:rgba(0,0,0,.82);transform:scale(1.1)}
+
 .wf-submit{
   width:100%;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;
   color:#fff;background:linear-gradient(120deg,var(--pink),var(--pink-deep));
@@ -215,21 +235,81 @@ body.is-birthday .bd-today{display:block}
   padding:6px 16px;cursor:pointer;transition:.2s}
 .wall-refresh:hover{background:var(--pink-pale);color:var(--pink-deep);border-color:var(--pink)}
 
-.wall{columns:3;column-gap:14px}
+.wall{columns:3;column-gap:16px}
 .wish{
-  break-inside:avoid;margin-bottom:14px;padding:18px 20px;
+  break-inside:avoid;margin-bottom:18px;padding:22px 20px 16px;
   border-radius:var(--r-md);border:2px solid var(--white);
   box-shadow:var(--shadow);position:relative;
   animation:wishIn .5s cubic-bezier(.2,.9,.3,1.2) both;
+  transition:transform .25s,box-shadow .25s;
 }
 @keyframes wishIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+
+/* แถบสีบนหัวการ์ด */
 .wish::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;border-radius:var(--r-md) var(--r-md) 0 0}
+
+/* ── สก็อตเทปแปะมุมบน ── */
+.wish-tape{
+  position:absolute;top:-9px;left:50%;
+  width:64px;height:22px;
+  background:linear-gradient(105deg,rgba(255,255,255,.62),rgba(236,240,246,.5));
+  border-left:1px dashed rgba(255,255,255,.75);
+  border-right:1px dashed rgba(255,255,255,.75);
+  box-shadow:0 2px 5px rgba(80,120,160,.13);
+  backdrop-filter:blur(1px);
+  pointer-events:none;
+}
+/* เอียงสลับซ้าย/ขวาให้ดูไม่ซ้ำกัน */
+.wish:nth-child(3n+1) .wish-tape{transform:translateX(-70%) rotate(-6deg)}
+.wish:nth-child(3n+2) .wish-tape{transform:translateX(-30%) rotate(5deg)}
+.wish:nth-child(3n)   .wish-tape{transform:translateX(-50%) rotate(-2.5deg)}
+
+/* ── สติกเกอร์มุมการ์ด ── */
+.wish-sticker{
+  position:absolute;right:-8px;bottom:-8px;
+  font-size:26px;line-height:1;
+  filter:drop-shadow(0 3px 5px rgba(80,120,160,.28));
+  transform:rotate(-12deg);pointer-events:none;
+  transition:transform .3s;
+}
+
+/* ── รูปแนบในการ์ด ── */
+.wish-photo{
+  width:100%;border-radius:12px;overflow:hidden;margin-bottom:12px;
+  background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 4px 12px rgba(80,120,160,.14);
+  display:block;
+}
+.wish-photo img{
+  width:100%;max-height:230px;object-fit:cover;display:block;
+  background:var(--pink-pale);
+}
+
 .wish-msg{font-family:'Itim',cursive;font-size:15px;font-weight:400;color:var(--ink);line-height:1.75;
   margin-bottom:12px;white-space:pre-wrap;overflow-wrap:anywhere}
 .wish-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .wish-from{font-family:'Baloo 2',cursive;font-weight:700;font-size:13.5px;color:var(--ink2);overflow-wrap:anywhere}
 .wish-from::before{content:'— '}
 .wish-time{font-family:'Fredoka',sans-serif;font-size:10.5px;color:var(--ink3);white-space:nowrap}
+
+/* ── ดุ้กดิ้กตอน hover / กดบนมือถือ ── */
+@keyframes wiggle{
+  0%,100%{transform:rotate(0) scale(1.03)}
+  20%{transform:rotate(-2.2deg) scale(1.03)}
+  45%{transform:rotate(1.8deg) scale(1.035)}
+  70%{transform:rotate(-1.2deg) scale(1.03)}
+  88%{transform:rotate(.7deg) scale(1.03)}
+}
+@media(hover:hover){
+  .wish:hover{animation:wiggle .62s ease-in-out;box-shadow:0 16px 34px rgba(232,90,146,.22);z-index:3}
+  .wish:hover .wish-sticker{transform:rotate(8deg) scale(1.22)}
+}
+/* แตะบนมือถือ — JS เติมคลาส .tapped ให้ */
+.wish.tapped{animation:wiggle .62s ease-in-out;box-shadow:0 16px 34px rgba(232,90,146,.22)}
+.wish.tapped .wish-sticker{transform:rotate(8deg) scale(1.22)}
+@media(prefers-reduced-motion:reduce){
+  .wish:hover,.wish.tapped{animation:none;transform:scale(1.02)}
+}
 
 /* wish card palettes */
 .wc0{background:linear-gradient(150deg,rgba(255,227,238,.95),rgba(255,255,255,.92))}
@@ -248,9 +328,21 @@ body.is-birthday .bd-today{display:block}
 
 /* ════════ GALLERY STRIP ════════ */
 .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.gal-item{aspect-ratio:1;border-radius:var(--r-sm);overflow:hidden;border:3px solid var(--white);box-shadow:var(--shadow);transition:transform .28s}
+.gal-item{aspect-ratio:1;border-radius:var(--r-sm);overflow:hidden;border:3px solid var(--white);box-shadow:var(--shadow);transition:transform .28s;position:relative}
 .gal-item:hover{transform:translateY(-5px) rotate(-1.5deg)}
-.gal-item img{width:100%;height:100%;object-fit:cover;display:block}
+/* รูปจางไว้ก่อน แล้วค่อยโชว์เมื่อโหลดเสร็จ
+   (ใช้ opacity ไม่ใช่ display:none — เพราะ display:none จะทำให้ loading="lazy" ไม่ยอมโหลดรูปเลย) */
+.gal-item img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
+.gal-item img.loaded{opacity:1}
+/* placeholder ทับอยู่ข้างบน ซ่อนเมื่อรูปโหลดสำเร็จ */
+.gal-ph{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  background:linear-gradient(150deg,var(--pink-pale),var(--gold-pale));
+  border:2px dashed rgba(245,122,168,.45);border-radius:calc(var(--r-sm) - 3px);
+  font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;color:var(--pink-deep);letter-spacing:1px;
+  transition:opacity .4s;
+}
+.gal-ph .em{font-size:30px}
 
 /* ════════ SHARE ════════ */
 .share-card{padding:26px 24px;text-align:center}
@@ -396,6 +488,17 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       </div>
     </div>
 
+    <div class="wf-row">
+      <div class="wf-label"><span>แนบรูป (ไม่บังคับ)</span></div>
+      <button class="wf-photo-btn" id="wfPhotoBtn" type="button">📷 เลือกรูปจากเครื่อง</button>
+      <input type="file" id="wfPhoto" accept="image/*" hidden />
+      <div class="wf-hint">jpg / png / webp · ระบบจะย่อรูปให้อัตโนมัติ</div>
+      <div class="wf-preview" id="wfPreview">
+        <img id="wfPreviewImg" alt="รูปที่แนบ" />
+        <button class="wf-preview-x" id="wfPreviewX" type="button" aria-label="ลบรูป">✕</button>
+      </div>
+    </div>
+
     <button class="wf-submit" id="wfSubmit">🎁 ส่งคำอวยพร</button>
     <div class="wf-msg" id="wfFeedback"></div>
   </div>
@@ -421,13 +524,14 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     <div><div class="sec-title">ภาพความทรงจำ</div><div class="sec-sub">OUR FAVORITE MOMENTS</div></div>
   </div>
 
+  <!-- วางรูปที่ images/BD1.jpg … BD6.jpg — ถ้ายังไม่มีจะโชว์กรอบ placeholder ให้ -->
   <div class="gal reveal">
-    <div class="gal-item"><img src="images/wawa-1.jpg" alt="วาว่า" loading="lazy" /></div>
-    <div class="gal-item"><img src="images/wawa-2.jpg" alt="วาว่า" loading="lazy" /></div>
-    <div class="gal-item"><img src="images/wawa-3.jpg" alt="วาว่า" loading="lazy" /></div>
-    <div class="gal-item"><img src="images/wawa-4.jpg" alt="วาว่า" loading="lazy" /></div>
-    <div class="gal-item"><img src="images/wawa-5.jpg" alt="วาว่า" loading="lazy" /></div>
-    <div class="gal-item"><img src="images/wawa-6.jpg" alt="วาว่า" loading="lazy" /></div>
+    <div class="gal-item"><img src="images/BD1.jpg" alt="วาว่า" loading="lazy" /><div class="gal-ph"><span class="em">🎂</span>BD1</div></div>
+    <div class="gal-item"><img src="images/BD2.jpg" alt="วาว่า" loading="lazy" /><div class="gal-ph"><span class="em">🎈</span>BD2</div></div>
+    <div class="gal-item"><img src="images/BD3.jpg" alt="วาว่า" loading="lazy" /><div class="gal-ph"><span class="em">🎁</span>BD3</div></div>
+    <div class="gal-item"><img src="images/BD4.jpg" alt="วาว่า" loading="lazy" /><div class="gal-ph"><span class="em">💕</span>BD4</div></div>
+    <div class="gal-item"><img src="images/BD5.jpg" alt="วาว่า" loading="lazy" /><div class="gal-ph"><span class="em">⭐</span>BD5</div></div>
+    <div class="gal-item"><img src="images/BD6.jpg" alt="วาว่า" loading="lazy" /><div class="gal-ph"><span class="em">🐶</span>BD6</div></div>
   </div>
 
   <!-- ── SHARE ── -->
@@ -456,6 +560,9 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
 const SB_URL = 'https://hvxtghogabswrrficaxa.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2eHRnaG9nYWJzd3JyZmljYXhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NTc5NTEsImV4cCI6MjA5ODAzMzk1MX0.J6UFi4qlzOiHck5XCt1cZqIgJCLd7YCxgGH5etC2aEg';
 const TABLE       = 'birthday_wishes';
+const BUCKET      = 'wish-photos';            // Supabase Storage bucket (public)
+const MAX_EDGE    = 1000;                     // ย่อรูปด้านยาวสุดเหลือกี่ px
+const MAX_UPLOAD  = 5 * 1024 * 1024;          // รับไฟล์ก่อนย่อไม่เกิน 5MB
 const LOCAL_KEY   = 'wawa_wishes_local_v1';   // fallback ถ้า Supabase ล่ม
 const SENT_KEY    = 'wawa_wish_sent_v1';      // กันสแปม (กดรัวๆ)
 const PROFILE_KEY = 'wawa_profile_v1';        // ใช้ชื่อร่วมกับหน้าเกม
@@ -474,6 +581,61 @@ async function sbFetch(path, opts = {}) {
   });
   if (!r.ok) throw new Error(await r.text());
   return r.json().catch(() => null);
+}
+
+/* ── ย่อ+บีบอัดรูปฝั่งเบราว์เซอร์ ก่อนอัปโหลด ──
+   คืน { blob, type } · ถ้าบีบแล้วไม่เล็กลง จะใช้ไฟล์เดิมแทน (กันไฟล์บวม) */
+const KEEPABLE = ['image/jpeg','image/webp','image/png'];
+
+function resizeImage(file){
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width:w, height:h } = img;
+      if (Math.max(w,h) > MAX_EDGE){
+        const k = MAX_EDGE / Math.max(w,h);
+        w = Math.round(w*k); h = Math.round(h*k);
+      }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const cx = c.getContext('2d');
+      cx.fillStyle = '#fff'; cx.fillRect(0,0,w,h);   // กันพื้นดำเวลาแปลง png โปร่งใส
+      cx.drawImage(img, 0, 0, w, h);
+      c.toBlob(b => {
+        if(!b) return reject(new Error('แปลงรูปไม่สำเร็จ'));
+        // ถ้ารูปเดิมเล็กอยู่แล้ว การ re-encode อาจทำให้ไฟล์ใหญ่ขึ้น — เลือกอันที่เล็กกว่า
+        if(b.size >= file.size && KEEPABLE.includes(file.type)){
+          resolve({ blob:file, type:file.type });
+        } else {
+          resolve({ blob:b, type:'image/jpeg' });
+        }
+      }, 'image/jpeg', 0.82);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('เปิดไฟล์รูปไม่ได้')); };
+    img.src = url;
+  });
+}
+
+/* ── อัปโหลดขึ้น Supabase Storage แล้วคืน public URL ── */
+const EXT = { 'image/jpeg':'jpg', 'image/webp':'webp', 'image/png':'png' };
+
+async function uploadPhoto(blob, type){
+  const mime = EXT[type] ? type : 'image/jpeg';
+  const name = `${Date.now()}-${Math.random().toString(36).slice(2,9)}.${EXT[mime]}`;
+  const r = await fetch(`${SB_URL}/storage/v1/object/${BUCKET}/${name}`, {
+    method: 'POST',
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY,
+      'Content-Type': mime,
+      'x-upsert': 'false'
+    },
+    body: blob
+  });
+  if(!r.ok) throw new Error(await r.text());
+  return `${SB_URL}/storage/v1/object/public/${BUCKET}/${name}`;
 }
 
 /* ════════════ DECOR ════════════ */
@@ -592,6 +754,40 @@ function feedback(text, kind){
   elFb.className = 'wf-msg' + (kind ? ' ' + kind : '');
 }
 
+/* ── เลือก / ลบรูปแนบ ── */
+const elPhoto    = document.getElementById('wfPhoto');
+const elPrev     = document.getElementById('wfPreview');
+const elPrevImg  = document.getElementById('wfPreviewImg');
+let PHOTO_BLOB = null, PHOTO_TYPE = 'image/jpeg';
+
+document.getElementById('wfPhotoBtn').addEventListener('click', ()=> elPhoto.click());
+
+elPhoto.addEventListener('change', async ()=>{
+  const f = elPhoto.files && elPhoto.files[0];
+  if(!f) return;
+  if(!f.type.startsWith('image/')){ feedback('ไฟล์นี้ไม่ใช่รูปภาพนะ 🙏','err'); elPhoto.value=''; return; }
+  if(f.size > MAX_UPLOAD){ feedback('รูปใหญ่เกิน 5MB ลองเลือกรูปเล็กลงนะ 🙏','err'); elPhoto.value=''; return; }
+  try {
+    feedback('กำลังย่อรูป...','');
+    const out = await resizeImage(f);
+    PHOTO_BLOB = out.blob; PHOTO_TYPE = out.type;
+    elPrevImg.src = URL.createObjectURL(PHOTO_BLOB);
+    elPrev.classList.add('on');
+    feedback('','');
+  } catch(err){
+    console.warn(err);
+    PHOTO_BLOB = null; elPhoto.value = '';
+    feedback('อ่านรูปไม่สำเร็จ ลองรูปอื่นนะ 😢','err');
+  }
+});
+
+document.getElementById('wfPreviewX').addEventListener('click', ()=>{
+  PHOTO_BLOB = null;
+  elPhoto.value = '';
+  elPrev.classList.remove('on');
+  elPrevImg.removeAttribute('src');
+});
+
 elSub.addEventListener('click', async ()=>{
   const name = elName.value.trim();
   const msg  = elMsg.value.trim();
@@ -607,9 +803,21 @@ elSub.addEventListener('click', async ()=>{
   }
 
   elSub.disabled = true;
-  feedback('กำลังส่ง...','');
 
-  const row = { name, message: msg, color: COLOR, created_at: new Date().toISOString() };
+  // อัปโหลดรูปก่อน (ถ้ามี) — ถ้าอัปไม่ผ่าน ยังส่งข้อความต่อได้
+  let photoUrl = null;
+  if(PHOTO_BLOB){
+    feedback('กำลังอัปโหลดรูป...','');
+    try {
+      photoUrl = await uploadPhoto(PHOTO_BLOB, PHOTO_TYPE);
+    } catch(err){
+      console.warn('photo upload failed', err);
+      feedback('อัปโหลดรูปไม่สำเร็จ — จะส่งเฉพาะข้อความให้นะ 🙏','err');
+    }
+  }
+
+  feedback('กำลังส่ง...','');
+  const row = { name, message: msg, color: COLOR, photo: photoUrl, created_at: new Date().toISOString() };
 
   try {
     await sbFetch(TABLE, {
@@ -626,6 +834,12 @@ elSub.addEventListener('click', async ()=>{
     localStorage.setItem(LOCAL_KEY, JSON.stringify(local));
     feedback('บันทึกไว้ในเครื่องแล้ว (เชื่อมต่อเซิร์ฟเวอร์ไม่ได้) 💾','ok');
   }
+
+  // ล้างรูปที่แนบไว้
+  PHOTO_BLOB = null;
+  elPhoto.value = '';
+  elPrev.classList.remove('on');
+  elPrevImg.removeAttribute('src');
 
   localStorage.setItem(SENT_KEY, String(Date.now()));
   // จำชื่อไว้ให้ครั้งหน้า
@@ -656,9 +870,36 @@ function timeAgo(iso){
   return new Date(t).toLocaleDateString('th-TH', { day:'numeric', month:'short' });
 }
 
+// สติกเกอร์มุมการ์ด — สุ่มแบบคงที่ต่อการ์ด (hash จากชื่อ+เวลา) จะได้ไม่เปลี่ยนตอนรีเฟรช
+const STICKERS = ['🌵','🎀','⭐','🍓','🌷','🧁','🐶','🎈','💗','🍰','🌈','🐾'];
+function stickerFor(w){
+  const s = String(w.name) + String(w.created_at);
+  let h = 0;
+  for(let i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) >>> 0; }
+  return STICKERS[h % STICKERS.length];
+}
+
 function wishNode(w){
   const card = document.createElement('div');
   card.className = 'wish wc' + (Number(w.color) >= 0 && Number(w.color) <= 4 ? Number(w.color) : 0);
+
+  // สก็อตเทปแปะหัวการ์ด
+  const tape = document.createElement('div');
+  tape.className = 'wish-tape';
+  card.appendChild(tape);
+
+  // รูปแนบ (ถ้ามี)
+  if(w.photo && /^https?:\/\//i.test(w.photo)){
+    const ph = document.createElement('div');
+    ph.className = 'wish-photo';
+    const pi = document.createElement('img');
+    pi.src = w.photo;
+    pi.alt = 'รูปจาก ' + w.name;
+    pi.loading = 'lazy';
+    pi.addEventListener('error', ()=> ph.remove());   // รูปเสีย → ตัดกรอบทิ้ง
+    ph.appendChild(pi);
+    card.appendChild(ph);
+  }
 
   const msg = document.createElement('div');
   msg.className = 'wish-msg';
@@ -677,6 +918,13 @@ function wishNode(w){
 
   foot.append(from, time);
   card.append(msg, foot);
+
+  // สติกเกอร์มุมล่างขวา
+  const st = document.createElement('div');
+  st.className = 'wish-sticker';
+  st.textContent = stickerFor(w);
+  card.appendChild(st);
+
   return card;
 }
 
@@ -718,10 +966,35 @@ async function loadWall(){
     }
   }
 }
+// แตะการ์ดบนมือถือ → ดุ้กดิ้ก (hover ใช้ไม่ได้บนจอสัมผัส)
+wall.addEventListener('pointerdown', e=>{
+  if(e.pointerType === 'mouse') return;        // เดสก์ท็อปใช้ :hover อยู่แล้ว
+  const card = e.target.closest('.wish');
+  if(!card) return;
+  card.classList.remove('tapped');
+  void card.offsetWidth;                        // reflow เพื่อรีสตาร์ท animation
+  card.classList.add('tapped');
+}, { passive:true });
+wall.addEventListener('animationend', e=>{
+  if(e.target.classList.contains('wish')) e.target.classList.remove('tapped');
+});
+
 loadWall();
 document.getElementById('wallRefresh').addEventListener('click', loadWall);
 // รีเฟรชอัตโนมัติทุก 60 วิ เมื่อแท็บเปิดอยู่
 setInterval(()=>{ if(!document.hidden) loadWall(); }, 60000);
+
+/* ════════════ GALLERY ════════════ */
+// รูปโหลดสำเร็จ → โชว์รูปแล้วซ่อน placeholder (ถ้าไม่มีไฟล์ ก็คงกรอบ BD1–BD6 ไว้)
+document.querySelectorAll('.gal-item img').forEach(img=>{
+  const show = ()=>{
+    img.classList.add('loaded');
+    const ph = img.nextElementSibling;
+    if(ph) ph.style.display = 'none';
+  };
+  if(img.complete && img.naturalWidth > 0) show();
+  else img.addEventListener('load', show);
+});
 
 /* ════════════ SHARE ════════════ */
 document.getElementById('shareBtn').addEventListener('click', function(){
