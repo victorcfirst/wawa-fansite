@@ -357,6 +357,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .nav-links{display:none;flex-direction:column;width:100%;gap:4px;margin-top:10px;
     padding-top:10px;border-top:1.5px solid var(--lilac-pale);flex-wrap:wrap}
   .nav-links.open{display:flex}
+  /* เปิดเมนูเต็มแล้ว ไม่ต้องมีทางลัดซ้ำอีก เหลือแค่ปุ่มปิด */
+  nav:has(.nav-links.open) .nav-primary > a{display:none}
   .nav-links a{font-size:14px;padding:10px 14px;border-radius:14px}
   nav{flex-wrap:wrap}
   .ge6-cd{padding:24px 18px}
@@ -410,6 +412,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   </div>
   <div class="nav-links" id="navLinks">
     <a href="index.html">หน้าหลัก</a>
+    <a href="birthday.html">🎂 อวยพรวันเกิด</a>
     <a href="token.html">🪙 Token สะสม</a>
     <a href="activity.html">🎮 กิจกรรม</a>
     <a href="ge6.html" class="active">🗳️ GE6</a>

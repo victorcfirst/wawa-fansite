@@ -269,6 +269,8 @@ footer img{width:52px;height:52px;object-fit:contain;margin-bottom:10px;
   .nav-links{display:none;flex-direction:column;width:100%;gap:4px;margin-top:10px;
     padding-top:10px;border-top:1.5px solid var(--pink-pale)}
   .nav-links.open{display:flex}
+  /* เปิดเมนูเต็มแล้ว ไม่ต้องมีทางลัดซ้ำอีก เหลือแค่ปุ่มปิด */
+  nav:has(.nav-links.open) .nav-primary > a{display:none}
   .nav-links a{font-size:14px;padding:10px 14px;border-radius:14px}
   .brand-sub{font-size:8.5px}
   .stats-row{grid-template-columns:1fr}

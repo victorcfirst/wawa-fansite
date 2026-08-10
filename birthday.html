@@ -226,6 +226,24 @@ body.is-birthday .bd-today{display:block}
 .wf-msg.ok{color:#1a7a44}
 .wf-msg.err{color:#c0392b}
 
+/* ════════ สปอนเซอร์สมทบ token ════════ */
+.sponsor-note{
+  display:flex;align-items:flex-start;gap:13px;
+  margin-top:22px;padding:18px 22px;
+  background:linear-gradient(120deg,rgba(255,248,224,.92),rgba(255,227,238,.85));
+  border-color:rgba(232,192,96,.55);
+}
+.sponsor-note .sn-star{font-size:22px;line-height:1.3;flex-shrink:0;
+  filter:drop-shadow(0 3px 6px rgba(200,152,10,.35))}
+.sponsor-note p{font-size:13px;font-weight:300;color:var(--ink2);line-height:1.85;margin:0}
+.sponsor-note b{font-family:'Baloo 2',cursive;font-weight:700;font-size:14.5px;color:var(--gold-deep)}
+.sn-deadline{
+  display:inline-block;margin-left:4px;
+  font-family:'Fredoka',sans-serif;font-size:11.5px;font-weight:500;
+  color:var(--pink-deep);background:rgba(255,255,255,.75);
+  padding:2px 12px;border-radius:20px;white-space:nowrap;
+}
+
 /* ════════ WISH WALL ════════ */
 .wall-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
 .wall-count{font-family:'Baloo 2',cursive;font-weight:700;font-size:15px;color:var(--pink-deep);display:flex;align-items:center;gap:7px}
@@ -371,6 +389,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .nav-links{display:none;flex-direction:column;width:100%;gap:4px;margin-top:10px;
     padding-top:10px;border-top:1.5px solid var(--pink-pale);flex-wrap:wrap}
   .nav-links.open{display:flex}
+  /* เปิดเมนูเต็มแล้ว ไม่ต้องมีทางลัดซ้ำอีก เหลือแค่ปุ่มปิด */
+  nav:has(.nav-links.open) .nav-primary > a{display:none}
   .nav-links a{font-size:14px;padding:10px 14px;border-radius:14px}
   .brand-sub{display:none}
   .bd-hero{padding:28px 16px 16px}
@@ -416,6 +436,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     <a href="birthday.html" class="active">🎂 อวยพรวันเกิด</a>
     <a href="token.html">🪙 Token สะสม</a>
     <a href="activity.html">🎮 กิจกรรม</a>
+    <a href="ge6.html">🗳️ GE6</a>
   </div>
 </nav>
 
@@ -501,6 +522,16 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
 
     <button class="wf-submit" id="wfSubmit">🎁 ส่งคำอวยพร</button>
     <div class="wf-msg" id="wfFeedback"></div>
+  </div>
+
+  <!-- ── สปอนเซอร์สมทบ token ── -->
+  <div class="card sponsor-note reveal">
+    <span class="sn-star">⭐</span>
+    <p>
+      ทุกคำอวยพร จะได้รับการสนับสนุนจาก <b>Sponsor</b> เข้าวอลเลทบ้านชิวาว่าแลนด์
+      <b>การ์ดละ 2 token</b> (สูงสุด 100 token)
+      <span class="sn-deadline">นับยอดถึงคืนวันศุกร์ที่ 14 ส.ค. 2569</span>
+    </p>
   </div>
 
   <!-- ── WISH WALL ── -->
