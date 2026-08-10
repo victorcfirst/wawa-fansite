@@ -38,6 +38,15 @@ create policy "public insert wishes"
   with check (true);
 ```
 
+> ⚠️ **ถ้าเคยสร้างตารางไว้ก่อนหน้านี้แล้ว** `create table if not exists` จะข้ามไปเฉยๆ ไม่เพิ่มคอลัมน์ `photo` ให้
+> ต้องรันบรรทัดนี้เพิ่มเองหนึ่งครั้ง (รันซ้ำได้ ไม่พัง):
+>
+> ```sql
+> alter table birthday_wishes add column if not exists photo text;
+> ```
+>
+> เช็กว่ามีแล้วหรือยัง: Table Editor → `birthday_wishes` → ดูว่ามีคอลัมน์ `photo` ไหม
+
 > **หมายเหตุ:** ไม่ได้เปิด policy `update` / `delete` ไว้ — คนทั่วไปจึงแก้หรือลบคำอวยพรของคนอื่นไม่ได้
 > ถ้าแอดมินต้องการลบข้อความไม่เหมาะสม ให้ลบผ่านหน้า **Table Editor** ใน Supabase ได้เลย
 

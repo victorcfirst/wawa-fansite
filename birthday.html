@@ -819,12 +819,23 @@ elSub.addEventListener('click', async ()=>{
   feedback('กำลังส่ง...','');
   const row = { name, message: msg, color: COLOR, photo: photoUrl, created_at: new Date().toISOString() };
 
+  const insert = body => sbFetch(TABLE, {
+    method: 'POST',
+    headers: { 'Prefer': 'return=minimal' },
+    body: JSON.stringify(body)
+  });
+
   try {
-    await sbFetch(TABLE, {
-      method: 'POST',
-      headers: { 'Prefer': 'return=minimal' },
-      body: JSON.stringify(row)
-    });
+    try {
+      await insert(row);
+    } catch(err){
+      // ตารางยังไม่มีคอลัมน์ photo → ส่งใหม่แบบไม่มีรูป ดีกว่าปล่อยให้คำอวยพรหลุด
+      const { photo, ...noPhoto } = row;
+      if(!HAS_PHOTO_COL) throw err;
+      console.warn('insert พร้อม photo ไม่ผ่าน — ลองใหม่แบบไม่มีรูป', err);
+      await insert(noPhoto);
+      HAS_PHOTO_COL = false;
+    }
     feedback('ส่งคำอวยพรเรียบร้อยแล้ว ขอบคุณนะ! 🎉','ok');
   } catch(err){
     // fallback: เก็บในเครื่อง เพื่อไม่ให้คำอวยพรหาย
@@ -944,11 +955,24 @@ function renderWall(list){
   wall.appendChild(frag);
 }
 
+// ตารางรุ่นแรกยังไม่มีคอลัมน์ photo — ถ้าดึงแล้วพัง จะสลับไปแบบไม่มีรูปให้เอง
+let HAS_PHOTO_COL = true;
+
 async function loadWall(){
   try {
-    const rows = await sbFetch(
-      `${TABLE}?select=name,message,color,created_at&order=created_at.desc&limit=300`
-    );
+    let rows;
+    try {
+      rows = await sbFetch(
+        `${TABLE}?select=name,message,color,photo,created_at&order=created_at.desc&limit=300`
+      );
+    } catch(err){
+      if(!HAS_PHOTO_COL) throw err;
+      console.warn('ตารางยังไม่มีคอลัมน์ photo — โหลดแบบไม่มีรูปแทน', err);
+      HAS_PHOTO_COL = false;
+      rows = await sbFetch(
+        `${TABLE}?select=name,message,color,created_at&order=created_at.desc&limit=300`
+      );
+    }
     renderWall(rows || []);
   } catch(err){
     console.warn('supabase read failed, using local', err);
