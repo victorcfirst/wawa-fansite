@@ -156,7 +156,19 @@ nav{
 .donate-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:18px;display:flex;align-items:center;gap:10px}
 .donate-title .dt-badge{font-family:'Fredoka',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(120deg,var(--ge6a),var(--ge6b));color:#fff;padding:3px 12px;border-radius:20px}
 .donate-bank{display:flex;align-items:center;gap:16px;background:var(--lilac-pale);border:1.5px solid rgba(155,89,182,.2);border-radius:16px;padding:18px 20px;margin-bottom:14px}
-.bank-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1a56db,#1034a6);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+.bank-logo{
+  width:52px;height:52px;border-radius:14px;background:#fff;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  overflow:hidden;box-shadow:0 3px 10px rgba(16,52,166,.18);position:relative;
+}
+.bank-logo img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
+/* ยังไม่มีไฟล์โลโก้ → โชว์ตัวอักษร ttb แทน ไม่ให้เห็นรูปแตก */
+.bank-logo-fb{
+  position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;letter-spacing:-.5px;color:#1034a6;
+}
+.bank-logo.no-img img{display:none}
+.bank-logo.no-img .bank-logo-fb{display:flex}
 .bank-info{flex:1;min-width:0}
 .bank-name{font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:3px}
 .bank-acc{font-family:'Baloo 2',cursive;font-weight:700;font-size:22px;color:var(--ink);letter-spacing:.5px;line-height:1.1}
@@ -206,11 +218,63 @@ nav{
 .act-empty{text-align:center;padding:36px 20px;color:var(--ink3);font-family:'Fredoka',sans-serif;font-size:14px}
 .act-empty .em{font-size:40px;display:block;margin-bottom:8px}
 
+/* ── ช่องใส่รูป: ยังไม่มีไฟล์ก็โชว์กรอบประ ไม่พัง ── */
+.shot{position:relative;border-radius:var(--r-sm);overflow:hidden;background:rgba(239,231,253,.35);
+  border:2px dashed rgba(155,89,182,.28);min-height:150px;display:flex}
+.shot img{width:100%;height:auto;display:block;opacity:0;transition:opacity .45s}
+.shot img.loaded{opacity:1}
+.shot.ready{border-style:solid;border-color:var(--white);background:none;box-shadow:var(--shadow)}
+.shot-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;text-align:center;padding:16px;font-family:'Fredoka',sans-serif;font-size:12px;color:var(--ink3);line-height:1.6}
+.shot-ph .em{font-size:32px}
+.shot.ready .shot-ph{display:none}
+
+/* ── ธีมกิจกรรมด้านบนสุด ── */
+.theme-block{padding:22px 22px 20px;margin-bottom:28px}
+.theme-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+.theme-name{font-family:'Mali',cursive;font-weight:700;font-size:21px;color:var(--ge6b);line-height:1.25}
+.theme-desc{font-size:12.5px;font-weight:300;color:var(--ink2);line-height:1.7;margin-bottom:16px}
+.theme-shots{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.theme-shots .shot{min-height:190px}
+
+/* ── การ์ดกิจกรรมแบบมีรูป ── */
+.act-card.has-shot{flex-direction:column;gap:16px;padding:20px}
+.act-card.has-shot .act-head{display:flex;gap:16px;align-items:flex-start;width:100%}
+.act-card.has-shot .shot{width:100%}
+.act-card.has-shot:hover{transform:none;box-shadow:var(--shadow)}
+.mission-no{font-family:'Fredoka',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;color:var(--ge6b);background:var(--lilac-pale);padding:3px 10px;border-radius:12px}
+.tag-done{background:rgba(39,174,96,.15);color:#1a7a44}
+
+/* แถบความคืบหน้าของภารกิจ */
+.mp{margin-top:12px}
+.mp-bar{height:12px;border-radius:20px;background:rgba(155,89,182,.14);overflow:hidden}
+.mp-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--ge6a),var(--pink));
+  width:0;transition:width 1.1s cubic-bezier(.2,.9,.3,1)}
+.mp-fill.full{background:linear-gradient(90deg,#27ae60,#1e8449)}
+.mp-txt{display:flex;justify-content:space-between;gap:10px;margin-top:6px;
+  font-family:'Fredoka',sans-serif;font-size:11px;color:var(--ink3)}
+.mp-txt b{font-family:'Baloo 2',cursive;font-size:13px;color:var(--ink2)}
+
 /* ════════ TOKEN PANEL ════════ */
 .token-redirect{text-align:center;padding:48px 24px}
 .token-redirect .tr-coin{font-size:72px;margin-bottom:20px;display:block;animation:bob 4s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .token-redirect .tr-title{font-family:'Mali',cursive;font-weight:700;font-size:22px;color:var(--ink);margin-bottom:8px}
+.tk-coin-wrap{width:86px;height:86px;margin:0 auto 16px;animation:bob 4s ease-in-out infinite}
+.tk-coin-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(200,152,10,.3))}
+.tk-label{font-family:'Fredoka',sans-serif;font-size:11.5px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3)}
+.tk-big{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(48px,14vw,68px);line-height:1.1;
+  background:linear-gradient(120deg,var(--gold-deep),#f0b429,var(--gold-deep));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.tk-unit{font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;color:var(--ink2);margin-top:-2px}
+.tk-updated{display:inline-flex;align-items:center;gap:7px;margin-top:14px;font-family:'Fredoka',sans-serif;
+  font-size:11px;color:var(--ink3);background:rgba(239,231,253,.6);padding:5px 14px;border-radius:20px}
+.tk-dot{width:7px;height:7px;border-radius:50%;background:#27ae60;box-shadow:0 0 0 3px rgba(39,174,96,.18)}
+.tk-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}
+.tk-stat{background:rgba(255,255,255,.75);border:2px solid var(--white);border-radius:var(--r-sm);padding:14px 8px;box-shadow:var(--shadow)}
+.tks-num{font-family:'Baloo 2',cursive;font-weight:800;font-size:26px;line-height:1.1}
+.tks-lbl{font-family:'Fredoka',sans-serif;font-size:10.5px;color:var(--ink3);margin-top:2px}
 .token-redirect .tr-desc{font-size:13.5px;color:var(--ink2);margin-bottom:28px;line-height:1.75}
 .btn-ge6{display:inline-flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;text-decoration:none;padding:14px 32px;border-radius:30px;background:linear-gradient(120deg,var(--ge6a),var(--ge6b));color:#fff;box-shadow:var(--shadow-ge6);transition:.25s}
 .btn-ge6:hover{transform:translateY(-3px);box-shadow:0 18px 48px rgba(108,52,131,.4)}
@@ -246,6 +310,7 @@ nav{
 .ann-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:var(--ink);margin-bottom:6px;line-height:1.3}
 .ann-body{font-size:12.5px;font-weight:300;color:var(--ink2);line-height:1.75}
 
+.ann-shot{margin-top:14px}
 .ann-empty{text-align:center;padding:36px 20px;color:var(--ink3);font-family:'Fredoka',sans-serif;font-size:14px}
 .ann-empty .em{font-size:40px;display:block;margin-bottom:8px}
 
@@ -281,6 +346,12 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .stmt-header{flex-direction:column;gap:8px}
   .stmt-row{flex-wrap:wrap;gap:6px}
   .wrap{padding:0 14px 60px}
+  .theme-shots{grid-template-columns:1fr}
+  .act-card.has-shot{padding:18px}
+  .act-card.has-shot .act-head{gap:12px}
+  .tk-stats{gap:8px}
+  .tks-num{font-size:22px}
+  .tks-lbl{font-size:9.5px}
 }
 @media(max-width:420px){
   .cd-timer{gap:6px}
@@ -330,33 +401,33 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   <!-- ── COUNTDOWN ── -->
   <div class="card ge6-cd reveal">
     <div class="cd-label">นับถอยหลัง</div>
-    <div class="cd-event-name">วันเริ่มโหวต GE6 🗳️</div>
-    <div class="cd-target-date">1 ตุลาคม 2569 · เวลา 12:00 น.</div>
+    <div class="cd-event-name" id="cdEventName">วันเริ่มโหวต GE6 🗳️</div>
+    <div class="cd-target-date" id="cdTargetDate">1 ตุลาคม 2569</div>
     <div class="cd-timer" id="cdTimer">
       <div class="cd-unit"><span class="cd-num" id="cdD">--</span><span class="cd-u">วัน</span></div>
       <div class="cd-unit"><span class="cd-num" id="cdH">--</span><span class="cd-u">ชั่วโมง</span></div>
       <div class="cd-unit"><span class="cd-num" id="cdM">--</span><span class="cd-u">นาที</span></div>
       <div class="cd-unit"><span class="cd-num" id="cdS">--</span><span class="cd-u">วินาที</span></div>
     </div>
-    <div class="cd-done" id="cdDone">🎉 เริ่มโหวตแล้ว! ไปหนุนวาว่ากันเลย!</div>
+    <div class="cd-done" id="cdDone">🎉 ประกาศผล GE6 แล้ว — ขอบคุณทุกแรงใจนะครับ 💜</div>
 
-    <!-- ขั้นตอนสำคัญ -->
+    <!-- ขั้นตอนสำคัญ · แก้วันที่ตรง data-date แล้วข้อความจะขยับตาม -->
     <div class="ge6-steps" id="ge6Steps">
-      <div class="ge6-step" data-date="2026-09-01">
+      <div class="ge6-step" data-date="2026-07-26T00:00:00+07:00" data-name="ประกาศ GE6 📣" data-full="26 กรกฎาคม 2569">
         ประกาศ GE6
-        <span class="step-date">1 ก.ย. 2569</span>
+        <span class="step-date">26 ก.ค. 2569</span>
       </div>
-      <div class="ge6-step" data-date="2026-10-01T05:00:00Z">
+      <div class="ge6-step" data-date="2026-10-01T00:00:00+07:00" data-name="วันเริ่มโหวต GE6 🗳️" data-full="1 ตุลาคม 2569">
         เริ่มโหวต
         <span class="step-date">1 ต.ค. 2569</span>
       </div>
-      <div class="ge6-step" data-date="2026-10-31">
+      <div class="ge6-step" data-date="2026-11-12T00:00:00+07:00" data-name="วันสิ้นสุดการโหวต ⏳" data-full="12 พฤศจิกายน 2569">
         สิ้นสุดโหวต
-        <span class="step-date">31 ต.ค. 2569</span>
+        <span class="step-date">12 พ.ย. 2569</span>
       </div>
-      <div class="ge6-step" data-date="2026-11-15">
+      <div class="ge6-step" data-date="2026-11-14T00:00:00+07:00" data-name="วันประกาศผล GE6 🏆" data-full="14 พฤศจิกายน 2569">
         ประกาศผล
-        <span class="step-date">15 พ.ย. 2569</span>
+        <span class="step-date">14 พ.ย. 2569</span>
       </div>
     </div>
   </div>
@@ -364,7 +435,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   <!-- ── DONATION ── -->
   <div class="sec-head reveal">
     <div class="sec-emoji e-ge6">💜</div>
-    <div><div class="sec-title">บัญชีบ้านแฟนด้อม</div><div class="sec-sub">DONATION ACCOUNT · GE6</div></div>
+    <div><div class="sec-title">บัญชีบ้านชิวาว่าแลนด์</div><div class="sec-sub">DONATION ACCOUNT · GE6</div></div>
   </div>
 
   <div class="card donate-card reveal">
@@ -373,17 +444,19 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       <span class="dt-badge">Official</span>
     </div>
     <div class="donate-bank">
-      <div class="bank-logo">🏦</div>
+      <div class="bank-logo">
+        <img src="images/ge6/ttb-logo.png" alt="ttb" id="bankLogoImg" />
+        <span class="bank-logo-fb" aria-hidden="true">ttb</span>
+      </div>
       <div class="bank-info">
-        <div class="bank-name">ธนาคาร — กรุณาระบุชื่อธนาคาร</div>
-        <div class="bank-acc" id="bankAcc">000-0-00000-0</div>
-        <div class="bank-holder">ชื่อบัญชี: บ้านชิวาว่าแลนด์ / ChiwawaLand</div>
+        <div class="bank-name">ธนาคารทหารไทยธนชาต (TTB)</div>
+        <div class="bank-acc" id="bankAcc">924-7-11158-7</div>
+        <div class="bank-holder">ชื่อบัญชี: นาย นัฐพงษ์ คำตา</div>
       </div>
       <button class="copy-btn" id="copyBtn" onclick="copyAcc()">คัดลอก</button>
     </div>
     <p class="donate-note">
-      <b>หมายเหตุ:</b> กรุณาโอนพร้อมระบุชื่อ-นามสกุล และแจ้งสลิปในกลุ่มหรือ Openchat ทุกครั้ง
-      · เพื่อการตรวจสอบที่โปร่งใส ยอดทั้งหมดจะแสดงในแท็บ Statement
+      <b>หมายเหตุ:</b> กรุณาแจ้งสลิปใน Line Openchat หรือช่องทาง SNS ของบ้านชิวาว่าแลนด์ให้ด้วยนะคะ
     </p>
   </div>
 
@@ -403,30 +476,117 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   <!-- ═══ TAB: กิจกรรม ═══ -->
   <div class="tab-panel active" id="tab-activities">
 
-    <!-- กิจกรรมที่เปิดอยู่ / กำลังจะมา -->
-    <div class="act-section-label">🟢 กิจกรรมที่เปิดอยู่ / กำลังจะมา</div>
-    <div class="act-grid" id="openActivities">
-      <!-- placeholder — แก้ไขตรงนี้เพื่อเพิ่มกิจกรรม -->
-      <div class="card act-card">
-        <div class="act-icon" style="background:linear-gradient(135deg,#efe7fd,#d5b8f5)">🗳️</div>
-        <div class="act-body">
-          <div class="act-meta">
-            <span class="act-tag tag-upcoming">เร็วๆ นี้</span>
-            <span class="act-date">1 ต.ค. 2569 เป็นต้นไป</span>
-          </div>
-          <div class="act-name">รณรงค์โหวต GE6</div>
-          <div class="act-desc">ร่วมกันสนับสนุนวาว่า #วาว่า #GE6 ทุกแพลตฟอร์ม — รายละเอียดเพิ่มเติมจะประกาศเร็วๆ นี้</div>
+    <!-- ── ธีมรวมของกิจกรรม (ภาพรวม) ── -->
+    <div class="card theme-block reveal">
+      <div class="theme-head">
+        <span class="mission-no">Theme</span>
+        <div class="theme-name">#21SINGWithWawa</div>
+      </div>
+      <p class="theme-desc">
+        ภาพรวมกิจกรรมของบ้านชิวาว่าแลนด์ในช่วง GE6 — เดินไปทีละภารกิจพร้อมกันทั้งบ้าน
+        แต่ละด่านที่ปิดได้ คือพลังที่ส่งต่อให้วาว่าไปถึงเป้าหมาย 💜
+      </p>
+      <!-- 📌 อัปโหลดรูป 2 ใบนี้แล้วจะขึ้นเอง (ไม่มีไฟล์ = โชว์กรอบประไว้) -->
+      <div class="theme-shots">
+        <div class="shot">
+          <img src="images/ge6/theme-promo.jpg" alt="โปรโมตกิจกรรม #21SINGWithWawa" loading="lazy" />
+          <div class="shot-ph"><span class="em">🎨</span>รูปโปรโมตกิจกรรม<br><small>images/ge6/theme-promo.jpg</small></div>
+        </div>
+        <div class="shot">
+          <img src="images/ge6/theme-map.jpg" alt="แผนที่ภารกิจ #21SINGWithWawa" loading="lazy" />
+          <div class="shot-ph"><span class="em">🗺️</span>แผนที่ภารกิจ<br><small>images/ge6/theme-map.jpg</small></div>
         </div>
       </div>
     </div>
 
-    <!-- กิจกรรมที่ปิดแล้ว -->
+    <!-- กิจกรรมที่เปิดอยู่ / กำลังจะมา -->
+    <div class="act-section-label">🟢 กระดานที่เปิดอยู่ตอนนี้</div>
+    <div class="act-grid" id="openActivities">
+
+      <div class="card act-card has-shot reveal">
+        <div class="act-head">
+          <div class="act-icon" style="background:linear-gradient(135deg,#efe7fd,#d5b8f5)">⭐</div>
+          <div class="act-body">
+            <div class="act-meta">
+              <span class="mission-no">Mission 2</span>
+              <span class="act-tag tag-open">เปิดอยู่</span>
+            </div>
+            <div class="act-name">STAR SIGNAL — เติมพลังงานดวงดาว</div>
+            <div class="act-desc">
+              น้องกระบองเพชรต้องการความช่วยเหลือจากทุกคน ช่วยกันเติมพลังงานดวงดาว
+              เพื่อส่งสัญญาณตามหาเจ้าหญิงวาว่าของพวกเรา ด้วยกันเถอะ ⭐<br>
+              <b>ฉลองวันเกิดวาว่า</b> — ครบ 5,000 บาทภายในอาทิตย์นี้ Sponsor ทบเพิ่มให้อีก 5,000 บาท
+            </div>
+            <!-- ✏️ อัปเดตยอด: แก้ data-now (data-goal คือเป้า) -->
+            <div class="mp" data-now="0" data-goal="5000">
+              <div class="mp-bar"><div class="mp-fill"></div></div>
+              <div class="mp-txt"><span>SIGNAL POWER</span><b><span class="mp-now">0</span> / 5,000 บาท</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot">
+          <img src="images/ge6/mission-2.jpg" alt="Mission 2 — Star Signal" loading="lazy" />
+          <div class="shot-ph"><span class="em">🖼️</span>กระดาน Mission 2<br><small>images/ge6/mission-2.jpg</small></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- กิจกรรมที่ปิดแล้ว — ล่าสุดอยู่บนสุด -->
     <div class="act-section-label" style="background:rgba(149,165,166,.1);color:#7f8c8d">⚫ กิจกรรมที่สิ้นสุดแล้ว</div>
     <div class="act-grid" id="closedActivities">
-      <div class="act-empty">
-        <span class="em">🗂️</span>
-        ยังไม่มีกิจกรรมที่สิ้นสุดแล้ว
+
+      <div class="card act-card has-shot reveal">
+        <div class="act-head">
+          <div class="act-icon" style="background:linear-gradient(135deg,#d6f2f3,#b8e8ea)">🌵</div>
+          <div class="act-body">
+            <div class="act-meta">
+              <span class="mission-no">Mission 1</span>
+              <span class="act-tag tag-done">✓ สำเร็จแล้ว</span>
+            </div>
+            <div class="act-name">The Awakening — เติมพลังให้น้องกระบองเพชร</div>
+            <div class="act-desc">
+              ช่วยกัน Donate ช่องละ 50 บาท เพื่อปลุกให้น้องกระบองเพชรของวาว่ากลับมามีชีวิตชีวา พร้อมลุยศึก GE6<br>
+              ปิดกระดานได้ตามเป้า Sponsor ทบเพิ่มอีก 2,000 บาท · ทุกช่องโดเนทสุ่มรับรางวัลบัตรจับมือ 1 ใบ 🎁
+            </div>
+            <div class="mp" data-now="100" data-goal="100">
+              <div class="mp-bar"><div class="mp-fill"></div></div>
+              <div class="mp-txt"><span>กระดาน 100 ช่อง</span><b><span class="mp-now">100</span> / 100 ช่อง</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot">
+          <img src="images/ge6/mission-1.jpg" alt="Mission 1 — The Awakening" loading="lazy" />
+          <div class="shot-ph"><span class="em">🖼️</span>กระดาน Mission 1<br><small>images/ge6/mission-1.jpg</small></div>
+        </div>
       </div>
+
+      <div class="card act-card has-shot reveal">
+        <div class="act-head">
+          <div class="act-icon" style="background:linear-gradient(135deg,#ffe3ee,#ffc9de)">🌹</div>
+          <div class="act-body">
+            <div class="act-meta">
+              <span class="mission-no">Mission 0</span>
+              <span class="act-tag tag-done">✓ สำเร็จแล้ว</span>
+            </div>
+            <div class="act-name">#RisingWithWawa — ฉลองเซนเตอร์ป้ายแดง</div>
+            <div class="act-desc">
+              ระหว่างรอใบสมัคร GE6 ของวาว่า พวกเรามาร่วมกันฉลองตำแหน่งเซนเตอร์ป้ายแดงในเพลง
+              「Kegareteiru Shinjitsu」 ด้วยการแสดงพลังให้วาว่าเห็นว่าพวกเราพร้อมพาวาว่าไปให้ไกลในการเดินทางครั้งใหม่นี้แล้ว<br>
+              การันตี 60 บาท = 1 vote · ครบ 100 vote ทบเพิ่มอีก 100 vote เข้ากระเป๋าบ้าน 🎉
+            </div>
+            <div class="mp" data-now="100" data-goal="100">
+              <div class="mp-bar"><div class="mp-fill"></div></div>
+              <div class="mp-txt"><span>เป้าหมาย 100 vote</span><b><span class="mp-now">100</span> / 100 vote</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot">
+          <img src="images/ge6/mission-0.jpg" alt="Mission 0 — Rising With Wawa" loading="lazy" />
+          <div class="shot-ph"><span class="em">🖼️</span>กระดาน Mission 0<br><small>images/ge6/mission-0.jpg</small></div>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -434,13 +594,26 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   <!-- ═══ TAB: Token ═══ -->
   <div class="tab-panel" id="tab-token">
     <div class="card token-redirect">
-      <span class="tr-coin">🪙</span>
-      <div class="tr-title">BNK Token สะสม</div>
-      <div class="tr-desc">
-        ดูยอด Token ปัจจุบัน ประวัติการสะสม<br>
-        และรางวัลพิเศษสำหรับแฟนคลับได้ที่หน้า Token สะสม
+      <div class="tk-coin-wrap">
+        <img src="images/BNKtoken-logo-transparent.png" alt="BNK Token" class="tk-coin-img" />
       </div>
-      <a href="token.html" class="btn-ge6">🪙 ไปหน้า Token สะสม →</a>
+      <div class="tk-label">ยอดเหรียญสะสมทั้งหมด</div>
+      <!-- ✏️ ยกยอดมาจาก token.html — แก้ที่นี่ให้ตรงกันเวลาอัปเดต -->
+      <div class="tk-big">390</div>
+      <div class="tk-unit">BNK Token</div>
+      <div class="tk-updated"><span class="tk-dot"></span>อัปเดตล่าสุด: 15 มิ.ย. 2569</div>
+
+      <div class="tk-stats">
+        <div class="tk-stat"><div class="tks-num" style="color:var(--gold-deep)">390</div><div class="tks-lbl">Token ทั้งหมด</div></div>
+        <div class="tk-stat"><div class="tks-num" style="color:var(--teal-deep)">1</div><div class="tks-lbl">กิจกรรมที่รอใช้</div></div>
+        <div class="tk-stat"><div class="tks-num" style="color:var(--pink-deep)">0</div><div class="tks-lbl">ใช้ไปแล้ว</div></div>
+      </div>
+
+      <div class="tr-desc" style="margin-top:24px">
+        ดูประวัติการสะสม แผนการใช้ Token และ Wallet ของบ้าน<br>
+        ที่ตรวจสอบได้เองบน TokenX Scan
+      </div>
+      <a href="token.html" class="btn-ge6">🪙 ดูรายละเอียดหน้า Token สะสม →</a>
     </div>
   </div>
 
@@ -488,11 +661,30 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   <div class="tab-panel" id="tab-announce">
     <div class="ann-list" id="annList">
 
+      <!-- เพิ่มประกาศใหม่ตรงนี้ (ล่าสุดอยู่บนสุด) -->
+
       <div class="card ann-card">
         <span class="ann-pin">📌</span>
         <div class="ann-meta">
           <span class="ann-type type-important">สำคัญ</span>
-          <span class="ann-date">31 ก.ค. 2569</span>
+          <span class="ann-date">ฉบับที่ 1</span>
+        </div>
+        <div class="ann-title">รายละเอียดการดำเนินกิจกรรมในช่วง GE6</div>
+        <div class="ann-body">
+          ประกาศจาก ChiWaWaLand — Wawa BNK48 TH FC เรื่องแนวทางการดำเนินกิจกรรมช่วง GE6
+          ทั้งเรื่องบัญชีกลางของบ้าน การอัปเดต Wallet และ Statement ให้ตรวจสอบได้
+          รวมถึงหลักเกณฑ์การใช้ Token โหวตให้วาว่า 💜
+        </div>
+        <div class="shot ann-shot">
+          <img src="images/ge6/announce-01.jpg" alt="ประกาศจาก ChiWaWaLand ฉบับที่ 1 เรื่องรายละเอียดการดำเนินกิจกรรมในช่วง GE6" loading="lazy" />
+          <div class="shot-ph"><span class="em">📄</span>ประกาศฉบับที่ 1<br><small>images/ge6/announce-01.jpg</small></div>
+        </div>
+      </div>
+
+      <div class="card ann-card">
+        <span class="ann-pin">📌</span>
+        <div class="ann-meta">
+          <span class="ann-type type-info">ข้อมูล</span>
         </div>
         <div class="ann-title">เปิดหน้า GE6 อย่างเป็นทางการ</div>
         <div class="ann-body">
@@ -501,7 +693,6 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
         </div>
       </div>
 
-      <!-- เพิ่มประกาศใหม่ด้านบน (ล่าสุดอยู่บนสุด) -->
 
     </div>
   </div>
@@ -544,17 +735,29 @@ navToggle.addEventListener('click',()=>{
 const ro = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
-/* ── countdown ── */
-const VOTE_START = new Date('2026-10-01T05:00:00Z'); // 12:00 ICT
+/* ── countdown ──
+   นับไปหา "หมุดถัดไป" ที่ยังมาไม่ถึงเสมอ — พอเริ่มโหวตแล้วจะเปลี่ยนไปนับวันปิดโหวต
+   แล้วต่อด้วยวันประกาศผลให้เอง ไม่ต้องมาแก้มือ */
+const STEPS = [...document.querySelectorAll('.ge6-step')].map(s => ({
+  time: new Date(s.dataset.date).getTime(),
+  name: s.dataset.name,
+  full: s.dataset.full
+}));
+
+function nextStep(now){ return STEPS.find(s => s.time > now) || null; }
 
 function updateCd(){
-  const now = Date.now();
-  const diff = VOTE_START.getTime() - now;
-  if(diff <= 0){
+  const now  = Date.now();
+  const step = nextStep(now);
+  if(!step){
     document.getElementById('cdTimer').style.display='none';
     document.getElementById('cdDone').style.display='block';
     return;
   }
+  document.getElementById('cdEventName').textContent  = step.name;
+  document.getElementById('cdTargetDate').textContent = step.full;
+
+  const diff = step.time - now;
   const s = Math.floor(diff/1000);
   const d = Math.floor(s/86400);
   const h = Math.floor((s%86400)/3600);
@@ -598,6 +801,43 @@ function copyAcc(){
     setTimeout(()=>{btn.textContent='คัดลอก';btn.classList.remove('copied')},2200);
   });
 }
+
+/* ── ช่องใส่รูป: ไฟล์มาถึงค่อยเปิดเผย ไม่งั้นคงกรอบประไว้ ──
+   ใช้ opacity ไม่ใช่ display:none เพราะ display:none ทำให้ loading="lazy" ไม่ยอมโหลด */
+document.querySelectorAll('.shot img').forEach(img=>{
+  const show = ()=>{ img.classList.add('loaded'); img.closest('.shot').classList.add('ready'); };
+  if(img.complete && img.naturalWidth > 0) show();
+  else img.addEventListener('load', show);
+});
+
+/* ── โลโก้ธนาคาร: ยังไม่มีไฟล์ → ใช้ตัวอักษรแทน ── */
+(function(){
+  const img = document.getElementById('bankLogoImg');
+  if(!img) return;
+  const fallback = ()=> img.parentElement.classList.add('no-img');
+  img.addEventListener('error', fallback);
+  if(img.complete && img.naturalWidth === 0) fallback();
+})();
+
+/* ── แถบความคืบหน้าภารกิจ: วิ่งตอนเลื่อนมาเห็น ── */
+(function(){
+  const bars = document.querySelectorAll('.mp');
+  if(!bars.length) return;
+  const fill = mp => {
+    const now  = Number(mp.dataset.now)  || 0;
+    const goal = Number(mp.dataset.goal) || 1;
+    const pct  = Math.max(0, Math.min(100, now / goal * 100));
+    const bar  = mp.querySelector('.mp-fill');
+    bar.style.width = pct + '%';
+    if(pct >= 100) bar.classList.add('full');
+    const label = mp.querySelector('.mp-now');
+    if(label) label.textContent = now.toLocaleString('th-TH');
+  };
+  const io = new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){ fill(e.target); io.unobserve(e.target); }
+  }),{threshold:.35});
+  bars.forEach(b=>io.observe(b));
+})();
 
 /* ── statement last-updated (update this string manually) ── */
 document.getElementById('stmtUpdated').textContent = '31 ก.ค. 2569';
