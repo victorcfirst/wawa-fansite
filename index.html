@@ -74,13 +74,11 @@ nav{
 .nav-links .nav-token-full{display:inline-block;background:linear-gradient(120deg,#e8c060,#c89020);color:#fff;font-weight:600}
 /* primary cluster (token + hamburger) — hidden on desktop */
 .nav-primary{display:none;align-items:center;gap:8px}
-.nav-token{display:flex;align-items:center;justify-content:center;width:40px;height:40px;
-  text-decoration:none;border-radius:50%;background:linear-gradient(135deg,#7b2fff,#5000d6);
-  box-shadow:0 4px 12px rgba(80,0,214,.35)}
-.nav-token img{width:26px;height:26px;object-fit:contain}
-.nav-act{display:flex;align-items:center;justify-content:center;width:40px;height:40px;
-  border-radius:30px;text-decoration:none;font-size:18px;flex-shrink:0;
-  background:linear-gradient(120deg,#f57aa8,#e85a92);box-shadow:0 4px 12px rgba(232,90,146,.3)}
+/* ทางลัดบนมือถือ — สลับตามเรื่องที่กำลังเร่งอยู่ช่วงนี้ */
+.nav-bd,.nav-ge6{display:flex;align-items:center;justify-content:center;width:40px;height:40px;
+  border-radius:50%;text-decoration:none;font-size:19px;flex-shrink:0}
+.nav-bd{background:linear-gradient(120deg,#f57aa8,#e85a92);box-shadow:0 4px 12px rgba(232,90,146,.32)}
+.nav-ge6{background:linear-gradient(120deg,#9b59b6,#6c3483);box-shadow:0 4px 12px rgba(108,52,131,.32)}
 .nav-toggle{width:42px;height:38px;border:none;border-radius:12px;cursor:pointer;
   background:var(--pink-pale);display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:4px;padding:0;transition:.2s}
@@ -345,6 +343,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .nav-links{display:none;flex-direction:column;width:100%;gap:4px;margin-top:10px;
     padding-top:10px;border-top:1.5px solid var(--pink-pale)}
   .nav-links.open{display:flex}
+  /* เปิดเมนูเต็มแล้ว ไม่ต้องมีทางลัดซ้ำอีก เหลือแค่ปุ่มปิด */
+  nav:has(.nav-links.open) .nav-primary > a{display:none}
   .nav-links a{font-size:14px;padding:10px 14px;border-radius:14px}
   .nav-links .nav-token-full{display:block;background:linear-gradient(120deg,#e8c060,#c89020);color:#fff;font-weight:600}
   .countdown-wrap,.links-grid{grid-template-columns:1fr}
@@ -392,8 +392,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   </a>
   <!-- เมนูหลัก (โชว์เด่นเสมอ) -->
   <div class="nav-primary">
-    <a href="token.html" class="nav-token" aria-label="Token สะสม"><img src="images/BNKtoken-logo-transparent.png" alt="BNK Token"></a>
-    <a href="activity.html" class="nav-act" aria-label="กิจกรรม">🎮</a>
+    <a href="birthday.html" class="nav-bd" aria-label="อวยพรวันเกิดวาว่า">🎂</a>
+    <a href="ge6.html" class="nav-ge6" aria-label="GE6">🗳️</a>
     <button class="nav-toggle" id="navToggle" aria-label="เมนู">
       <span></span><span></span><span></span>
     </button>
