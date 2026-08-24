@@ -163,6 +163,24 @@ nav{
 body.is-birthday .cd-timer,body.is-birthday .cd-label{display:none}
 body.is-birthday .bd-today{display:block}
 
+/* หลังวันเกิดผ่านไปแล้ว → สลับเป็นโหมดขอบคุณเอง */
+.bd-thanks{display:none;text-align:center}
+.bd-thanks .bt-em{font-size:58px;display:block;margin-bottom:10px;animation:cakeBob 3.2s ease-in-out infinite}
+.bd-thanks .bt-tx{font-family:'Mali',cursive;font-weight:700;font-size:clamp(20px,5.2vw,30px);color:#fff;line-height:1.35}
+.bd-thanks .bt-sub{font-family:'Fredoka',sans-serif;font-size:13px;color:rgba(255,255,255,.92);margin-top:10px;line-height:1.9}
+.bd-thanks .bt-sub b{font-family:'Baloo 2',cursive;font-weight:800;font-size:19px;color:#fff}
+body.is-after .cd-timer,body.is-after .cd-label,body.is-after .bd-today{display:none}
+body.is-after .bd-thanks{display:block}
+/* สลับข้อความหัวเรื่องตามช่วงเวลา */
+.post-only{display:none}
+body.is-after .pre-only{display:none}
+body.is-after .post-only{display:inline-flex}
+body.is-after span.post-only{display:inline}
+.late-note{
+  font-family:'Fredoka',sans-serif;font-size:12.5px;color:var(--ink3);
+  text-align:center;line-height:1.8;margin:-6px 0 16px;
+}
+
 /* ════════ SECTION ════════ */
 .sec-head{display:flex;align-items:center;gap:13px;margin:52px 0 20px}
 .sec-emoji{width:46px;height:46px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:var(--shadow)}
@@ -442,7 +460,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
 
 <!-- ░░ HERO ░░ -->
 <header class="bd-hero">
-  <div class="bd-tag">🎂 Wawa's Birthday · 11 August</div>
+  <div class="bd-tag pre-only">🎂 Wawa's Birthday · 11 August</div>
+  <div class="bd-tag post-only">💐 ขอบคุณทุกคำอวยพร · 11 สิงหาคม 2569</div>
 
   <div class="bd-portrait">
     <span class="bd-crown">👑</span>
@@ -451,9 +470,9 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     </div>
   </div>
 
-  <div class="bd-hbd">Happy Birthday</div>
+  <div class="bd-hbd"><span class="pre-only">Happy Birthday</span><span class="post-only">Thank You</span></div>
   <h1 class="bd-name">วาว่า</h1>
-  <div class="bd-age">🎉 ครบ 17 ปีแล้ว! 🎉</div>
+  <div class="bd-age"><span class="pre-only">🎉 ครบ 17 ปีแล้ว! 🎉</span><span class="post-only">🎉 ฉลองครบ 17 ปีไปด้วยกันแล้ว! 🎉</span></div>
   <div class="bd-date">11 สิงหาคม 2552 · Team BIII · BNK48 4th Generation</div>
 </header>
 
@@ -473,13 +492,48 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       <div class="bt-tx">วันนี้วันเกิดวาว่า!</div>
       <div class="bt-sub">มาร่วมส่งคำอวยพรให้น้องกันเถอะ 💕</div>
     </div>
+    <div class="bd-thanks">
+      <span class="bt-em">💐</span>
+      <div class="bt-tx">ขอบคุณแฟนคลับทุกคน<br>ที่มาร่วมอวยพรวันเกิดวาว่า</div>
+      <div class="bt-sub">
+        <span id="thanksLine"><b><span id="thanksCount">–</span></b> คำอวยพรจากพวกเราทุกคน ส่งถึงน้องเรียบร้อยแล้ว 💕<br></span>
+        กระดานยังเปิดอยู่ ใครยังไม่ได้เขียน ตามมาอวยพรย้อนหลังได้เลยนะ
+      </div>
+    </div>
+  </div>
+
+  <!-- ── สปอนเซอร์สมทบ token ── -->
+  <div class="card sponsor-note reveal">
+    <span class="sn-star">✅</span>
+    <p>
+      <b>Side Mission 1 สำเร็จแล้ว!</b> คำอวยพรของทุกคนพา Sponsor สมทบ
+      <b>100 BNK Token</b> เข้าวอลเลทบ้านชิวาว่าแลนด์เต็มเพดาน (การ์ดละ 2 token)
+      <span class="sn-deadline">ปิดยอดคืนวันศุกร์ที่ 14 ส.ค. 2569</span>
+    </p>
+  </div>
+
+  <!-- ── WISH WALL ── -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-gold">🎈</div>
+    <div><div class="sec-title">กระดานคำอวยพร</div><div class="sec-sub">WISH WALL FROM CHIWAWALAND</div></div>
+  </div>
+
+  <div class="wall-bar reveal">
+    <div class="wall-count">💌 <span class="wc-num" id="wallCount">–</span> คำอวยพร</div>
+    <button class="wall-refresh" id="wallRefresh">🔄 รีเฟรช</button>
+  </div>
+
+  <div class="wall" id="wall">
+    <div class="wall-state"><span class="em">💌</span>กำลังโหลดคำอวยพร...</div>
   </div>
 
   <!-- ── WISH FORM ── -->
   <div class="sec-head reveal">
     <div class="sec-emoji e-pink">💌</div>
-    <div><div class="sec-title">เขียนคำอวยพร</div><div class="sec-sub">SEND YOUR BIRTHDAY WISH</div></div>
+    <div><div class="sec-title">ร่วมอวยพรวันเกิดย้อนหลัง</div><div class="sec-sub">SEND A LATE BIRTHDAY WISH</div></div>
   </div>
+
+  <p class="late-note reveal">วันเกิดผ่านไปแล้ว แต่กระดานยังเปิดรับอยู่นะ — มาช้าไม่เป็นไร วาว่าได้อ่านทุกใบแน่นอน 💕</p>
 
   <div class="card wish-form reveal">
     <div class="wf-row">
@@ -522,31 +576,6 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
 
     <button class="wf-submit" id="wfSubmit">🎁 ส่งคำอวยพร</button>
     <div class="wf-msg" id="wfFeedback"></div>
-  </div>
-
-  <!-- ── สปอนเซอร์สมทบ token ── -->
-  <div class="card sponsor-note reveal">
-    <span class="sn-star">⭐</span>
-    <p>
-      ทุกคำอวยพร จะได้รับการสนับสนุนจาก <b>Sponsor</b> เข้าวอลเลทบ้านชิวาว่าแลนด์
-      <b>การ์ดละ 2 token</b> (สูงสุด 100 token)
-      <span class="sn-deadline">นับยอดถึงคืนวันศุกร์ที่ 14 ส.ค. 2569</span>
-    </p>
-  </div>
-
-  <!-- ── WISH WALL ── -->
-  <div class="sec-head reveal">
-    <div class="sec-emoji e-gold">🎈</div>
-    <div><div class="sec-title">กระดานคำอวยพร</div><div class="sec-sub">WISH WALL FROM CHIWAWALAND</div></div>
-  </div>
-
-  <div class="wall-bar reveal">
-    <div class="wall-count">💌 <span class="wc-num" id="wallCount">–</span> คำอวยพร</div>
-    <button class="wall-refresh" id="wallRefresh">🔄 รีเฟรช</button>
-  </div>
-
-  <div class="wall" id="wall">
-    <div class="wall-state"><span class="em">💌</span>กำลังโหลดคำอวยพร...</div>
   </div>
 
   <!-- ── GALLERY ── -->
@@ -694,11 +723,19 @@ const ro = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.tar
 document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
 /* ════════════ COUNTDOWN ════════════ */
+const BIRTHDAY_END = new Date('2026-08-12T00:00:00+07:00');  // หมดวันเกิด → โหมดขอบคุณ
+
 function updateCd(){
-  const diff = BIRTHDAY.getTime() - Date.now();
+  const now  = Date.now();
+  const diff = BIRTHDAY.getTime() - now;
+  if(now >= BIRTHDAY_END.getTime()){
+    document.body.classList.remove('is-birthday');
+    document.body.classList.add('is-after');
+    return true;
+  }
   if(diff <= 0){
     document.body.classList.add('is-birthday');
-    return true;
+    return false;                       // ปล่อยให้เดินต่อ เที่ยงคืนจะสลับเป็นโหมดขอบคุณเอง
   }
   const s = Math.floor(diff/1000);
   document.getElementById('cdD').textContent = String(Math.floor(s/86400)).padStart(2,'0');
@@ -707,8 +744,10 @@ function updateCd(){
   document.getElementById('cdS').textContent = String(s%60).padStart(2,'0');
   return false;
 }
-updateCd();
-const cdTimer = setInterval(()=>{ if(updateCd()){ clearInterval(cdTimer); fireConfetti(160); } }, 1000);
+const startedDone = updateCd();       // เปิดหน้ามาก็เลยวันเกิดแล้ว ไม่ต้องยิงคอนเฟตตีซ้ำ
+const cdTimer = setInterval(()=>{
+  if(updateCd()){ clearInterval(cdTimer); if(!startedDone) fireConfetti(160); }
+}, 1000);
 
 /* ════════════ CONFETTI ════════════ */
 const cvs = document.getElementById('confetti');
@@ -972,7 +1011,10 @@ function wishNode(w){
 
 function renderWall(list){
   wall.textContent = '';
-  document.getElementById('wallCount').textContent = list.length.toLocaleString('th-TH');
+  const total = list.length.toLocaleString('th-TH');
+  document.getElementById('wallCount').textContent = total;
+  const tc = document.getElementById('thanksCount');
+  if(tc) tc.textContent = total;
 
   if(!list.length){
     const s = document.createElement('div');
@@ -1018,6 +1060,9 @@ async function loadWall(){
       s.innerHTML = '<span class="em">😢</span>โหลดคำอวยพรไม่สำเร็จ ลองกดรีเฟรชอีกครั้งนะ';
       wall.appendChild(s);
       document.getElementById('wallCount').textContent = '0';
+      // โหลดคำอวยพรไม่ได้ → ไม่รู้จำนวนจริง ซ่อนบรรทัดนับไปเลย ดีกว่าโชว์เลขมั่ว
+      const tl = document.getElementById('thanksLine');
+      if(tl) tl.style.display = 'none';
     }
   }
 }
