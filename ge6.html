@@ -323,6 +323,48 @@ nav{
 .stmt-clear .sc-ic{font-size:16px;line-height:1.3;flex-shrink:0}
 .stmt-clear b{display:block;font-family:'Baloo 2',cursive;font-weight:700;font-size:14px;color:#1a7a44}
 
+/* ════════ DONATION SUMMARY ════════ */
+.ds-card{padding:24px 26px;margin-top:4px}
+.ds-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.ds-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:17px;color:var(--ink)}
+.ds-updated{font-family:'Fredoka',sans-serif;font-size:11px;color:var(--ink3)}
+.ds-table{display:flex;flex-direction:column}
+.ds-row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:baseline;
+  padding:9px 0;border-bottom:1.5px solid rgba(155,89,182,.09)}
+.ds-row span:first-child{font-size:12.5px;font-weight:300;color:var(--ink2);line-height:1.5}
+.ds-row .ds-b{font-family:'Baloo 2',cursive;font-weight:700;font-size:14px;color:var(--ink);
+  text-align:right;min-width:74px}
+.ds-row .ds-t{font-family:'Fredoka',sans-serif;font-size:11.5px;color:var(--lilac-deep);
+  text-align:right;min-width:76px}
+.ds-th{border-bottom:2px solid rgba(155,89,182,.22)}
+.ds-th span{font-family:'Fredoka',sans-serif !important;font-size:10.5px !important;font-weight:600 !important;
+  letter-spacing:.5px;text-transform:uppercase;color:var(--ge6b) !important}
+.ds-total{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  margin-top:18px;padding:16px 20px;border-radius:var(--r-sm);
+  background:linear-gradient(120deg,var(--ge6a),var(--ge6b));box-shadow:var(--shadow-ge6);
+}
+.dst-lbl{font-family:'Fredoka',sans-serif;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.9);letter-spacing:.5px}
+.dst-num{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(22px,6vw,30px);color:#fff;line-height:1.1}
+.ds-note{font-size:11px;font-weight:300;color:var(--ink3);line-height:1.7;margin-top:12px}
+.ds-shot{margin-top:16px}
+
+/* ── รายการเสบียง Mission 4 ── */
+.supply{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:12px}
+.sup{display:flex;align-items:baseline;gap:7px;background:rgba(255,255,255,.72);
+  border:1.5px solid rgba(155,89,182,.14);border-radius:11px;padding:7px 11px}
+.sup .s-n{flex:1;min-width:0;font-size:11.5px;font-weight:300;color:var(--ink2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sup .s-p{font-family:'Fredoka',sans-serif;font-size:10.5px;color:var(--ink3);white-space:nowrap}
+.sup .s-c{font-family:'Baloo 2',cursive;font-weight:700;font-size:11.5px;white-space:nowrap}
+.sup .s-c.sold{color:#1a7a44}
+.bonus-line{
+  margin-top:11px;padding:10px 14px;border-radius:11px;
+  background:rgba(232,192,96,.16);border:1.5px solid rgba(200,152,10,.32);
+  font-size:12px;font-weight:300;color:var(--ink2);line-height:1.7;
+}
+.bonus-line b{font-family:'Baloo 2',cursive;font-weight:700;font-size:13.5px;color:var(--gold-deep)}
+
 /* ════════ ประกาศ PANEL ════════ */
 .ann-list{display:flex;flex-direction:column;gap:14px}
 .ann-card{padding:22px 24px;position:relative}
@@ -375,6 +417,11 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .stmt-row{flex-wrap:wrap;gap:6px}
   .wrap{padding:0 14px 60px}
   .theme-shots{grid-template-columns:1fr}
+  .ds-card{padding:20px 16px}
+  .ds-row{grid-template-columns:1fr auto;row-gap:2px}
+  .ds-row .ds-t{grid-column:2;font-size:10.5px;min-width:0}
+  .ds-row span:first-child{grid-column:1;grid-row:1/span 2;align-self:center}
+  .supply{grid-template-columns:1fr}
   .form-card{flex-direction:column;gap:16px}
   .form-shot{width:100%;max-width:280px;margin:0 auto}
   .act-card.has-shot{padding:18px}
@@ -517,6 +564,44 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     </p>
   </div>
 
+  <!-- ── DONATION SUMMARY ── -->
+  <div class="sec-head reveal">
+    <div class="sec-emoji e-sun">🧾</div>
+    <div><div class="sec-title">สรุปยอดสนับสนุน</div><div class="sec-sub">DONATION SUMMARY · #21SINGWithWawa</div></div>
+  </div>
+
+  <div class="card ds-card reveal">
+    <div class="ds-head">
+      <div class="ds-title">รวมทุกภารกิจในธีม #21SINGWithWawa</div>
+      <!-- ✏️ แก้วันที่อัปเดตตรงนี้ -->
+      <div class="ds-updated">🕐 อัปเดตล่าสุด: 2 ก.ย. 2569</div>
+    </div>
+
+    <!-- ✏️ เพิ่มภารกิจใหม่: ก๊อป .ds-row มาวางต่อท้าย แล้วแก้ตัวเลขใน .ds-total ให้ตรง -->
+    <div class="ds-table">
+      <div class="ds-row ds-th"><span>กิจกรรม</span><span>ยอดเงินที่ได้</span><span>ยอดทบ token</span></div>
+      <div class="ds-row"><span>1. Mission 0 · Rising with Wawa</span><span class="ds-b">6,000</span><span class="ds-t">100 token</span></div>
+      <div class="ds-row"><span>2. Mission 1 · The Awakening 🌵</span><span class="ds-b">7,000</span><span class="ds-t">–</span></div>
+      <div class="ds-row"><span>3. Mission 2 · Star Signal ⭐</span><span class="ds-b">10,000</span><span class="ds-t">–</span></div>
+      <div class="ds-row"><span>4. Side Mission 1 · เขียนการ์ด HBD 🎂</span><span class="ds-b">–</span><span class="ds-t">100 token</span></div>
+      <div class="ds-row"><span>5. Mission 3 · Follow the Pawprints 🐾</span><span class="ds-b">6,800</span><span class="ds-t">–</span></div>
+      <div class="ds-row"><span>6. Side Mission 2 · Flip with Wawa 🔄</span><span class="ds-b">3,300</span><span class="ds-t">–</span></div>
+      <div class="ds-row"><span>7. Mission 4 · Feed the Guardian 🐢</span><span class="ds-b">68,070</span><span class="ds-t">–</span></div>
+      <div class="ds-row"><span>8. Direct donate 💝</span><span class="ds-b">88</span><span class="ds-t">–</span></div>
+    </div>
+
+    <div class="ds-total">
+      <span class="dst-lbl">ยอดรวมทั้งหมด</span>
+      <span class="dst-num">฿ 101,258.00</span>
+    </div>
+    <p class="ds-note">* หน่วยเป็นบาท · ทางบ้านจะอัปเดตอย่างต่อเนื่องจนถึงช่วงเปิดโหวต · ตรวจสอบรายการเดินบัญชีได้ที่แท็บ Statement</p>
+
+    <div class="shot ds-shot">
+      <img src="images/ge6/donation-summary.jpg" alt="Donation Summary #21SINGWithWawa" loading="lazy" />
+      <div class="shot-ph"><span class="em">🧾</span>ภาพสรุปยอดสนับสนุน<br><small>images/ge6/donation-summary.jpg</small></div>
+    </div>
+  </div>
+
   <!-- ── TABS ── -->
   <div class="sec-head reveal">
     <div class="sec-emoji e-teal">✨</div>
@@ -559,6 +644,55 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     <!-- กิจกรรมที่เปิดอยู่ / กำลังจะมา -->
     <div class="act-section-label">🟢 กระดานที่เปิดอยู่ตอนนี้</div>
     <div class="act-grid" id="openActivities">
+      <div class="card act-empty">
+        <span class="em">🌟</span>
+        ปิดครบทุกกระดานแล้ว! ขอบคุณทุกแรงใจนะคะ<br>
+        <small>รอประกาศภารกิจถัดไปจากบ้านชิวาว่าแลนด์เร็วๆ นี้</small>
+      </div>
+    </div>
+
+    <div class="act-section-label" style="background:rgba(149,165,166,.1);color:#7f8c8d">⚫ กิจกรรมที่สิ้นสุดแล้ว</div>
+    <div class="act-grid" id="closedActivities">
+
+      <div class="card act-card has-shot reveal">
+        <div class="act-head">
+          <div class="act-icon" style="background:linear-gradient(135deg,#d6f2f3,#a8e0d0)">🐢</div>
+          <div class="act-body">
+            <div class="act-meta">
+              <span class="mission-no">Mission 4</span>
+              <span class="act-tag tag-done">✓ สำเร็จแล้ว</span>
+            </div>
+            <div class="act-name">FEED THE GUARDIAN — เติมเสบียงให้น้องเต่า</div>
+            <div class="act-desc">
+              ช่วยกันเติมเสบียงอาหารให้น้องเต่า ผู้พิทักษ์แห่งหมู่บ้านชิวาว่าแลนด์
+              เพื่อร่วมทัพไปช่วยเหลือเจ้าหญิงวาว่าในดินแดนห่างไกล 🐢<br>
+              ระดมเสบียงครบภายใน 7 วัน (ปิดวันพฤหัสที่ 3 ก.ย. เวลา 20:00 น.) ปลดล็อก
+              <b>“กล่องสมบัติวิเศษ”</b> จากผู้สนับสนุนลึกลับ การันตี 18 บาท = 1 token
+              ให้วาว่า · ทุก 18 บาทได้ 1 สิทธิ์ลุ้น Canvas TCA และ Shock Me Girl [set A] 🎁
+            </div>
+
+            <div class="supply">
+              <div class="sup"><span class="s-n">น้ำดื่ม</span><span class="s-p">18 ฿</span><span class="s-c sold">101/100</span></div>
+              <div class="sup"><span class="s-n">หญ้าแห้ง</span><span class="s-p">36 ฿</span><span class="s-c sold">51/50</span></div>
+              <div class="sup"><span class="s-n">ผักบุ้ง</span><span class="s-p">90 ฿</span><span class="s-c sold">20/20</span></div>
+              <div class="sup"><span class="s-n">ตะกร้าผลไม้</span><span class="s-p">180 ฿</span><span class="s-c sold">15/15</span></div>
+              <div class="sup"><span class="s-n">อาหารเต่าพรีเมี่ยม</span><span class="s-p">360 ฿</span><span class="s-c sold">15/15</span></div>
+              <div class="sup"><span class="s-n">น้ำยา Elixir</span><span class="s-p">900 ฿</span><span class="s-c sold">5/5</span></div>
+            </div>
+
+            <div class="bonus-line">🎉 ปลดล็อกกล่องสมบัติสำเร็จ — โบนัส <b>50,000 บาท</b> · วาว่าได้รับ <b>1,000 โหวต</b></div>
+
+            <div class="mp" data-now="6" data-goal="6">
+              <div class="mp-bar"><div class="mp-fill"></div></div>
+              <div class="mp-txt"><span>เสบียงขายหมดทุกรายการ</span><b><span class="mp-now">6</span> / 6 รายการ</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot">
+          <img src="images/ge6/mission-4.jpg" alt="Mission 4 — Feed the Guardian" loading="lazy" />
+          <div class="shot-ph"><span class="em">🖼️</span>กระดาน Mission 4<br><small>images/ge6/mission-4.jpg</small></div>
+        </div>
+      </div>
 
       <div class="card act-card has-shot reveal">
         <div class="act-head">
@@ -566,18 +700,17 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
           <div class="act-body">
             <div class="act-meta">
               <span class="mission-no">Side Mission 2</span>
-              <span class="act-tag tag-open">เปิดอยู่</span>
+              <span class="act-tag tag-done">✓ สำเร็จแล้ว</span>
             </div>
             <div class="act-name">FLIP WITH WAWA — 21 หรือ (12)?</div>
             <div class="act-desc">
-              ลองกลับหัวตามวาว่าดูสิ! มาช่วยกันหมุนภาพวาว่าให้กลับมาตั้งตรง
-              <b>สลิปละ 21 บาท</b> ทั้งหมด 100 สลิป · ทุก 10 สลิป ภาพวาว่าจะหมุนกลับมา 18°<br>
-              ⭐ ครบ 2,100 บาท รับโบนัสจากสปอนเซอร์อีก 1,200 บาท
+              ช่วยกันหมุนภาพวาว่าให้กลับมาตั้งตรงสำเร็จ! สลิปละ 21 บาท ครบ 100 สลิป
+              ทุก 10 สลิปภาพหมุนกลับมา 18°<br>
+              ปิดกระดานครบ 2,100 บาทตามเป้า รับโบนัสจากสปอนเซอร์อีก 1,200 บาท ⭐
             </div>
-            <!-- ✏️ อัปเดตยอด: แก้ data-now (data-goal คือเป้า) -->
-            <div class="mp" data-now="15" data-goal="100" data-unit="สลิป">
+            <div class="mp" data-now="100" data-goal="100">
               <div class="mp-bar"><div class="mp-fill"></div></div>
-              <div class="mp-txt"><span>หมุนไปแล้ว</span><b><span class="mp-now">15</span> / 100 สลิป</b></div>
+              <div class="mp-txt"><span>หมุนครบแล้ว</span><b><span class="mp-now">100</span> / 100 สลิป</b></div>
             </div>
           </div>
         </div>
@@ -586,11 +719,6 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
           <div class="shot-ph"><span class="em">🖼️</span>กระดาน Side Mission 2<br><small>images/ge6/side-mission-2.jpg</small></div>
         </div>
       </div>
-
-    </div>
-
-    <div class="act-section-label" style="background:rgba(149,165,166,.1);color:#7f8c8d">⚫ กิจกรรมที่สิ้นสุดแล้ว</div>
-    <div class="act-grid" id="closedActivities">
 
       <div class="card act-card has-shot reveal">
         <div class="act-head">
@@ -772,7 +900,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
         </div>
         <div class="stmt-row">
           <span class="stmt-label">ยอดรับบริจาครวม</span>
-          <span class="stmt-value plus" id="stmtTotal">฿ 0.00</span>
+          <span class="stmt-value plus" id="stmtTotal">฿ 101,258.00</span>
         </div>
         <div class="stmt-row">
           <span class="stmt-label">ค่าใช้จ่าย GE6</span>
@@ -780,7 +908,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
         </div>
         <div class="stmt-row">
           <span class="stmt-label">ยอดคงเหลือ</span>
-          <span class="stmt-value" id="stmtBalance">฿ 0.00</span>
+          <span class="stmt-value" id="stmtBalance">฿ 101,258.00</span>
         </div>
         <p class="stmt-note">* ยอดอาจมีความล่าช้า 1-2 วัน · ข้อมูลทั้งหมดตรวจสอบได้จาก statement ด้านล่าง</p>
       </div>
@@ -792,7 +920,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
           <div class="shot-ph"><span class="em">📄</span>Statement ล่าสุด<br><small>images/ge6/statement-latest.jpg</small></div>
         </div>
         <p class="stmt-note" style="margin-top:12px">
-          รอบบัญชี 1 – 31 ก.ค. 2569 · ไม่มีรายการเคลื่อนไหว (เริ่มต้นที่ 0 บาท)<br>
+          รอบบัญชี 1 ก.ค. – 2 ก.ย. 2569 · ฝากเงิน 165 รายการ รวม 101,258.00 บาท · ถอนเงิน 0 รายการ<br>
           * อัปเดตทุก 7–14 วัน หรือเมื่อมีรายการสำคัญ
         </p>
       </div>
@@ -1013,7 +1141,7 @@ document.querySelectorAll('.shot img').forEach(img=>{
 })();
 
 /* ── statement last-updated (update this string manually) ── */
-document.getElementById('stmtUpdated').textContent = '31 ก.ค. 2569';
+document.getElementById('stmtUpdated').textContent = '2 ก.ย. 2569';
 </script>
 </body>
 </html>
