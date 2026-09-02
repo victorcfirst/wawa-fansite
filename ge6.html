@@ -347,7 +347,20 @@ nav{
 .dst-lbl{font-family:'Fredoka',sans-serif;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.9);letter-spacing:.5px}
 .dst-num{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(22px,6vw,30px);color:#fff;line-height:1.1}
 .ds-note{font-size:11px;font-weight:300;color:var(--ink3);line-height:1.7;margin-top:12px}
-.ds-shot{margin-top:16px}
+.ds-shot{margin-top:14px}
+.ds-more{margin-top:16px}
+.ds-more summary{
+  display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;
+  font-family:'Fredoka',sans-serif;font-size:12.5px;font-weight:500;color:var(--ge6b);
+  background:var(--lilac-pale);border:1.5px solid rgba(155,89,182,.24);
+  border-radius:20px;padding:9px 18px;transition:.2s;width:fit-content;
+}
+.ds-more summary::-webkit-details-marker{display:none}
+.ds-more summary::after{content:'▾';font-size:11px;transition:transform .25s}
+.ds-more[open] summary::after{transform:rotate(180deg)}
+.ds-more summary:hover{background:#e6d8fb;border-color:var(--ge6a)}
+.ds-more .dm-ic{font-size:14px}
+.ds-more:not([open]) .dm-body{display:none}
 
 /* ── รายการเสบียง Mission 4 ── */
 .supply{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:12px}
@@ -596,10 +609,16 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     </div>
     <p class="ds-note">* หน่วยเป็นบาท · ทางบ้านจะอัปเดตอย่างต่อเนื่องจนถึงช่วงเปิดโหวต · ตรวจสอบรายการเดินบัญชีได้ที่แท็บ Statement</p>
 
-    <div class="shot ds-shot">
-      <img src="images/ge6/donation-summary.jpg" alt="Donation Summary #21SINGWithWawa" loading="lazy" />
-      <div class="shot-ph"><span class="em">🧾</span>ภาพสรุปยอดสนับสนุน<br><small>images/ge6/donation-summary.jpg</small></div>
-    </div>
+    <!-- ภาพสรุปเก็บพับไว้ ตัวเลขจริงอยู่ในตารางด้านบนแล้ว ไม่ต้องอ่านซ้ำสองรอบ -->
+    <details class="ds-more">
+      <summary><span class="dm-ic">🖼️</span>ดูภาพสรุปยอด (เวอร์ชันสำหรับแชร์ต่อ)</summary>
+      <div class="dm-body">
+        <div class="shot ds-shot">
+          <img src="images/ge6/donation-summary.jpg" alt="Donation Summary #21SINGWithWawa" loading="lazy" />
+          <div class="shot-ph"><span class="em">🧾</span>ภาพสรุปยอดสนับสนุน<br><small>images/ge6/donation-summary.jpg</small></div>
+        </div>
+      </div>
+    </details>
   </div>
 
   <!-- ── TABS ── -->
