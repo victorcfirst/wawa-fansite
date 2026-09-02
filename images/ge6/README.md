@@ -14,7 +14,9 @@
 | `announce-01.jpg` | แท็บประกาศ — ประกาศฉบับที่ 1 |
 | `mission-3.jpg` | กระดาน Mission 3 · Follow the Pawprints (สิ้นสุดแล้ว) |
 | `side-mission-1.jpg` | สรุป Side Mission 1 · อวยพรวันเกิด (สิ้นสุดแล้ว) |
-| `side-mission-2.jpg` | กระดาน Side Mission 2 · Flip With Wawa (เปิดอยู่) |
+| `side-mission-2.jpg` | กระดาน Side Mission 2 · Flip With Wawa (สิ้นสุดแล้ว) |
+| `mission-4.jpg` | กระดาน Mission 4 · Feed the Guardian (สิ้นสุดแล้ว) |
+| `donation-summary.jpg` | โซนสรุปยอดสนับสนุน · Donation Summary |
 | `wawa-ge6-form.jpg` | การ์ด "วาว่าส่งใบสมัครแล้ว" ใต้การ์ดนับถอยหลัง |
 | `statement-latest.jpg` | แท็บ Statement — รูป statement ล่าสุด |
 
@@ -33,7 +35,13 @@
 
 ## อัปเดตยอดในแถบความคืบหน้า
 
-แก้ที่ `data-now` ของ `<div class="mp" data-now="15" data-goal="100">` — แถบกับตัวเลขจะขยับตามเอง
+แก้ที่ `data-now` ของ `<div class="mp" data-now="6" data-goal="6">` — แถบกับตัวเลขจะขยับตามเอง
+
+## อัปเดตโซนสรุปยอดสนับสนุน (Donation Summary)
+
+ใน `ge6.html` หา `.ds-table` — ก๊อป `.ds-row` มาวางต่อท้ายเวลามีภารกิจใหม่
+แล้วอย่าลืมแก้ตัวเลขใน `.ds-total` กับวันที่ใน `.ds-updated` ให้ตรงกันด้วย
+(ยอดในแท็บ Statement เป็นคนละที่ ต้องแก้แยก)
 
 ## ยอด Token ในหน้า GE6
 
