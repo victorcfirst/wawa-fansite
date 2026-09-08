@@ -347,6 +347,20 @@ nav{
 .dst-lbl{font-family:'Fredoka',sans-serif;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.9);letter-spacing:.5px}
 .dst-num{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(22px,6vw,30px);color:#fff;line-height:1.1}
 .ds-note{font-size:11px;font-weight:300;color:var(--ink3);line-height:1.7;margin-top:12px}
+/* แปลงยอดเงินเป็นพลังโหวตให้เห็นภาพ */
+.ds-votes{
+  display:flex;align-items:center;gap:14px;margin-top:12px;
+  padding:14px 18px;border-radius:var(--r-sm);
+  background:rgba(239,231,253,.55);border:1.5px solid rgba(155,89,182,.25);
+}
+.ds-votes .dv-ic{font-size:24px;line-height:1;flex-shrink:0}
+.dv-body{flex:1;min-width:0}
+.dv-lbl{font-family:'Fredoka',sans-serif;font-size:11px;color:var(--ink3);letter-spacing:.3px}
+.dv-num{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(24px,6.5vw,32px);
+  color:var(--ge6b);line-height:1.15}
+.dv-num .dv-u{font-size:14px;font-weight:600;color:var(--ink2)}
+.dv-note{font-family:'Fredoka',sans-serif;font-size:10px;color:var(--ink3);
+  text-align:right;line-height:1.6;flex-shrink:0}
 .ds-shot{margin-top:14px}
 .ds-more{margin-top:16px}
 .ds-more summary{
@@ -435,6 +449,8 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
   .ds-row .ds-t{grid-column:2;font-size:10.5px;min-width:0}
   .ds-row span:first-child{grid-column:1;grid-row:1/span 2;align-self:center}
   .supply{grid-template-columns:1fr}
+  .ds-votes{flex-wrap:wrap;gap:10px}
+  .dv-note{width:100%;text-align:left;border-top:1.5px solid rgba(155,89,182,.16);padding-top:8px}
   .form-card{flex-direction:column;gap:16px}
   .form-shot{width:100%;max-width:280px;margin:0 auto}
   .act-card.has-shot{padding:18px}
@@ -587,7 +603,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     <div class="ds-head">
       <div class="ds-title">รวมทุกภารกิจในธีม #21SINGWithWawa</div>
       <!-- ✏️ แก้วันที่อัปเดตตรงนี้ -->
-      <div class="ds-updated">🕐 อัปเดตล่าสุด: 2 ก.ย. 2569</div>
+      <div class="ds-updated">🕐 อัปเดตล่าสุด: 8 ก.ย. 2569</div>
     </div>
 
     <!-- ✏️ เพิ่มภารกิจใหม่: ก๊อป .ds-row มาวางต่อท้าย แล้วแก้ตัวเลขใน .ds-total ให้ตรง -->
@@ -600,12 +616,24 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       <div class="ds-row"><span>5. Mission 3 · Follow the Pawprints 🐾</span><span class="ds-b">6,800</span><span class="ds-t">–</span></div>
       <div class="ds-row"><span>6. Side Mission 2 · Flip with Wawa 🔄</span><span class="ds-b">3,300</span><span class="ds-t">–</span></div>
       <div class="ds-row"><span>7. Mission 4 · Feed the Guardian 🐢</span><span class="ds-b">68,070</span><span class="ds-t">–</span></div>
-      <div class="ds-row"><span>8. Direct donate 💝</span><span class="ds-b">88</span><span class="ds-t">–</span></div>
+      <div class="ds-row"><span>8. Side Mission 3 · Hearts for Wawa 💗</span><span class="ds-b">2,700</span><span class="ds-t">54 token</span></div>
+      <div class="ds-row"><span>9. Mission 5 · Gear Up, Little Hero! ⚔️</span><span class="ds-b">13,440</span><span class="ds-t">–</span></div>
+      <div class="ds-row"><span>10. Direct donate 💝</span><span class="ds-b">138</span><span class="ds-t">–</span></div>
     </div>
 
-    <div class="ds-total">
+    <!-- ✏️ แก้ยอดรวมที่ data-total แล้วทั้งตัวเลขและจำนวนโหวตจะขยับตามเอง -->
+    <div class="ds-total" id="dsTotal" data-total="117448">
       <span class="dst-lbl">ยอดรวมทั้งหมด</span>
-      <span class="dst-num">฿ 101,258.00</span>
+      <span class="dst-num">฿ 117,448.00</span>
+    </div>
+
+    <div class="ds-votes">
+      <span class="dv-ic">🗳️</span>
+      <div class="dv-body">
+        <div class="dv-lbl">คำนวณเป็นพลังโหวตให้วาว่าได้ราว</div>
+        <div class="dv-num"><span id="dsVotes">–</span> <span class="dv-u">โหวต</span></div>
+      </div>
+      <div class="dv-note">คิดที่ token ละ 68 บาท<br>เป็นตัวเลขประมาณการ</div>
     </div>
     <p class="ds-note">* หน่วยเป็นบาท · ทางบ้านจะอัปเดตอย่างต่อเนื่องจนถึงช่วงเปิดโหวต · ตรวจสอบรายการเดินบัญชีได้ที่แท็บ Statement</p>
 
@@ -663,15 +691,97 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
     <!-- กิจกรรมที่เปิดอยู่ / กำลังจะมา -->
     <div class="act-section-label">🟢 กระดานที่เปิดอยู่ตอนนี้</div>
     <div class="act-grid" id="openActivities">
-      <div class="card act-empty">
-        <span class="em">🌟</span>
-        ปิดครบทุกกระดานแล้ว! ขอบคุณทุกแรงใจนะคะ<br>
-        <small>รอประกาศภารกิจถัดไปจากบ้านชิวาว่าแลนด์เร็วๆ นี้</small>
+
+      <div class="card act-card has-shot reveal">
+        <div class="act-head">
+          <div class="act-icon" style="background:linear-gradient(135deg,#ffe3ee,#ffd0dd)">🏕️</div>
+          <div class="act-body">
+            <div class="act-meta">
+              <span class="mission-no">Side Mission 4</span>
+              <span class="act-tag tag-open">เปิดอยู่</span>
+            </div>
+            <div class="act-name">WAWA RECOVERY CAMP — ค่ายฟื้นพลังให้วาว่า</div>
+            <div class="act-desc">
+              มาช่วยกันดูแลวาว่าให้หายป่วยและกลับมาเต็มร้อย เลือกสมทบได้ตามถนัด
+              ทั้งทีมนักกายภาพฟื้นพลังและแผ่นแปะคลายปวด 🏕️<br>
+              ⭐ ภารกิจสำเร็จ ผู้ใหญ่ใจดีสมทบเพิ่ม 2,000 บาท เพื่อการันตีเป็น 100 โหวต
+            </div>
+
+            <!-- ✏️ อัปเดตยอด: แก้ data-now ทั้งของแต่ละรายการและของแถบรวม -->
+            <div class="supply">
+              <div class="sup"><span class="s-n">ทีมนักกายภาพฟื้นพลัง</span><span class="s-p">100 ฿</span><span class="s-c">5/24</span></div>
+              <div class="sup"><span class="s-n">แผ่นแปะคลายปวด</span><span class="s-p">40 ฿</span><span class="s-c">7/60</span></div>
+            </div>
+
+            <div class="mp" data-now="780" data-goal="4800">
+              <div class="mp-bar"><div class="mp-fill"></div></div>
+              <div class="mp-txt"><span>ยอดรวม</span><b><span class="mp-now">780</span> / 4,800 บาท</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot">
+          <img src="images/ge6/side-mission-4.jpg" alt="Side Mission 4 — Wawa Recovery Camp" loading="lazy" />
+          <div class="shot-ph"><span class="em">🖼️</span>กระดาน Side Mission 4<br><small>images/ge6/side-mission-4.jpg</small></div>
+        </div>
       </div>
+
     </div>
 
     <div class="act-section-label" style="background:rgba(149,165,166,.1);color:#7f8c8d">⚫ กิจกรรมที่สิ้นสุดแล้ว</div>
     <div class="act-grid" id="closedActivities">
+
+      <div class="card act-card has-shot reveal">
+        <div class="act-head">
+          <div class="act-icon" style="background:linear-gradient(135deg,#fff2cc,#f5d98a)">🦸</div>
+          <div class="act-body">
+            <div class="act-meta">
+              <span class="mission-no">Mission 5</span>
+              <span class="act-tag tag-done">✓ สำเร็จแล้ว</span>
+            </div>
+            <div class="act-name">GEAR UP, LITTLE HERO! — แต่งลุคให้น้องชิวาว่า</div>
+            <div class="act-desc">
+              โดเนทเริ่มต้นเพียง 30 บาท เพื่อปลดล็อกน้องชิวาว่าของคุณ (ตัวเปล่า)
+              แล้วโดเนทเพิ่มเพื่อเลือกอุปกรณ์สวมใส่ สร้างน้องชิวาว่าประจำตัวที่ไม่ซ้ำใคร ⚔️<br>
+              ระยะเวลา 5 – 9 ก.ย. 2569 · ทุก 30 บาท = 1 สิทธิ์ลุ้นรางวัลพิเศษ กระปุกชาจากวาว่า
+              (วาว่าเขียนถึงแฟนคลับ) · สำเร็จภารกิจ สปอนเซอร์สมทบเพิ่มอีก 5,000 บาท 🎁
+            </div>
+            <div class="mp" data-now="6720" data-goal="5000">
+              <div class="mp-bar"><div class="mp-fill"></div></div>
+              <div class="mp-txt"><span>ทะลุเป้า</span><b><span class="mp-now">6,720</span> / 5,000 บาท</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot">
+          <img src="images/ge6/mission-5.jpg" alt="Mission 5 — Gear Up, Little Hero!" loading="lazy" />
+          <div class="shot-ph"><span class="em">🖼️</span>กระดาน Mission 5<br><small>images/ge6/mission-5.jpg</small></div>
+        </div>
+      </div>
+
+      <div class="card act-card has-shot reveal">
+        <div class="act-head">
+          <div class="act-icon" style="background:linear-gradient(135deg,#ffe3ee,#ffc9de)">💗</div>
+          <div class="act-body">
+            <div class="act-meta">
+              <span class="mission-no">Side Mission 3</span>
+              <span class="act-tag tag-done">✓ สำเร็จแล้ว</span>
+            </div>
+            <div class="act-name">HEARTS FOR WAWA — ส่งกำลังใจให้หายป่วยเร็วๆ</div>
+            <div class="act-desc">
+              ช่วยกันส่งกำลังใจให้วาว่าหายป่วยเร็วๆ กำลังใจดวงละ 50 บาท 💗<br>
+              ฉลองยอดโดเนทของบ้านครบ 100,000 บาท · ภารกิจสำเร็จ สปอนเซอร์สนับสนุน
+              <b>54 BNK Token</b> ให้บ้านชิวาว่าแลนด์
+            </div>
+            <div class="mp" data-now="54" data-goal="54">
+              <div class="mp-bar"><div class="mp-fill"></div></div>
+              <div class="mp-txt"><span>กำลังใจจากทุกคน</span><b><span class="mp-now">54</span> ดวง</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="shot">
+          <img src="images/ge6/side-mission-3.jpg" alt="Side Mission 3 — Hearts for Wawa" loading="lazy" />
+          <div class="shot-ph"><span class="em">🖼️</span>กระดาน Side Mission 3<br><small>images/ge6/side-mission-3.jpg</small></div>
+        </div>
+      </div>
 
       <div class="card act-card has-shot reveal">
         <div class="act-head">
@@ -881,12 +991,12 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       </div>
       <div class="tk-label">ยอดเหรียญสะสมทั้งหมด</div>
       <!-- ✏️ ยกยอดมาจาก token.html — แก้ที่นี่ให้ตรงกันเวลาอัปเดต -->
-      <div class="tk-big">1090</div>
+      <div class="tk-big">1114</div>
       <div class="tk-unit">BNK Token</div>
-      <div class="tk-updated"><span class="tk-dot"></span>อัปเดตล่าสุด: 19 ส.ค. 2569</div>
+      <div class="tk-updated"><span class="tk-dot"></span>อัปเดตล่าสุด: 8 ก.ย. 2569</div>
 
       <div class="tk-stats">
-        <div class="tk-stat"><div class="tks-num" style="color:var(--gold-deep)">1090</div><div class="tks-lbl">Token ทั้งหมด</div></div>
+        <div class="tk-stat"><div class="tks-num" style="color:var(--gold-deep)">1114</div><div class="tks-lbl">Token ทั้งหมด</div></div>
         <div class="tk-stat"><div class="tks-num" style="color:var(--teal-deep)">1</div><div class="tks-lbl">กิจกรรมที่รอใช้</div></div>
         <div class="tk-stat"><div class="tks-num" style="color:var(--pink-deep)">0</div><div class="tks-lbl">ใช้ไปแล้ว</div></div>
       </div>
@@ -1091,6 +1201,16 @@ function copyAcc(){
     setTimeout(()=>{btn.textContent='คัดลอก';btn.classList.remove('copied')},2200);
   });
 }
+
+/* ── ยอดบริจาค → พลังโหวต ── */
+(function(){
+  const BAHT_PER_TOKEN = 68;              // 1 token = 68 บาท · แก้ตรงนี้ถ้าเรตเปลี่ยน
+  const box = document.getElementById('dsTotal');
+  const out = document.getElementById('dsVotes');
+  if(!box || !out) return;
+  const total = Number(box.dataset.total) || 0;
+  out.textContent = Math.floor(total / BAHT_PER_TOKEN).toLocaleString('th-TH');
+})();
 
 /* ── ดึงยอด Token จาก token.html มาแสดง ──
    เลขในหน้านี้เป็นแค่ค่าสำรอง อัปเดตที่ token.html ที่เดียวแล้วหน้านี้ตามเอง

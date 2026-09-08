@@ -230,6 +230,7 @@ nav{
 .tl.p4::before{box-shadow:0 0 0 2px var(--lilac);background:var(--lilac)}
 .tl.p5::before{box-shadow:0 0 0 2px var(--pink-deep);background:var(--pink-deep)}
 .tl.p6::before{box-shadow:0 0 0 2px #c89020;background:#c89020}
+.tl.p7::before{box-shadow:0 0 0 2px var(--teal-deep);background:var(--teal-deep)}
 .tl-card{padding:14px 18px}
 .tl-year{font-family:'Baloo 2',cursive;font-weight:700;font-size:13px;color:var(--teal-deep);display:inline-block;margin-bottom:3px}
 .tl-t{font-size:14px;font-weight:400;color:var(--ink)}
@@ -495,6 +496,16 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       <div><div class="sec-title">อัพเดตข่าวสารกับวาว่า</div><div class="sec-sub">Wawa's latest news</div></div>
     </div>
     <div class="news-grid reveal">
+      <!-- ════════════════════════════════════════════════════════
+           วิธีใส่รูปข่าว
+           1) อัปไฟล์รูปเข้าโฟลเดอร์ images/ ตั้งชื่อ news-5.jpg, news-6.jpg ... ต่อไปเรื่อยๆ
+              (แนวนอน อัตราส่วน 16:10 กำลังดี · ด้านยาวสุดไม่เกิน 1200px · ไม่เกิน ~400KB)
+           2) แก้ src="images/news-5.jpg" ในการ์ดให้ตรงกับชื่อไฟล์ที่อัป
+           3) ตัวอีโมจิใน <div class="ph"> คือรูปสำรอง จะโชว์เฉพาะตอนที่ยังไม่มีไฟล์รูป
+              พออัปไฟล์แล้วรูปจะทับเอง ไม่ต้องลบอีโมจิทิ้ง
+           สีพื้นหลังสำรอง: ni-1 ชมพู · ni-2 เหลือง · ni-3 ฟ้า · ni-4 ม่วง
+           ════════════════════════════════════════════════════════ -->
+
       <!-- การ์ดข่าว GE6 — ✏️ อัปเดตยอดตรงนี้เวลามีกิจกรรมใหม่ -->
       <article class="card news-card">
         <div class="news-img ni-4"><img src="images/news-5.jpg" alt=""><div class="ph">🗳️</div></div>
@@ -624,6 +635,7 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
       <div class="tl p4"><div class="card tl-card"><span class="tl-year">2567 · 2024</span><div class="tl-t">เข้าร่วม BNK48 Original Stage</div><div class="tl-d">ได้รับเลือกให้เป็นสมาชิกเริ่มต้นของ BNK48 Original Stage "WHISPER ROAR"</div></div></div>
       <div class="tl p5"><div class="card tl-card"><span class="tl-year">2568 · 2025</span><div class="tl-t">ติด Undergirls อันดับ #21 🎉</div><div class="tl-d">ก้าวกระโดดครั้งใหญ่จาก #61 สู่ Undergirls ด้วยพลังโหวตจากแฟนๆ</div></div></div>
       <div class="tl p6"><div class="card tl-card"><span class="tl-year">2569 · 2026</span><div class="tl-t">เข้าร่วม BNK48 Original Stage Season 2</div><div class="tl-d">ได้รับเลือกอีกครั้งให้เป็นสมาชิกเริ่มต้นของ BNK48 Original Stage "WHISPER ROAR" Season 2</div></div></div>
+      <div class="tl p7"><div class="card tl-card"><span class="tl-year">2569 · 2026</span><div class="tl-t">เซนเตอร์ป้ายแดง เพลง Kegareteiru Shinjitsu 🎤</div><div class="tl-d">ได้รับโอกาสเป็น Center เป็นครั้งแรก คู่กับ Nisha CGM48 ในงาน Bon Odori 2026</div></div></div>
     </div>
   </section>
   </div>
@@ -743,31 +755,18 @@ footer img{width:64px;height:64px;object-fit:contain;margin-bottom:12px;filter:d
         <button class="cal-btn" data-filter="Birthday">Birthday</button>
       </div>
       <div class="events" id="eventList">
+        <!-- ✏️ เพิ่มงานใหม่: ก๊อปการ์ดข้างล่างมาวาง แล้วแก้วันที่/ชื่องาน/สถานที่
+             data-type ต้องตรงกับปุ่มกรอง: Theater / Album / Event / Birthday
+             สีป้ายวันที่: d-teal · d-pink · d-sun · d-sky · d-lilac -->
         <div class="card ev" data-type="Event">
-          <div class="ev-dt d-teal"><div class="ev-mo">ส.ค.</div><div class="ev-dy">1-2</div></div>
-          <div class="ev-bd"><div class="ev-t">BNK48 6th Album “Ponytail to Shushu” Roadshow</div><div class="ev-s">Union Mall, Bangkok · ทั้งวัน</div></div>
+          <div class="ev-dt d-lilac"><div class="ev-mo">ต.ค.</div><div class="ev-dy">3-4</div></div>
+          <div class="ev-bd">
+            <div class="ev-t">BNK48 &amp; CGM48 Senbatsu General Election 2026: Fan Festival 2026</div>
+            <div class="ev-s">MCC Hall, The Mall Lifestore Bangkapi · 3-4 ตุลาคม 2569</div>
+          </div>
           <span class="ev-tp">Event</span>
         </div>
-        <div class="card ev" data-type="Theater">
-          <div class="ev-dt d-pink"><div class="ev-mo">ส.ค.</div><div class="ev-dy">15-16</div></div>
-          <div class="ev-bd"><div class="ev-t">BNK48 Original Stage “WHISPER ROAR” Season 2</div><div class="ev-s">the Bazaar hotel Bangkok · 13:00 / 17:00 น.</div></div>
-          <span class="ev-tp">Theater</span>
-        </div>
-        <div class="card ev" data-type="Birthday">
-          <div class="ev-dt d-sun"><div class="ev-mo">ส.ค.</div><div class="ev-dy">11</div></div>
-          <div class="ev-bd"><div class="ev-t">🎂 วันเกิดวาว่า!</div><div class="ev-s">11 สิงหาคม · ครบ 17 ปี</div></div>
-          <span class="ev-tp">Birthday</span>
-        </div>
-        <div class="card ev" data-type="Theater">
-          <div class="ev-dt d-pink"><div class="ev-mo">ส.ค.</div><div class="ev-dy">8-9</div></div>
-          <div class="ev-bd"><div class="ev-t">BNK48 Original Stage “WHISPER ROAR” Season 2</div><div class="ev-s">the Bazaar hotel Bangkok · 13:00 / 17:00 น.</div></div>
-          <span class="ev-tp">Theater</span>
-        </div>
-        <div class="card ev" data-type="Event">
-          <div class="ev-dt d-teal"><div class="ev-mo">ส.ค.</div><div class="ev-dy">28-30</div></div>
-          <div class="ev-bd"><div class="ev-t">NIPPON HAKU BANGKOK 2026</div><div class="ev-s">Queen Sirikit National Convention Center, Bangkok · ทั้งวัน</div></div>
-          <span class="ev-tp">Event</span>
-        </div>
+
 <!--        <div class="card ev" data-type="Album">
           <div class="ev-dt d-sun"><div class="ev-mo">มิ.ย.</div><div class="ev-dy">16</div></div>
           <div class="ev-bd"><div class="ev-t">เสื้อวันเกิด Wawa BNK48 — ปิด Pre-Order</div><div class="ev-s">app.bnk48.com · 23:59 น.</div></div>

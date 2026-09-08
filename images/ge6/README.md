@@ -17,6 +17,9 @@
 | `side-mission-2.jpg` | กระดาน Side Mission 2 · Flip With Wawa (สิ้นสุดแล้ว) |
 | `mission-4.jpg` | กระดาน Mission 4 · Feed the Guardian (สิ้นสุดแล้ว) |
 | `donation-summary.jpg` | โซนสรุปยอดสนับสนุน · Donation Summary |
+| `side-mission-3.jpg` | กระดาน Side Mission 3 · Hearts for Wawa (สิ้นสุดแล้ว) |
+| `mission-5.jpg` | กระดาน Mission 5 · Gear Up, Little Hero! (สิ้นสุดแล้ว) |
+| `side-mission-4.jpg` | กระดาน Side Mission 4 · Wawa Recovery Camp (เปิดอยู่) |
 | `wawa-ge6-form.jpg` | การ์ด "วาว่าส่งใบสมัครแล้ว" ใต้การ์ดนับถอยหลัง |
 | `statement-latest.jpg` | แท็บ Statement — รูป statement ล่าสุด |
 
@@ -35,12 +38,14 @@
 
 ## อัปเดตยอดในแถบความคืบหน้า
 
-แก้ที่ `data-now` ของ `<div class="mp" data-now="6" data-goal="6">` — แถบกับตัวเลขจะขยับตามเอง
+แก้ที่ `data-now` ของ `<div class="mp" data-now="780" data-goal="4800">` — แถบกับตัวเลขจะขยับตามเอง
 
 ## อัปเดตโซนสรุปยอดสนับสนุน (Donation Summary)
 
 ใน `ge6.html` หา `.ds-table` — ก๊อป `.ds-row` มาวางต่อท้ายเวลามีภารกิจใหม่
-แล้วอย่าลืมแก้ตัวเลขใน `.ds-total` กับวันที่ใน `.ds-updated` ให้ตรงกันด้วย
+แล้วแก้ยอดรวม 2 ที่ใน `.ds-total` ให้ตรงกัน — ทั้ง `data-total="117448"` (ตัวเลขล้วน)
+และข้อความ `฿ 117,448.00` · จำนวนโหวตข้างล่างคำนวณจาก `data-total` ให้เอง (token ละ 68 บาท)
+อย่าลืมแก้วันที่ใน `.ds-updated` ด้วย
 (ยอดในแท็บ Statement เป็นคนละที่ ต้องแก้แยก)
 
 ## ยอด Token ในหน้า GE6
